@@ -43,7 +43,7 @@ class Calculator extends Component {
       '/': () => numbers[0] / numbers[1],
     };
 
-    const resultNumber = operatorCollection[operator]();
+    const resultNumber = Number(operatorCollection[operator]().toFixed(2));
     this.setState({ numbers: [resultNumber, 0], operator: '' });
   };
 
@@ -54,7 +54,7 @@ class Calculator extends Component {
     return (
       <div className="App">
         <div className="calculator">
-          <h1 id="total">0</h1>
+          <h1 id="total">{!operator || numbers[1] === 0 ? numbers[0] : numbers[1]}</h1>
           <div className="digits flex">
             <button className="digit" onClick={this.onClickDigit}>
               9
