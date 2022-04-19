@@ -1,31 +1,80 @@
 import { Component } from 'react';
 import './Calculator.css';
+import { calculator } from '../domain/calculator';
 export default class Calculator extends Component {
+  constructor() {
+    super();
+    this.state = {
+      prevNumber: 0,
+      nextNumber: null,
+      result: 0,
+      operator: '',
+    };
+  }
+
+  changeNumber = (e) => {
+    this.setState({
+      nextNumber: this.state.nextNumber * 10 + Number(e.target.textContent),
+    });
+  };
+
+  calculate = (e) => {
+    if (this.state.nextNumber === null || this.state.operator === '=') {
+      this.setState({ operator: e.target.textContent });
+      return;
+    }
+
+    if (this.state.operator === '') {
+      this.setState({
+        prevNumber: this.state.nextNumber,
+        nextNumber: null,
+        operator: e.target.textContent,
+      });
+      return;
+    }
+
+    this.setState({
+      prevNumber: calculator[this.state.operator](
+        this.state.prevNumber,
+        this.state.nextNumber
+      ),
+      nextNumber: null,
+      operator: e.target.textContent,
+    });
+  };
+
   render() {
     return (
       <div className="calculator">
-        <h1 id="total">0</h1>
+        <h1 id="total">
+          {this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber}
+        </h1>
         <div className="digits flex">
-          <button className="digit">9</button>
-          <button className="digit">8</button>
-          <button className="digit">7</button>
-          <button className="digit">6</button>
-          <button className="digit">5</button>
-          <button className="digit">4</button>
-          <button className="digit">3</button>
-          <button className="digit">2</button>
-          <button className="digit">1</button>
-          <button className="digit">0</button>
+          {new Array(10).fill().map((_, idx) => (
+            <button className="digit" key={9 - idx} onClick={this.changeNumber}>
+              {9 - idx}
+            </button>
+          ))}
         </div>
         <div className="modifiers subgrid">
           <button className="modifier">AC</button>
         </div>
         <div className="operations subgrid">
-          <button className="operation">/</button>
-          <button className="operation">X</button>
-          <button className="operation">-</button>
-          <button className="operation">+</button>
-          <button className="operation">=</button>
+          <button className="operation" onClick={this.calculate}>
+            /
+          </button>
+          <button className="operation" onClick={this.calculate}>
+            X
+          </button>
+          <button className="operation" onClick={this.calculate}>
+            -
+          </button>
+          <button className="operation" onClick={this.calculate}>
+            +
+          </button>
+          <button className="operation" onClick={this.calculate}>
+            =
+          </button>
         </div>
       </div>
     );
