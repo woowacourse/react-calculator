@@ -16,7 +16,7 @@ export default class Digits extends Component {
             <Digit
               digit={digit}
               key={index}
-              changeScreenNumber={this.state.changeScreenNumber}
+              onClickDigit={this.state.onClickDigit}
             ></Digit>
           );
         })}

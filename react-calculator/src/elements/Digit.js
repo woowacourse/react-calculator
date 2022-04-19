@@ -10,7 +10,7 @@ export default class Digit extends Component {
       <button
         className="digit"
         onClick={() => {
-          this.state.changeScreenNumber(this.state.digit);
+          this.state.onClickDigit(this.state.digit);
         }}
       >
         {this.state.digit}
