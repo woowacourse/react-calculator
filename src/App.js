@@ -8,6 +8,7 @@ class App extends Component {
       firstOperand: '0',
       secondOperand: '',
       operator: null,
+      isError: false,
     };
   }
 
@@ -66,8 +67,19 @@ class App extends Component {
   #showResult() {
     const result = this.#calculate();
 
+    if (result === Infinity) {
+      this.setState({
+        firstOperand: '0',
+        secondOperand: '',
+        operator: null,
+        isError: true,
+      });
+
+      return;
+    }
+
     this.setState({
-      firstOperand: result,
+      firstOperand: String(result),
       secondOperand: '',
       operator: null,
     });
@@ -101,6 +113,7 @@ class App extends Component {
       firstOperand: '0',
       secondOperand: '',
       operator: null,
+      isError: false,
     });
   };
 
@@ -108,11 +121,15 @@ class App extends Component {
     return (
       <div className="App">
         <div className="calculator">
-          <h1 id="total">
-            {this.state.firstOperand}
-            {this.state.operator}
-            {this.state.secondOperand}
-          </h1>
+          {this.state.isError ? (
+            <h1 id="total">오류</h1>
+          ) : (
+            <h1 id="total">
+              {this.state.firstOperand}
+              {this.state.operator}
+              {this.state.secondOperand}
+            </h1>
+          )}
           <div className="digits flex" onClick={this.#handleDigitClick}>
             {this.digitButtons}
           </div>
