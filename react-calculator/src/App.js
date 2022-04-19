@@ -34,13 +34,19 @@ class Calculator extends Component {
   };
 
   onClickOperation = (e) => {
-    if (!this.state.numbers[0]) return alert("숫자를 먼저 입력하세요");
     if (e.target.innerText === "=") {
       this.onClickEqualOperation();
       return;
     }
+
+    if (!this.state.numbers[0]) {
+      alert("숫자를 먼저 입력하세요");
+      return;
+    }
+
     if (this.offset() > 0) {
-      return alert("올바른 입력을 해주세요");
+      alert("올바른 입력을 해주세요");
+      return;
     }
     this.setState({
       operator: e.target.innerText,
@@ -48,6 +54,10 @@ class Calculator extends Component {
   };
 
   onClickEqualOperation = () => {
+    if (!this.state.numbers[1]) {
+      alert("완전한 계산식을 입력하세요");
+      return;
+    }
     this.setState({
       calculated: true,
     });
