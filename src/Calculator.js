@@ -11,27 +11,61 @@ class Calculator extends Component {
     };
   }
 
+  onClickDigit = ({ target }) => {
+    const numberIndex = this.state.operator === '' ? 0 : 1;
+    const newStateNumbers = [...this.state.numbers];
+    newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(target.innerText);
+
+    if (newStateNumbers[numberIndex] >= 1000) {
+      alert('숫자는 세 자리까지 입력 가능합니다.');
+      return;
+    }
+
+    this.setState({ numbers: newStateNumbers });
+  };
+
   onClickOperator = ({ target }) => {
     this.setState({ operator: target.textContent });
   };
 
   render() {
-    const { operator } = this.state;
+    const { operator, numbers } = this.state;
+
     return (
       <div className="App">
         <div className="calculator">
           <h1 id="total">0</h1>
           <div className="digits flex">
-            <button className="digit">9</button>
-            <button className="digit">8</button>
-            <button className="digit">7</button>
-            <button className="digit">6</button>
-            <button className="digit">5</button>
-            <button className="digit">4</button>
-            <button className="digit">3</button>
-            <button className="digit">2</button>
-            <button className="digit">1</button>
-            <button className="digit">0</button>
+            <button className="digit" onClick={this.onClickDigit}>
+              9
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              8
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              7
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              6
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              5
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              4
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              3
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              2
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              1
+            </button>
+            <button className="digit" onClick={this.onClickDigit}>
+              0
+            </button>
           </div>
           <div className="modifiers subgrid">
             <button className="modifier">AC</button>
@@ -62,6 +96,7 @@ class Calculator extends Component {
             >
               +
             </button>
+
             <button className="operation">=</button>
           </div>
         </div>
