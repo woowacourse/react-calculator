@@ -5,12 +5,14 @@
 - [] 2개의 숫자에 대해 곱셈이 가능하다.
 - [] 2개의 숫자에 대해 나눗셈이 가능하다.
 - [x] AC(All Clear)버튼을 누르면 0으로 초기화 한다.
-- [] 숫자는 한번에 최대 3자리 수까지 입력 가능하다.
+- [x] 숫자는 한번에 최대 3자리 수까지 입력 가능하다.
 - [] 숫자는 2개까지만 입력할 수 있다.
 - [] 계산 결과를 표현할 때 소수점 이하는 버림한다.
 - [] 연산의 결과값이 Infinity일 경우 오류라는 문자열을 보여준다. (아이폰 참고)
 
-- [] 출력값 있는 상황에 사용자의 페이지 이탈시 confirm을 활용해 사용자의 이탈 여부를 확인한다.
+- [] 출력값 있는 상황에 사용자의 페이지 이탈시 confirm을 활용해 사용자의 이탈 여
+  부를 확인한다. (componentWillUnMount)
+- [] 항상 사용자의 이탈시 마지막 출력값을 Local Storage에 저장한다.
   (componentWillUnMount)
-- [] 항상 사용자의 이탈시 마지막 출력값을 Local Storage에 저장한다. (componentWillUnMount)
-- [] 초기 로딩시 이전 값이 Local Storage에 존재한다면 초기 값으로 적용한다. (componentDidMount)
+- [] 초기 로딩시 이전 값이 Local Storage에 존재한다면 초기 값으로 적용한다.
+  (componentDidMount)

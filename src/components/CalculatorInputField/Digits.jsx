@@ -4,16 +4,15 @@ class Digits extends React.Component {
   render() {
     return (
       <div className="digits flex">
-        <button className="digit">9</button>
-        <button className="digit">8</button>
-        <button className="digit">7</button>
-        <button className="digit">6</button>
-        <button className="digit">5</button>
-        <button className="digit">4</button>
-        <button className="digit">3</button>
-        <button className="digit">2</button>
-        <button className="digit">1</button>
-        <button className="digit">0</button>
+        {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map((digit) => (
+          <button
+            className="digit"
+            key={digit}
+            onClick={this.props.handleClickDigit}
+          >
+            {digit}
+          </button>
+        ))}
       </div>
     );
   }

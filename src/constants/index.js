@@ -1,0 +1,7 @@
+const MAX_NUMBER_LENGTH = 3;
+
+const ERROR_MESSAGE = {
+  EXCEED_MAX_NUMBER_LENGTH: `${MAX_NUMBER_LENGTH}자리수를 초과하였습니다.`,
+};
+
+export { MAX_NUMBER_LENGTH, ERROR_MESSAGE };

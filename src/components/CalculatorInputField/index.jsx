@@ -11,7 +11,7 @@ class CalculatorInputField extends React.Component {
     return (
       <>
         <AllClear handleClickAC={this.props.handleClickAC} />
-        <Digits />
+        <Digits handleClickDigit={this.props.handleClickDigit} />
         <Operators />
       </>
     );
