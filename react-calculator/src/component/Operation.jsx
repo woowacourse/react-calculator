@@ -5,7 +5,11 @@ class Operation extends Component {
     return (
       <>
         <div className="modifiers subgrid">
-          <button className="modifier" id="clear-button">
+          <button
+            className="modifier"
+            id="clear-button"
+            onClick={this.props.onClickClearButton}
+          >
             AC
           </button>
         </div>

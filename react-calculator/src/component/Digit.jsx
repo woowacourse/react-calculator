@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 
 class Digit extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div className="digits flex" onClick={this.props.onClickDigit}>

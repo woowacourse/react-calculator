@@ -63,6 +63,14 @@ class Calculator extends Component {
     });
   };
 
+  onClickClearButton = () => {
+    this.setState({
+      numbers: ["", ""],
+      operator: "",
+      calculated: false,
+    });
+  };
+
   totalRender() {
     return this.state.calculated
       ? this.resultRender()
@@ -100,7 +108,10 @@ class Calculator extends Component {
         <div className="calculator">
           <h1 id="total">{this.totalRender()}</h1>
           <Digit onClickDigit={this.onClickDigit}></Digit>
-          <Operation onClickOperation={this.onClickOperation}></Operation>
+          <Operation
+            onClickOperation={this.onClickOperation}
+            onClickClearButton={this.onClickClearButton}
+          ></Operation>
         </div>
       </div>
     );
