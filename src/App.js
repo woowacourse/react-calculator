@@ -20,26 +20,81 @@ class App extends Component {
     );
   });
 
-  handleDigitClick = (e) => {
+  #handleDigitClick = (e) => {
     if (e.target.className !== 'digit') return;
     const number = e.target.textContent;
 
     if (this.state.operator) {
       this.setState({
-        secondOperand: this.concatOperand(this.state.secondOperand, number),
+        secondOperand: this.#concatOperand(this.state.secondOperand, number),
       });
+
       return;
     }
     this.setState({
-      firstOperand: this.concatOperand(this.state.firstOperand, number),
+      firstOperand: this.#concatOperand(this.state.firstOperand, number),
     });
   };
 
-  concatOperand(currentOperand, number) {
+  #concatOperand(currentOperand, number) {
     if (currentOperand && currentOperand.length > 2) return currentOperand;
     if (currentOperand === '0') return number;
     return currentOperand + number;
   }
+
+  #handleOperatorClick = (e) => {
+    if (!e.target.classList.contains('operation')) return;
+    if (this.state.secondOperand) return;
+
+    const operator = e.target.textContent;
+
+    if (operator !== '=') {
+      this.setState({
+        operator: e.target.textContent,
+      });
+
+      return;
+    }
+  };
+
+  #handleResultButton = (e) => {
+    if (!this.state.secondOperand) return;
+
+    this.#showResult();
+  };
+
+  #showResult() {
+    const result = this.#calculate();
+    console.log(result);
+    this.setState({
+      firstOperand: result,
+      secondOperand: '',
+      operator: null,
+    });
+  }
+
+  #calculate() {
+    if (
+      !this.state.operator ||
+      !this.state.firstOperand ||
+      !this.state.secondOperand
+    ) {
+      return;
+    }
+
+    const calc = this.calculation[this.state.operator];
+    return calc(
+      Number(this.state.firstOperand),
+      Number(this.state.secondOperand)
+    );
+  }
+
+  calculation = {
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+    X: (a, b) => a * b,
+    '/': (a, b) => Math.floor(a / b),
+  };
 
   render() {
     return (
@@ -50,18 +105,26 @@ class App extends Component {
             {this.state.operator}
             {this.state.secondOperand}
           </h1>
-          <div className="digits flex" onClick={this.handleDigitClick}>
+          <div className="digits flex" onClick={this.#handleDigitClick}>
             {this.digitButtons}
           </div>
           <div className="modifiers subgrid">
             <button className="modifier">AC</button>
           </div>
-          <div className="operations subgrid">
+          <div
+            className="operations subgrid"
+            onClick={this.#handleOperatorClick}
+          >
             <button className="operation">/</button>
             <button className="operation">X</button>
             <button className="operation">-</button>
             <button className="operation">+</button>
-            <button className="operation">=</button>
+            <button
+              className="operation result-button"
+              onClick={this.#handleResultButton}
+            >
+              =
+            </button>
           </div>
         </div>
       </div>
