@@ -124,9 +124,10 @@ class Calculator extends Component {
       return Number(this.state.numbers[0]) - Number(this.state.numbers[1]);
     }
     if (this.state.operator === "/") {
-      return Math.floor(
+      const result = Math.floor(
         Number(this.state.numbers[0]) / Number(this.state.numbers[1])
       );
+      return result === Infinity ? "오류" : result;
     }
   }
 
