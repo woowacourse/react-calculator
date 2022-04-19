@@ -12,12 +12,16 @@ export default class Calculator extends Component {
   }
 
   changeNumber = (e) => {
+    if (!Number.isFinite(this.state.prevNumber)) {
+      this.initialize();
+    }
     this.setState({
       nextNumber: this.state.nextNumber * 10 + Number(e.target.textContent),
     });
   };
 
   calculate = (e) => {
+    if (!Number.isFinite(this.state.prevNumber)) return;
     if (this.state.nextNumber === null || this.state.operator === '=') {
       this.setState({ operator: e.target.textContent });
       return;
@@ -54,7 +58,11 @@ export default class Calculator extends Component {
     return (
       <div className="calculator">
         <h1 id="total">
-          {this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber}
+          {Number.isFinite(this.state.prevNumber)
+            ? this.state.nextNumber === null
+              ? this.state.prevNumber
+              : this.state.nextNumber
+            : '오류'}
         </h1>
         <div className="digits flex">
           {new Array(10).fill().map((_, idx) => (
