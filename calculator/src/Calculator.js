@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './css/index.css';
 import { FONT_SIZE_STANDARD, INFINITY_MESSAGE, MAX_CURRENT_LENGTH, INIT_STATE } from './constants';
 import { loadCalculationProgressLocal, saveCalculationProgressLocal } from './localStorageManager';
+import CalculatorButton from './CalculatorButton';
 
 const digits = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 const operators = ['/', 'X', '-', '+', '='];
@@ -96,9 +97,7 @@ const Calculator = () => {
         </div>
         <div className='digits flex'>
           {digits.map((digit) => (
-            <button key={digit.toString()} className='digit' onClick={handleDigitClick}>
-              {digit}
-            </button>
+            <CalculatorButton key={digit.toString()} className='digit' onClick={handleDigitClick} value={digit} />
           ))}
         </div>
         <div className='modifiers subgrid'>
@@ -108,9 +107,7 @@ const Calculator = () => {
         </div>
         <div className='operations subgrid'>
           {operators.map((operator) => (
-            <button className='operation' key={operator} onClick={handleOperatorClick}>
-              {operator}
-            </button>
+            <CalculatorButton className='operation' key={operator} onClick={handleOperatorClick} value={operator} />
           ))}
         </div>
       </div>
