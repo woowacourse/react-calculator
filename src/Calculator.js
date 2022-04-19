@@ -28,8 +28,28 @@ class Calculator extends Component {
     this.setState({ operator: target.textContent });
   };
 
+  onClickResult = () => {
+    const { operator, numbers } = this.state;
+
+    if (operator === '') {
+      alert('연산자를 입력해주세요.');
+      return;
+    }
+
+    const operatorCollection = {
+      '+': () => numbers[0] + numbers[1],
+      '-': () => numbers[0] - numbers[1],
+      X: () => numbers[0] * numbers[1],
+      '/': () => numbers[0] / numbers[1],
+    };
+
+    const resultNumber = operatorCollection[operator]();
+    this.setState({ numbers: [resultNumber, 0], operator: '' });
+  };
+
   render() {
     const { operator, numbers } = this.state;
+    console.log(operator, numbers);
 
     return (
       <div className="App">
@@ -97,7 +117,9 @@ class Calculator extends Component {
               +
             </button>
 
-            <button className="operation">=</button>
+            <button className="operation" onClick={this.onClickResult}>
+              =
+            </button>
           </div>
         </div>
       </div>
