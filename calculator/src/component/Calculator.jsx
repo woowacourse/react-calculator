@@ -7,7 +7,6 @@ export default class Calculator extends Component {
     this.state = {
       prevNumber: 0,
       nextNumber: null,
-      result: 0,
       operator: '',
     };
   }
@@ -43,6 +42,14 @@ export default class Calculator extends Component {
     });
   };
 
+  initialize = () => {
+    this.setState({
+      prevNumber: 0,
+      nextNumber: null,
+      operator: '',
+    });
+  };
+
   render() {
     return (
       <div className="calculator">
@@ -57,7 +64,9 @@ export default class Calculator extends Component {
           ))}
         </div>
         <div className="modifiers subgrid">
-          <button className="modifier">AC</button>
+          <button className="modifier" onClick={this.initialize}>
+            AC
+          </button>
         </div>
         <div className="operations subgrid">
           <button className="operation" onClick={this.calculate}>
