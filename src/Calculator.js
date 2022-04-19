@@ -10,6 +10,13 @@ class Calculator extends React.Component {
     };
   }
 
+  operation = {
+    '+': this.add,
+    '-': this.subtract,
+    'x': this.multiply,
+    '/': this.divide,
+  };
+
   isOverThreeDigit(number) {
     return number.length >= 3;
   }
@@ -44,39 +51,33 @@ class Calculator extends React.Component {
     console.log('AC');
   }
 
+  add(firstNumber, secondNumber) {
+    return String(firstNumber + secondNumber);
+  }
+
+  subtract(firstNumber, secondNumber) {
+    return String(firstNumber - secondNumber);
+  }
+
+  multiply(firstNumber, secondNumber) {
+    return String(firstNumber * secondNumber);
+  }
+
+  divide(firstNumber, secondNumber) {
+    return String(firstNumber / secondNumber);
+  }
+
   calculate() {
-    switch (this.state.operand) {
-      case '+':
-        this.setState({
-          firstNumber: String(+this.state.firstNumber + +this.state.secondNumber),
-          secondNumber: '',
-          operand: '',
-        });
-        break;
-      case '-':
-        this.setState({
-          firstNumber: String(+this.state.firstNumber - +this.state.secondNumber),
-          secondNumber: '',
-          operand: '',
-        });
-        break;
-      case 'x':
-        this.setState({
-          firstNumber: String(+this.state.firstNumber * +this.state.secondNumber),
-          secondNumber: '',
-          operand: '',
-        });
-        break;
-      case '/':
-        this.setState({
-          firstNumber: String(+this.state.firstNumber / +this.state.secondNumber),
-          secondNumber: '',
-          operand: '',
-        });
-        break;
-      default:
-        break;
-    }
+    if (!this.operation[this.state.operand]) return;
+
+    this.setState({
+      firstNumber: this.operation[this.state.operand](
+        +this.state.firstNumber,
+        +this.state.secondNumber,
+      ),
+      secondNumber: '',
+      operand: '',
+    });
   }
 
   handleOperation(e) {
