@@ -8,20 +8,21 @@ import { isOverMaxLength } from './validator/index';
 export default class Calculator extends Component {
   constructor() {
     super();
-    this.state = {
-      screenNumber: 0,
-      firstNumber: 0,
-      operator: '',
-    };
+    this.state = { screenNumber: 0, 숫자입력중: true };
   }
 
   changeScreenNumber = (targetNumber) => {
     this.setState({ screenNumber: targetNumber });
   };
 
+  changeStep = (target) => {
+    this.setState({ 숫자입력중: target });
+  };
+
   onClickDigit = (enteredDigit) => {
-    if (this.state.firstNumber === this.state.screenNumber) {
+    if (!this.state.숫자입력중) {
       this.changeScreenNumber(enteredDigit);
+      this.setState({ 숫자입력중: true });
       return;
     }
     const prevNumber = this.state.screenNumber;
@@ -30,50 +31,17 @@ export default class Calculator extends Component {
     }
   };
 
-  onClickOperator = (operator) => {
-    if (operator === '=') {
-      this.setState({
-        firstNumber: 0,
-        operator: '',
-      });
-      switch (this.state.operator) {
-        case '+':
-          this.changeScreenNumber(
-            this.state.firstNumber + this.state.screenNumber
-          );
-          break;
-        case '-':
-          this.changeScreenNumber(
-            this.state.firstNumber - this.state.screenNumber
-          );
-          break;
-        case 'X':
-          this.changeScreenNumber(
-            this.state.firstNumber * this.state.screenNumber
-          );
-          break;
-        case '/':
-          this.changeScreenNumber(
-            this.state.firstNumber / this.state.screenNumber
-          );
-          break;
-        default:
-          break;
-      }
-      return;
-    }
-    if (!this.state.operator) {
-      this.setState({ firstNumber: this.state.screenNumber });
-      this.setState({ operator });
-    }
-  };
-
   render() {
     return (
       <div className="calculator">
         <Screen screenNumber={this.state.screenNumber}></Screen>
         <Digits onClickDigit={this.onClickDigit}></Digits>
-        <Operators onClickOperator={this.onClickOperator}></Operators>
+        <Operators
+          changeScreenNumber={this.changeScreenNumber}
+          screenNumber={this.state.screenNumber}
+          changeStep={this.changeStep}
+          숫자입력중={this.state.숫자입력중}
+        ></Operators>
         <ClearButton changeScreenNumber={this.changeScreenNumber}></ClearButton>
       </div>
     );
