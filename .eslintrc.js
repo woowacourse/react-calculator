@@ -1,20 +1,16 @@
 module.exports = {
-  parser: 'babel-eslint',
-  extends: ['airbnb', 'prettier', 'prettier/react'],
-  plugins: ['prettier', 'react', 'jsx-a11y'],
   env: {
-    jest: true,
     browser: true,
-    node: true,
-    es6: true,
+    es2021: true,
   },
-  parser: 'babel-eslint',
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
   parserOptions: {
-    ecmaVersion: 6,
-    sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
     },
+    ecmaVersion: 'latest',
+    sourceType: 'module',
   },
+  plugins: ['react'],
   rules: {},
 };
