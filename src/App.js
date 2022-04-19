@@ -1,15 +1,25 @@
 import { Component } from 'react';
+
 import './App.css';
+
+import { MAX_DIGIT_LENGTH } from './constants';
 
 class App extends Component {
   constructor() {
     super();
-    this.state = {
+    this.calculation = {
+      '+': (a, b) => a + b,
+      '-': (a, b) => a - b,
+      X: (a, b) => a * b,
+      '/': (a, b) => Math.floor(a / b),
+    };
+    this.initialState = {
       firstOperand: '0',
       secondOperand: '',
       operator: null,
       isError: false,
     };
+    this.state = { ...this.initialState };
   }
 
   digitButtons = Array.from({ length: 10 }).map((val, index) => {
@@ -38,7 +48,8 @@ class App extends Component {
   };
 
   #concatOperand(currentOperand, number) {
-    if (currentOperand && currentOperand.length > 2) return currentOperand;
+    if (currentOperand && currentOperand.length >= MAX_DIGIT_LENGTH)
+      return currentOperand;
     if (currentOperand === '0') return number;
     return currentOperand + number;
   }
@@ -58,7 +69,7 @@ class App extends Component {
     }
   };
 
-  #handleResultButton = (e) => {
+  #handleResultButton = () => {
     if (!this.state.secondOperand) return;
 
     this.#showResult();
@@ -68,45 +79,23 @@ class App extends Component {
     const result = this.#calculate();
 
     if (result === Infinity) {
-      this.setState({
-        firstOperand: '0',
-        secondOperand: '',
-        operator: null,
-        isError: true,
-      });
+      this.setState({ ...this.initialState, isError: true });
 
       return;
     }
 
-    this.setState({
-      firstOperand: String(result),
-      secondOperand: '',
-      operator: null,
-    });
+    this.setState({ ...this.initialState, firstOperand: String(result) });
   }
 
   #calculate() {
-    if (
-      !this.state.operator ||
-      !this.state.firstOperand ||
-      !this.state.secondOperand
-    ) {
+    const { operator, firstOperand, secondOperand } = this.state;
+    if (!operator || !firstOperand || !secondOperand) {
       return;
     }
 
-    const calc = this.calculation[this.state.operator];
-    return calc(
-      Number(this.state.firstOperand),
-      Number(this.state.secondOperand)
-    );
+    const calc = this.calculation[operator];
+    return calc(Number(firstOperand), Number(secondOperand));
   }
-
-  calculation = {
-    '+': (a, b) => a + b,
-    '-': (a, b) => a - b,
-    X: (a, b) => a * b,
-    '/': (a, b) => Math.floor(a / b),
-  };
 
   #handleAllClear = () => {
     this.setState({
