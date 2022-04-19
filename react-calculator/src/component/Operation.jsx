@@ -9,7 +9,10 @@ class Operation extends Component {
             AC
           </button>
         </div>
-        <div className="operations subgrid">
+        <div
+          className="operations subgrid"
+          onClick={this.props.onClickOperation}
+        >
           <button className="operation" data-operator="/">
             /
           </button>

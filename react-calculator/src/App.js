@@ -33,7 +33,25 @@ class Calculator extends Component {
     });
   };
 
-  onClickOperation = () => {};
+  onClickOperation = (e) => {
+    if (!this.state.numbers[0]) return alert("숫자를 먼저 입력하세요");
+    if (e.target.innerText === "=") {
+      this.onClickEqualOperation();
+      return;
+    }
+    if (this.offset() > 0) {
+      return alert("올바른 입력을 해주세요");
+    }
+    this.setState({
+      operator: e.target.innerText,
+    });
+  };
+
+  onClickEqualOperation = () => {
+    this.setState({
+      calculated: true,
+    });
+  };
 
   totalRender() {
     return this.state.calculated
@@ -51,16 +69,18 @@ class Calculator extends Component {
 
   resultRender() {
     if (this.state.operator === "+") {
-      return this.state.numbers[0] + this.state.numbers[1];
+      return Number(this.state.numbers[0]) + Number(this.state.numbers[1]);
     }
-    if (this.state.operator === "*") {
-      return this.state.numbers[0] * this.state.numbers[1];
+    if (this.state.operator === "X") {
+      return Number(this.state.numbers[0]) * Number(this.state.numbers[1]);
     }
     if (this.state.operator === "-") {
-      return this.state.numbers[0] - this.state.numbers[1];
+      return Number(this.state.numbers[0]) - Number(this.state.numbers[1]);
     }
     if (this.state.operator === "/") {
-      return Math.floor(this.state.numbers[0] / this.state.numbers[1]);
+      return Math.floor(
+        Number(this.state.numbers[0]) / Number(this.state.numbers[1])
+      );
     }
   }
 
