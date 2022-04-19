@@ -13,6 +13,23 @@ class Calculator extends Component {
     };
   }
 
+  componentDidMount() {
+    const calculationSituation = localStorage.getItem("calculate-situation");
+
+    calculationSituation && this.setState(JSON.parse(calculationSituation));
+    window.addEventListener("beforeunload", this.onBeforeUnload);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("beforeunload", this.onBeforeUnload);
+  }
+
+  onBeforeUnload = (event) => {
+    event.preventDefault();
+    localStorage.setItem("calculate-situation", JSON.stringify(this.state));
+    event.returnValue = "";
+  };
+
   offset() {
     return this.state.operator === "" ? 0 : 1;
   }
