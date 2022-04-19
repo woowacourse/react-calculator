@@ -1,6 +1,6 @@
 import React from 'react';
 
-class App extends React.Component {
+class Calculator extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,28 +48,28 @@ class App extends React.Component {
     switch (this.state.operand) {
       case '+':
         this.setState({
-          firstNumber: +this.state.firstNumber + +this.state.secondNumber,
+          firstNumber: String(+this.state.firstNumber + +this.state.secondNumber),
           secondNumber: '',
           operand: '',
         });
         break;
       case '-':
         this.setState({
-          firstNumber: +this.state.firstNumber - +this.state.secondNumber,
+          firstNumber: String(+this.state.firstNumber - +this.state.secondNumber),
           secondNumber: '',
           operand: '',
         });
         break;
       case 'x':
         this.setState({
-          firstNumber: +this.state.firstNumber * +this.state.secondNumber,
+          firstNumber: String(+this.state.firstNumber * +this.state.secondNumber),
           secondNumber: '',
           operand: '',
         });
         break;
       case '/':
         this.setState({
-          firstNumber: +this.state.firstNumber / +this.state.secondNumber,
+          firstNumber: String(+this.state.firstNumber / +this.state.secondNumber),
           secondNumber: '',
           operand: '',
         });
@@ -158,4 +158,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default Calculator;
