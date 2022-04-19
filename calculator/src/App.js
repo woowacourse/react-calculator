@@ -1,7 +1,8 @@
-import './App.css';
+import { Component } from 'react';
+import Calculator from './component/Calculator';
 
-function App() {
-  return <div className="App"></div>;
+export default class App extends Component {
+  render() {
+    return <Calculator></Calculator>;
+  }
 }
-
-export default App;
