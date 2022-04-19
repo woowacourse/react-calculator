@@ -13,16 +13,27 @@ class Calculator extends Component {
     };
   }
 
+  offset() {
+    return this.state.operator === "" ? 0 : 1;
+  }
+
   onClickDigit = (e) => {
+    if (this.state.numbers[this.offset()].length >= 3) {
+      alert("숫자는 3자리수까지 입력가능합니다");
+      return;
+    }
+
     const digit = Number(e.target.innerText);
     const newNumbers = [...this.state.numbers];
 
-    newNumbers[newNumbers[0] === "" ? 0 : 1] = digit;
+    newNumbers[this.offset()] += digit;
     this.setState({
       numbers: newNumbers,
       calculated: false,
     });
   };
+
+  onClickOperation = () => {};
 
   totalRender() {
     return this.state.calculated
@@ -59,7 +70,7 @@ class Calculator extends Component {
         <div className="calculator">
           <h1 id="total">{this.totalRender()}</h1>
           <Digit onClickDigit={this.onClickDigit}></Digit>
-          <Operation></Operation>
+          <Operation onClickOperation={this.onClickOperation}></Operation>
         </div>
       </div>
     );
