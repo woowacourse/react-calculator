@@ -4,11 +4,15 @@ class Operators extends React.Component {
   render() {
     return (
       <div className="operations subgrid">
-        <button className="operation">/</button>
-        <button className="operation">X</button>
-        <button className="operation">-</button>
-        <button className="operation">+</button>
-        <button className="operation">=</button>
+        {['/', 'X', '-', '+', '='].map((operator) => (
+          <button
+            className="operation"
+            key={operator}
+            onClick={this.props.handleClickOperator}
+          >
+            {operator}
+          </button>
+        ))}
       </div>
     );
   }

@@ -4,7 +4,6 @@ import AllClear from './AllClear';
 import Operators from './Operators';
 
 class CalculatorInputField extends React.Component {
-  // @TODO: digits 가 눌러졌을 때, 상태를 바꿔주기
   // @TODO: operator 가 눌러졌을 때 상태를 바꿔주기 (=이면 결과값 바꿔주기)
 
   render() {
@@ -12,7 +11,7 @@ class CalculatorInputField extends React.Component {
       <>
         <AllClear handleClickAC={this.props.handleClickAC} />
         <Digits handleClickDigit={this.props.handleClickDigit} />
-        <Operators />
+        <Operators handleClickOperator={this.props.handleClickOperator} />
       </>
     );
   }
