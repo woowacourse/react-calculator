@@ -148,4 +148,8 @@ class App extends Component {
   }
 }
 
+window.addEventListener('beforeunload', function (event) {
+  event.returnValue = '';
+});
+
 export default App;
