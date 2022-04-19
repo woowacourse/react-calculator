@@ -4,7 +4,9 @@ class AllClear extends React.Component {
   render() {
     return (
       <div className="modifiers subgrid">
-        <button className="modifier">AC</button>
+        <button className="modifier" onClick={this.props.handleClickAC}>
+          AC
+        </button>
       </div>
     );
   }

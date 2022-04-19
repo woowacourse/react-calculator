@@ -17,12 +17,23 @@ class App extends React.Component {
     };
   }
 
+  handleClickAC = () => {
+    this.setState({
+      expression: {
+        prevNumber: '',
+        operator: '',
+        nextNumber: '',
+      },
+      result: 0,
+    });
+  };
+
   render() {
     return (
       <div id="app">
         <div className="calculator">
           <CalculationResult expression={this.state.expression} result={this.state.result} />
-          <CalculatorInputField />
+          <CalculatorInputField handleClickAC={this.handleClickAC} />
         </div>
       </div>
     );
