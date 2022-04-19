@@ -47,9 +47,15 @@ class Calculator extends Component {
     this.setState({ numbers: [resultNumber, 0], operator: '' });
   };
 
+  onClickAllClear = () => {
+    this.setState({
+      numbers: [0, 0],
+      operator: '',
+    });
+  };
+
   render() {
     const { operator, numbers } = this.state;
-    console.log(operator, numbers);
 
     return (
       <div className="App">
@@ -88,7 +94,9 @@ class Calculator extends Component {
             </button>
           </div>
           <div className="modifiers subgrid">
-            <button className="modifier">AC</button>
+            <button className="modifier" onClick={this.onClickAllClear}>
+              AC
+            </button>
           </div>
           <div className="operations subgrid">
             {/* 연산자 컴포넌트로 나누기 */}
