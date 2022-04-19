@@ -57,7 +57,7 @@ export default class Operators extends Component {
         break;
       case '/':
         this.props.changeScreenNumber(
-          this.state.firstNumber / this.props.screenNumber
+          Math.floor(this.state.firstNumber / this.props.screenNumber)
         );
         break;
       default:
