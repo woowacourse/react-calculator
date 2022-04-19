@@ -65,7 +65,7 @@ class App extends Component {
 
   #showResult() {
     const result = this.#calculate();
-    console.log(result);
+
     this.setState({
       firstOperand: result,
       secondOperand: '',
@@ -96,6 +96,14 @@ class App extends Component {
     '/': (a, b) => Math.floor(a / b),
   };
 
+  #handleAllClear = () => {
+    this.setState({
+      firstOperand: '0',
+      secondOperand: '',
+      operator: null,
+    });
+  };
+
   render() {
     return (
       <div className="App">
@@ -109,7 +117,9 @@ class App extends Component {
             {this.digitButtons}
           </div>
           <div className="modifiers subgrid">
-            <button className="modifier">AC</button>
+            <button className="modifier" onClick={this.#handleAllClear}>
+              AC
+            </button>
           </div>
           <div
             className="operations subgrid"
