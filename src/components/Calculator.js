@@ -58,6 +58,21 @@ class Calculator extends Component {
     });
   };
 
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+    const memoizedState = JSON.parse(localStorage.getItem('prevState'));
+
+    this.setState((prevState) => (memoizedState ? memoizedState : prevState));
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem('prevState', JSON.stringify(this.state));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+  }
+
   onClickDigits = ({ target }) => {
     const { textContent: digit, className } = target;
 
@@ -112,6 +127,14 @@ class Calculator extends Component {
     e.preventDefault();
     localStorage.setItem('prevState', JSON.stringify(this.state));
     if (hasInput({ ...this.state })) {
+      e.returnValue = '';
+    }
+  };
+
+  onBeforeUnload = (e) => {
+    e.preventDefault();
+    const { firstOperand, secondOperand, operation } = this.state;
+    if (firstOperand !== '0' || secondOperand !== '' || operation !== null) {
       e.returnValue = '';
     }
   };
