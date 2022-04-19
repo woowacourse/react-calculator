@@ -11,7 +11,11 @@ export default class Operators extends Component {
     return (
       <div className="operations subgrid">
         {this.state.operators.map((operator, index) => (
-          <Operator operator={operator} key={index} />
+          <Operator
+            onClickOperator={this.props.onClickOperator}
+            operator={operator}
+            key={index}
+          />
         ))}
       </div>
     );

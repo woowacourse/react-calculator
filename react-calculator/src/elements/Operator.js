@@ -7,6 +7,15 @@ export default class Operator extends Component {
   }
 
   render() {
-    return <button className="operation">{this.state.operator}</button>;
+    return (
+      <button
+        className="operation"
+        onClick={() => {
+          this.props.onClickOperator(this.state.operator);
+        }}
+      >
+        {this.state.operator}
+      </button>
+    );
   }
 }
