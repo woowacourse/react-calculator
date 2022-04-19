@@ -23,6 +23,15 @@ class Calculator extends Component {
       return;
     }
 
+    if (this.state.calculated) {
+      this.setState({
+        numbers: [e.target.innerText, ""],
+        operator: "",
+        calculated: false,
+      });
+      return;
+    }
+
     const digit = Number(e.target.innerText);
     const newNumbers = [...this.state.numbers];
 
@@ -39,6 +48,15 @@ class Calculator extends Component {
       return;
     }
 
+    if (this.state.calculated) {
+      this.setState({
+        numbers: [this.resultRender(), ""],
+        operator: e.target.innerText,
+        calculated: false,
+      });
+      return;
+    }
+
     if (!this.state.numbers[0]) {
       alert("숫자를 먼저 입력하세요");
       return;
@@ -48,6 +66,7 @@ class Calculator extends Component {
       alert("올바른 입력을 해주세요");
       return;
     }
+
     this.setState({
       operator: e.target.innerText,
     });
@@ -58,6 +77,15 @@ class Calculator extends Component {
       alert("완전한 계산식을 입력하세요");
       return;
     }
+
+    if (this.state.calculated) {
+      this.setState({
+        numbers: [this.resultRender(), this.state.numbers[1]],
+        calculated: true,
+      });
+      return;
+    }
+
     this.setState({
       calculated: true,
     });
