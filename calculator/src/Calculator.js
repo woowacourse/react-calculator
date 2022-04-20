@@ -36,6 +36,15 @@ class Calculator extends React.Component {
     this.setState({ ...this.state, num2: num2 + digit, total: total + digit });
   };
 
+  handleModifierButtonClick = () => {
+    this.setState({
+      num1: '',
+      num2: '',
+      operation: '',
+      total: 0,
+    });
+  };
+
   handleOperationButtonClick = ({ target }) => {
     const operationInput = target.textContent;
     const { num1, num2, operation, total } = this.state;
@@ -98,7 +107,9 @@ class Calculator extends React.Component {
           <button className="digit">0</button>
         </div>
         <div className="modifiers subgrid">
-          <button className="modifier">AC</button>
+          <button className="modifier" onClick={this.handleModifierButtonClick}>
+            AC
+          </button>
         </div>
         <div
           className="operations subgrid"
