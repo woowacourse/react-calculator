@@ -13,7 +13,11 @@
   },
   "plugins": ["react"],
   "rules": {
-    "max-depth": ["error", 2],
-    "max-lines-per-function": ["error", 3]
+    "class-methods-use-this": "off",
+    "react/sort-comp": "off",
+    "object-curly-newline": "off",
+    "react/prop-types": "off",
+    "react/destructuring-assignment": "off",
+    "max-depth": ["error", 2]
   }
 }
