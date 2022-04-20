@@ -4,46 +4,49 @@ import CalculatorButton from "./component/CalculatorButton";
 
 export default class App extends Component {
   state = {
-    firstNumber: null,
+    firstNumber: 0,
     operator: null,
-    secondNumber: null,
+    secondNumber: 0,
+    isFirstNumber: true,
     result: 0,
   };
 
   initState = () => {
     this.setState({
-      firstNumber: null,
+      firstNumber: 0,
       operator: null,
-      secondNumber: null,
+      secondNumber: 0,
+      isFirstNumber: true,
       result: 0,
     });
   };
 
-  onSetFirstNumber = (number) => {
+  setFirstNumber = (number) => {
     this.setState({
       firstNumber: Number(number),
     });
   };
 
-  onSetOperator = (operator) => {
+  setOperator = (operator) => {
     this.setState({
       operator: operator,
     });
   };
 
-  onSetSecondNumber = (number) => {
-    this.setState(
-      {
-        secondNumber: Number(number),
-      },
-      () => this.calculate()
-    );
+  setSecondNumber = (number) => {
+    this.setState({
+      secondNumber: Number(number),
+    });
   };
 
-  onSetResult = (number) => {
+  setResult = (number) => {
     this.setState({
       result: number,
     });
+  };
+
+  setIsFirstNumber = (isFirstNumber) => {
+    this.setState({ isFirstNumber });
   };
 
   calculate = () => {
@@ -88,13 +91,17 @@ export default class App extends Component {
           <div className="calculator">
             <DisplayResult result={this.state.result} />
             <CalculatorButton
-              onSetFirstNumber={this.onSetFirstNumber}
-              onSetOperator={this.onSetOperator}
-              onSetSecondNumber={this.onSetSecondNumber}
+              setFirstNumber={this.setFirstNumber}
+              setOperator={this.setOperator}
+              setSecondNumber={this.setSecondNumber}
+              setIsFirstNumber={this.setIsFirstNumber}
               calculate={this.calculate}
-              onSetResult={this.onSetResult}
+              setResult={this.setResult}
               result={this.state.result}
               initState={this.initState}
+              isFirstNumber={this.state.isFirstNumber}
+              firstNumber={this.state.firstNumber}
+              secondNumber={this.state.secondNumber}
             />
           </div>
         </div>

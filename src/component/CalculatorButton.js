@@ -1,56 +1,39 @@
 import React, { Component } from "react";
 
 export default class CalculatorButton extends Component {
-  state = {
-    firstNumber: "",
-    secondNumber: "",
-    isFirstNumber: true,
-  };
-
-  initState = () => {
-    this.setState({
-      firstNumber: "",
-      secondNumber: "",
-      isFirstNumber: true,
-    });
-  };
-
   onClickNumber = (e) => {
     if (this.props.result === 0) {
-      this.props.onSetResult(e.target.textContent);
+      this.props.setResult(e.target.textContent);
     } else {
-      this.props.onSetResult(this.props.result + e.target.textContent);
+      this.props.setResult(this.props.result + e.target.textContent);
     }
 
-    if (this.state.isFirstNumber) {
-      this.setState({
-        firstNumber: this.state.firstNumber + e.target.textContent,
-      });
+    if (this.props.isFirstNumber) {
+      this.props.setFirstNumber(
+        this.props.firstNumber * 10 + Number(e.target.textContent)
+      );
       return;
     }
 
-    this.setState({
-      secondNumber: this.state.secondNumber + e.target.textContent,
-    });
+    this.props.setSecondNumber(this.props.secondNumber + e.target.textContent);
   };
 
   onClickOperator = (e) => {
-    this.props.onSetResult(this.props.result + e.target.textContent);
+    if (this.props.firstNumber === "") return;
+    if (e.target.textContent === "=" && this.props.secondNumber === "") return;
+    this.props.setResult(this.props.result + e.target.textContent);
 
     if (e.target.textContent !== "=") {
-      this.props.onSetFirstNumber(this.state.firstNumber);
-      this.props.onSetOperator(e.target.textContent);
-      this.setState({
-        isFirstNumber: false,
-      });
+      this.props.setFirstNumber(this.props.firstNumber);
+      this.props.setOperator(e.target.textContent);
+      this.props.setIsFirstNumber(false);
       return;
     }
 
-    this.props.onSetSecondNumber(this.state.secondNumber);
+    this.props.calculate();
   };
 
   onClickModifier = () => {
-    this.initState();
     this.props.initState();
   };
 
