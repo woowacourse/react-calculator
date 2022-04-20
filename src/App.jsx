@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 
 import './App.css';
 
@@ -19,7 +19,10 @@ class App extends Component {
       operator: null,
       isError: false,
     };
-    this.state = { ...this.initialState };
+    this.state = {
+      ...(JSON.parse(localStorage.getItem('state')) || this.initialState),
+    };
+    console.log('constructor called');
   }
 
   digitButtons = Array.from({ length: 10 }).map((val, index) => {
@@ -30,6 +33,24 @@ class App extends Component {
       </button>
     );
   });
+
+  componentDidMount() {
+    console.log('didMount called');
+    window.localStorage.removeItem('state');
+
+    window.addEventListener('beforeunload', (e) => {
+      e.preventDefault();
+
+      // chorme에서 confirm 추가를 위해서 필요
+      e.returnValue = '';
+    });
+
+    window.addEventListener('unload', () => {
+      if (this.state.firstOperand !== '0' || this.state.operator) {
+        window.localStorage.setItem('state', JSON.stringify(this.state));
+      }
+    });
+  }
 
   #handleDigitClick = (e) => {
     if (e.target.className !== 'digit') return;
@@ -107,6 +128,7 @@ class App extends Component {
   };
 
   render() {
+    console.log('render');
     return (
       <div className="App">
         <div className="calculator">
