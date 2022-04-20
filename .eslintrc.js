@@ -1,3 +1,5 @@
+/* lint 설정 이야기를 좀 더 해보자 */
+
 module.exports = {
   env: {
     browser: true,

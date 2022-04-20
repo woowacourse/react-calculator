@@ -60,11 +60,9 @@ class Calculator extends Component {
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onBeforeUnload);
-    const memoizedState = JSON.parse(localStorage.getItem('prevState'));
-
-    this.setState((prevState) => (memoizedState ? memoizedState : prevState));
   }
 
+  // setItem 하는 로직은 상태가 업데이트 될때 하는게 맞나 ?
   componentDidUpdate() {
     localStorage.setItem('prevState', JSON.stringify(this.state));
   }
@@ -138,6 +136,8 @@ class Calculator extends Component {
       e.returnValue = '';
     }
   };
+
+  // template을 만드는 함수를 만들어서 명시적으로 좀 해볼까?
 
   render() {
     return (
