@@ -11,7 +11,21 @@ class Calculator extends React.Component {
       operation: '',
       total: 0,
     };
+
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+    window.addEventListener('unload', this.handleUnload);
   }
+
+  handleBeforeUnload = e => {
+    e.preventDefault();
+    e.returnValue = '';
+  };
+
+  handleUnload = () => {
+    if (!Number.isInteger(this.state.total)) return;
+
+    localStorage.setItem('total', this.state.total);
+  };
 
   handleDigitButtonClick = ({ target }) => {
     const digit = target.textContent;
