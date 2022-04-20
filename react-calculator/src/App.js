@@ -2,6 +2,11 @@ import "./App.css";
 import React, { Component } from "react";
 import Digit from "./component/Digit";
 import Operation from "./component/Operation";
+import {
+  checkMaxNumberLength,
+  checkValidEqualOperation,
+  checkValidOperation,
+} from "./util/validator.js";
 
 class Calculator extends Component {
   constructor(props) {
@@ -35,77 +40,74 @@ class Calculator extends Component {
   }
 
   onClickDigit = (e) => {
-    if (this.state.numbers[this.offset()].length >= 3) {
-      alert("숫자는 3자리수까지 입력가능합니다");
-      return;
-    }
+    try {
+      checkMaxNumberLength(this.state.numbers, this.offset());
+      if (this.state.calculated) {
+        this.setState({
+          numbers: [e.target.innerText, ""],
+          operator: "",
+          calculated: false,
+        });
+        return;
+      }
 
-    if (this.state.calculated) {
+      const digit = Number(e.target.innerText);
+      const newNumbers = [...this.state.numbers];
+
+      newNumbers[this.offset()] += digit;
       this.setState({
-        numbers: [e.target.innerText, ""],
-        operator: "",
+        numbers: newNumbers,
         calculated: false,
       });
-      return;
+    } catch (err) {
+      alert(err.message);
     }
-
-    const digit = Number(e.target.innerText);
-    const newNumbers = [...this.state.numbers];
-
-    newNumbers[this.offset()] += digit;
-    this.setState({
-      numbers: newNumbers,
-      calculated: false,
-    });
   };
 
   onClickOperation = (e) => {
-    if (e.target.innerText === "=") {
-      this.onClickEqualOperation();
-      return;
-    }
+    try {
+      if (e.target.innerText === "=") {
+        this.onClickEqualOperation();
+        return;
+      }
 
-    if (this.state.calculated) {
+      if (this.state.calculated) {
+        this.setState({
+          numbers: [this.resultRender(), ""],
+          operator: e.target.innerText,
+          calculated: false,
+        });
+        return;
+      }
+
+      checkValidOperation(this.state.numbers, this.offset());
+
       this.setState({
-        numbers: [this.resultRender(), ""],
         operator: e.target.innerText,
-        calculated: false,
       });
-      return;
+    } catch (err) {
+      alert(err.message);
     }
-
-    if (!this.state.numbers[0]) {
-      alert("숫자를 먼저 입력하세요");
-      return;
-    }
-
-    if (this.offset() > 0) {
-      alert("올바른 입력을 해주세요");
-      return;
-    }
-
-    this.setState({
-      operator: e.target.innerText,
-    });
   };
 
   onClickEqualOperation = () => {
-    if (!this.state.numbers[1]) {
-      alert("완전한 계산식을 입력하세요");
-      return;
-    }
+    try {
+      checkValidEqualOperation(this.state.numbers);
 
-    if (this.state.calculated) {
+      if (this.state.calculated) {
+        this.setState({
+          numbers: [this.resultRender(), this.state.numbers[1]],
+          calculated: true,
+        });
+        return;
+      }
+
       this.setState({
-        numbers: [this.resultRender(), this.state.numbers[1]],
         calculated: true,
       });
-      return;
+    } catch (err) {
+      alert(err.message);
     }
-
-    this.setState({
-      calculated: true,
-    });
   };
 
   onClickClearButton = () => {
