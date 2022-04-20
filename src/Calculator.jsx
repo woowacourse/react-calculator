@@ -15,7 +15,8 @@ export default class Calculator extends Component {
 
   handleClickDigit(i) {
     const currentNumber = this.state.result;
-    if (currentNumber === '0') {
+
+    if (currentNumber === '0' || currentNumber === '오류') {
       this.setState({ result: i });
       return;
     }
@@ -26,6 +27,10 @@ export default class Calculator extends Component {
     const lastResult = this.state.result[this.state.result.length - 1];
     const numberReg = /^[0-9]+$/;
     const { result } = this.state;
+
+    if (result === '오류') {
+      return;
+    }
 
     if (operation === '=') {
       if (numberReg.test(result)) {
@@ -85,6 +90,11 @@ export default class Calculator extends Component {
         break;
       default:
         break;
+    }
+
+    if (result === Infinity) {
+      this.setState({ result: '오류' });
+      return;
     }
 
     this.setState({ result: String(result) });
