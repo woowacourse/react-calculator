@@ -1,56 +1,56 @@
 import React, { Component } from 'react';
 import Operator from '../elements/Operator';
+import { add, sub, mul, div } from '../utils/operations';
+import { OPERATORS, ERROR_MESSAGE } from '../constants';
 
 export default class Operators extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      operators: ['/', 'X', '-', '+', '='],
+      operators: OPERATORS,
       operator: '',
     };
   }
 
   onClickOperator = (operator) => {
     if (operator !== '=') {
-      if (this.props.숫자입력중 && this.props.firstNumber !== 0) {
-        alert(
-          "숫자는 2개까지만 입력할 수 있습니다. '='버튼을 눌러 계산을 해주세요."
-        );
+      if (this.props.isNumberStep && this.props.recordNumber !== 0) {
+        alert(ERROR_MESSAGE.OVER_INPUT_NUMBER_COUNT);
         return;
       }
-      this.props.changeStep(false);
-      this.props.setFirstNumber();
+      this.props.setStep(false);
+      this.props.setRecordNumber(this.props.screenNumber);
       this.setState({ operator });
       return;
     }
 
-    this.props.changeStep(false);
-    this.props.resetFirstNumber();
+    this.props.setStep(false);
+    this.props.setRecordNumber(0);
     this.setState({ operator: '' });
 
     switch (this.state.operator) {
       case '+':
-        this.props.changeScreenNumber(
-          this.props.firstNumber + this.props.screenNumber
+        this.props.setScreenNumber(
+          add(this.props.recordNumber, this.props.screenNumber)
         );
         break;
       case '-':
-        this.props.changeScreenNumber(
-          this.props.firstNumber - this.props.screenNumber
+        this.props.setScreenNumber(
+          sub(this.props.recordNumber, this.props.screenNumber)
         );
         break;
       case 'X':
-        this.props.changeScreenNumber(
-          this.props.firstNumber * this.props.screenNumber
+        this.props.setScreenNumber(
+          mul(this.props.recordNumber, this.props.screenNumber)
         );
         break;
       case '/':
         if (this.props.screenNumber === 0) {
-          this.props.changeScreenNumber('오류');
+          this.props.setScreenNumber(ERROR_MESSAGE.INFINITE_NUMBER);
           return;
         }
-        this.props.changeScreenNumber(
-          Math.floor(this.props.firstNumber / this.props.screenNumber)
+        this.props.setScreenNumber(
+          div(this.props.recordNumber, this.props.screenNumber)
         );
         break;
       default:

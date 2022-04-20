@@ -5,9 +5,9 @@ export default class ClearButton extends Component {
       <div className="modifiers subgrid">
         <button
           className="modifier"
-          onClick={(e) => {
-            this.props.changeScreenNumber(0);
-            this.props.resetFirstNumber();
+          onClick={() => {
+            this.props.setScreenNumber(0);
+            this.props.setRecordNumber(0);
           }}
         >
           AC

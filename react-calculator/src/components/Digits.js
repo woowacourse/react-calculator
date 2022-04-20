@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Digit from '../elements/Digit';
+import { DIGITS } from '../constants';
 
 export default class Digits extends Component {
   constructor(props) {
     super(props);
-
-    this.state = { ...props, digits: [9, 8, 7, 6, 5, 4, 3, 2, 1, 0] };
+    this.state = { ...props, digits: DIGITS };
   }
 
   render() {

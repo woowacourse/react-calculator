@@ -9,7 +9,7 @@ export default class Calculator extends Component {
   constructor() {
     super();
     const screenNumber = Number(localStorage.getItem('calculator-data'));
-    this.state = { screenNumber, 숫자입력중: true, firstNumber: 0 };
+    this.state = { screenNumber, recordNumber: 0, isNumberStep: true };
   }
 
   componentDidUpdate() {
@@ -21,31 +21,27 @@ export default class Calculator extends Component {
     this.addBeforeUnloadEvent();
   }
 
-  setFirstNumber = () => {
-    this.setState({ firstNumber: this.state.screenNumber });
+  setRecordNumber = (targetNumber) => {
+    this.setState({ recordNumber: targetNumber });
   };
 
-  resetFirstNumber = () => {
-    this.setState({ firstNumber: 0 });
-  };
-
-  changeScreenNumber = (targetNumber) => {
+  setScreenNumber = (targetNumber) => {
     this.setState({ screenNumber: targetNumber });
   };
 
-  changeStep = (target) => {
-    this.setState({ 숫자입력중: target });
+  setStep = (target) => {
+    this.setState({ isNumberStep: target });
   };
 
   onClickDigit = (enteredDigit) => {
-    if (!this.state.숫자입력중) {
-      this.changeScreenNumber(enteredDigit);
-      this.setState({ 숫자입력중: true });
+    if (!this.state.isNumberStep) {
+      this.setScreenNumber(enteredDigit);
+      this.setState({ isNumberStep: true });
       return;
     }
     const prevNumber = this.state.screenNumber;
     if (!isOverMaxLength(prevNumber)) {
-      this.changeScreenNumber(prevNumber * 10 + enteredDigit);
+      this.setScreenNumber(prevNumber * 10 + enteredDigit);
     }
   };
 
@@ -67,22 +63,22 @@ export default class Calculator extends Component {
   };
 
   render() {
+    const { screenNumber, isNumberStep, recordNumber } = this.state;
     return (
       <div className="calculator">
-        <Screen screenNumber={this.state.screenNumber}></Screen>
+        <Screen screenNumber={screenNumber}></Screen>
         <Digits onClickDigit={this.onClickDigit}></Digits>
         <Operators
-          changeScreenNumber={this.changeScreenNumber}
-          screenNumber={this.state.screenNumber}
-          changeStep={this.changeStep}
-          숫자입력중={this.state.숫자입력중}
-          firstNumber={this.state.firstNumber}
-          setFirstNumber={this.setFirstNumber}
-          resetFirstNumber={this.resetFirstNumber}
+          setScreenNumber={this.setScreenNumber}
+          screenNumber={screenNumber}
+          setStep={this.setStep}
+          isNumberStep={isNumberStep}
+          recordNumber={recordNumber}
+          setRecordNumber={this.setRecordNumber}
         ></Operators>
         <ClearButton
-          changeScreenNumber={this.changeScreenNumber}
-          resetFirstNumber={this.resetFirstNumber}
+          setScreenNumber={this.setScreenNumber}
+          setRecordNumber={this.setRecordNumber}
         ></ClearButton>
       </div>
     );
