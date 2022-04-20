@@ -19,24 +19,26 @@ const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   }
 };
 
+/** 생명 주기 -> 각자 어떤 부분을 학습해볼까? 애기해보기 */
 class Calculator extends Component {
   constructor() {
     super();
-    this.state = {
-      firstOperand: '0',
-      secondOperand: '',
-      operation: null,
-      isError: false,
-    };
+    const memoizedState = JSON.parse(localStorage.getItem('prevState'));
+    this.state = memoizedState
+      ? memoizedState
+      : {
+          firstOperand: '0',
+          secondOperand: '',
+          operation: null,
+          isError: false,
+        };
   }
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onBeforeUnload);
-    const memoizedState = JSON.parse(localStorage.getItem('prevState'));
-
-    this.setState((prevState) => (memoizedState ? memoizedState : prevState));
   }
 
+  // setItem 하는 로직은 상태가 업데이트 될때 하는게 맞나 ?
   componentDidUpdate() {
     localStorage.setItem('prevState', JSON.stringify(this.state));
   }
@@ -66,6 +68,7 @@ class Calculator extends Component {
   };
 
   onClickModifier = () => {
+    // 함수로 분리하면 어떨까?
     this.setState({
       firstOperand: '0',
       secondOperand: '',
@@ -85,6 +88,7 @@ class Calculator extends Component {
           operation: this.state.operation,
         });
 
+        // isError는 어디갔니?
         this.setState({
           firstOperand: result,
           secondOperand: '',
@@ -110,6 +114,8 @@ class Calculator extends Component {
       e.returnValue = '';
     }
   };
+
+  // template을 만드는 함수를 만들어서 명시적으로 좀 해볼까?
 
   render() {
     return (
