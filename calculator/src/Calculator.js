@@ -55,31 +55,36 @@ class Calculator extends React.Component {
       return alert(ERROR_MESSAGE.IS_OVER_MAX_OPERATION_COUNT);
 
     if (operationInput === '=') {
+      let newTotal;
+
       switch (operation) {
         case '+': {
-          const total = Number(num1) + Number(num2);
-          this.setState({ ...this.state, total });
+          newTotal = Number(num1) + Number(num2);
+          this.setState({ ...this.state, total: newTotal });
           break;
         }
         case '-': {
-          const total = Number(num1) - Number(num2);
-          this.setState({ ...this.state, total });
+          newTotal = Number(num1) - Number(num2);
+          this.setState({ ...this.state, total: newTotal });
           break;
         }
         case 'X': {
-          const total = Number(num1) * Number(num2);
-          this.setState({ ...this.state, total });
+          newTotal = Number(num1) * Number(num2);
+          this.setState({ ...this.state, total: newTotal });
           break;
         }
         case '/': {
           const result = parseInt(Number(num1) / Number(num2), 10);
-          const total = Number.isNaN(result)
+          newTotal = Number.isNaN(result)
             ? ERROR_MESSAGE.INFINITY_TOTAL
             : result;
-          this.setState({ ...this.state, total });
+          this.setState({ ...this.state, total: newTotal });
         }
         // no default
       }
+
+      this.setState({ num1: newTotal, num2: '', operation: '' });
+
       return;
     }
 
