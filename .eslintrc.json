@@ -18,6 +18,7 @@
     "object-curly-newline": "off",
     "react/prop-types": "off",
     "react/destructuring-assignment": "off",
-    "max-depth": ["error", 2]
+    "max-depth": ["error", 2],
+    "comma-dangle": "off"
   }
 }
