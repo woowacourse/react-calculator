@@ -9,56 +9,48 @@ class App extends React.Component {
     super();
 
     this.state = {
-      expression: {
-        prevNumber: '',
-        operator: '',
-        nextNumber: '',
-      },
+      prevNumber: '',
+      operator: '',
+      nextNumber: '',
     };
   }
 
   handleClickAC = () => {
     this.setState({
-      expression: {
-        prevNumber: '',
-        operator: '',
-        nextNumber: '',
-      },
+      prevNumber: '',
+      operator: '',
+      nextNumber: '',
     });
   };
 
   handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
-    if (this.state.expression.prevNumber === '오류') {
+    if (this.state.prevNumber === '오류') {
       this.setState({
-        expression: {
-          ...this.state.expression,
-          prevNumber: selectedDigit,
-        },
+        ...this.state,
+        prevNumber: selectedDigit,
       });
       return;
     }
 
     this.updateNumber(
-      this.state.expression.operator ? 'nextNumber' : 'prevNumber',
+      this.state.operator ? 'nextNumber' : 'prevNumber',
       selectedDigit
     );
   };
 
   updateNumber(numberKey, selectedDigit) {
-    if (this.state.expression[numberKey].length >= MAX_NUMBER_LENGTH) {
+    if (this.state[numberKey].length >= MAX_NUMBER_LENGTH) {
       alert(ERROR_MESSAGE.EXCEED_MAX_NUMBER_LENGTH);
       return;
     }
     this.setState({
-      expression: {
-        ...this.state.expression,
-        [numberKey]: this.state.expression[numberKey] + selectedDigit,
-      },
+      ...this.state,
+      [numberKey]: this.state[numberKey] + selectedDigit,
     });
   }
 
   handleClickOperator = ({ target: { textContent: selectedOperator } }) => {
-    const { prevNumber, operator, nextNumber } = this.state.expression;
+    const { prevNumber, operator, nextNumber } = this.state;
 
     if (prevNumber === '오류') return;
 
@@ -68,25 +60,17 @@ class App extends React.Component {
         return;
       }
       this.setState({
-        expression: {
-          ...this.state.expression,
-          operator: selectedOperator,
-        },
+        ...this.state,
+        operator: selectedOperator,
       });
       return;
     }
 
     if (operator) {
       this.setState({
-        expression: {
-          prevNumber: this.calculateExpression(
-            prevNumber,
-            operator,
-            nextNumber
-          ),
-          operator: '',
-          nextNumber: '',
-        },
+        prevNumber: this.calculateExpression(prevNumber, operator, nextNumber),
+        operator: '',
+        nextNumber: '',
       });
     }
   };
@@ -132,9 +116,7 @@ class App extends React.Component {
       const expression = JSON.parse(localStorage.getItem('expression'));
       if (!expression) return;
 
-      this.setState({
-        expression,
-      });
+      this.setState(expression);
     } catch {
       localStorage.removeItem('expression');
       alert('데이터를 불러오는 데 실패하였습니다.');
@@ -152,17 +134,14 @@ class App extends React.Component {
   };
 
   handleUnload = () => {
-    localStorage.setItem('expression', JSON.stringify(this.state.expression));
+    localStorage.setItem('expression', JSON.stringify(this.state));
   };
 
   render() {
     return (
       <div id="app">
         <div className="calculator">
-          <CalculationResult
-            expression={this.state.expression}
-            result={this.state.result}
-          />
+          <CalculationResult expression={this.state} />
           <CalculatorInputField
             handleClickAC={this.handleClickAC}
             handleClickDigit={this.handleClickDigit}
