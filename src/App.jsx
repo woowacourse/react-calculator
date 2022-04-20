@@ -1,48 +1,31 @@
 import './App.css';
 import React, { Component } from 'react';
-import DigitButton from './components/DigitButton';
+import Button from './components/Button';
 
 class App extends Component {
   // for error
   componentDidMount() {}
 
   render() {
+    const numbers = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+
     return (
       <div className="calculator">
         <h1 id="total">0</h1>
         <div className="digits flex">
-          <DigitButton number="9" />
-          <DigitButton number="8" />
-          <DigitButton number="7" />
-          <DigitButton number="6" />
-          <DigitButton number="5" />
-          <DigitButton number="4" />
-          <DigitButton number="3" />
-          <DigitButton number="2" />
-          <DigitButton number="1" />
-          <DigitButton number="0" />
+          {numbers.map((number, index) => (
+            <Button key={index} text={number} className="digit" />
+          ))}
         </div>
         <div className="modifiers subgrid">
-          <button type="button" className="modifier">
-            AC
-          </button>
+          <Button className="modifier" text="AC" />
         </div>
         <div className="operations subgrid">
-          <button type="button" className="operation">
-            /
-          </button>
-          <button type="button" className="operation">
-            X
-          </button>
-          <button type="button" className="operation">
-            -
-          </button>
-          <button type="button" className="operation">
-            +
-          </button>
-          <button type="button" className="operation">
-            =
-          </button>
+          <Button className="operation" text="/" />
+          <Button className="operation" text="X" />
+          <Button className="operation" text="/" />
+          <Button className="operation" text="+" />
+          <Button className="operation" text="=" />
         </div>
       </div>
     );
