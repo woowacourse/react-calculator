@@ -45,6 +45,13 @@ button {
   background-color: #efefef;
 }
 
+.modifiers button:active,
+.operations button:active,
+.digits button:active {
+  background-color: black;
+  color: white;
+}
+
 .total {
   grid-area: total;
   background-color: #333;
