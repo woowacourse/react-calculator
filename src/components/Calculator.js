@@ -3,9 +3,6 @@ import '../styles/Calculator.css';
 
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   if (operation === '/') {
-    if (secondOperand === 0) {
-      throw new Error('');
-    }
     return firstOperand / secondOperand;
   }
   if (operation === 'X') {
@@ -75,27 +72,31 @@ class Calculator extends Component {
 
   onClickOperations = ({ target }) => {
     const { textContent: operation } = target;
-
-    if (operation === '=') {
-      try {
-        const result = computeExpression({
-          firstOperand: Number(this.state.firstOperand),
-          secondOperand: Number(this.state.secondOperand),
-          operation: this.state.operation,
-        });
-
-        this.setState((prevState) => ({
-          ...prevState,
-          firstOperand: result,
-          secondOperand: '',
-          operation: null,
-        }));
-      } catch (error) {
-        this.initState();
-      }
+    if (operation !== '=') {
+      this.setState((prevState) => ({ ...prevState, operation }));
       return;
     }
-    this.setState((prevState) => ({ ...prevState, operation }));
+
+    const result = computeExpression({
+      firstOperand: Number(this.state.firstOperand),
+      secondOperand: Number(this.state.secondOperand),
+      operation: this.state.operation,
+    });
+
+    if (isFinite(result)) {
+      this.setState((prevState) => ({
+        ...prevState,
+        firstOperand: result,
+        secondOperand: '',
+        operation: null,
+      }));
+      return;
+    }
+
+    this.setState((prevState) => ({
+      ...prevState,
+      isError: true,
+    }));
   };
 
   onBeforeUnload = (e) => {
