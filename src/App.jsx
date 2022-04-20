@@ -2,7 +2,12 @@ import './App.css';
 import React from 'react';
 import CalculationResult from './components/CalculationResult';
 import CalculatorInputField from './components/CalculatorInputField';
-import { ERROR_MESSAGE, MAX_NUMBER_LENGTH } from './constants';
+import {
+  ERROR_MESSAGE,
+  INFINITY_CASE_TEXT,
+  LOCAL_STORAGE_EXPRESSION_KEY,
+  MAX_NUMBER_LENGTH,
+} from './constants';
 
 class App extends React.Component {
   constructor() {
@@ -24,7 +29,7 @@ class App extends React.Component {
   };
 
   handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
-    if (this.state.prevNumber === '오류') {
+    if (this.state.prevNumber === INFINITY_CASE_TEXT) {
       this.setState({
         ...this.state,
         prevNumber: selectedDigit,
@@ -52,11 +57,11 @@ class App extends React.Component {
   handleClickOperator = ({ target: { textContent: selectedOperator } }) => {
     const { prevNumber, operator, nextNumber } = this.state;
 
-    if (prevNumber === '오류') return;
+    if (prevNumber === INFINITY_CASE_TEXT) return;
 
     if (selectedOperator !== '=') {
       if (operator) {
-        alert('연산자는 하나만 입력할 수 있습니다.');
+        alert(ERROR_MESSAGE.ALLOW_ONE_OPERATOR);
         return;
       }
       this.setState({
@@ -89,7 +94,7 @@ class App extends React.Component {
       case '/':
         return this.divide(num1, num2);
       default:
-        alert(`${operator} 연산자는 존재하지 않습니다`);
+        alert(ERROR_MESSAGE.STRANGE_OPERATOR(operator));
     }
   }
 
@@ -103,7 +108,7 @@ class App extends React.Component {
     return num1 * num2;
   }
   divide(num1, num2) {
-    if (num2 === 0) return '오류';
+    if (num2 === 0) return INFINITY_CASE_TEXT;
 
     return Number.parseInt(num1 / num2);
   }
@@ -113,13 +118,15 @@ class App extends React.Component {
     window.addEventListener('unload', this.handleUnload);
 
     try {
-      const expression = JSON.parse(localStorage.getItem('expression'));
+      const expression = JSON.parse(
+        localStorage.getItem(LOCAL_STORAGE_EXPRESSION_KEY)
+      );
       if (!expression) return;
 
       this.setState(expression);
     } catch {
-      localStorage.removeItem('expression');
-      alert('데이터를 불러오는 데 실패하였습니다.');
+      localStorage.removeItem(LOCAL_STORAGE_EXPRESSION_KEY);
+      alert(ERROR_MESSAGE.FAIL_TO_GET_DATA);
     }
   }
 
@@ -134,7 +141,10 @@ class App extends React.Component {
   };
 
   handleUnload = () => {
-    localStorage.setItem('expression', JSON.stringify(this.state));
+    localStorage.setItem(
+      LOCAL_STORAGE_EXPRESSION_KEY,
+      JSON.stringify(this.state)
+    );
   };
 
   render() {
