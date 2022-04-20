@@ -1,28 +1,20 @@
 import React, { Component } from 'react';
 
-import { MAX_DIGIT_LENGTH } from './constants';
+import { MAX_DIGIT_LENGTH } from '../constants';
 
 export default class DigitButtons extends Component {
-  #digitButtons;
-
-  constructor({ state, setState }) {
-    super();
-
-    this.state = state;
-    this.setState = setState;
-  }
-
   #handleDigitClick = ({ target }) => {
+    const { state, handleParentState } = this.props;
+    const { operator, secondOperand, firstOperand } = state;
     const number = target.textContent;
-    const { operator, secondOperand, firstOperand } = this.state;
 
     if (operator) {
-      this.setState({
+      handleParentState({
         secondOperand: this.#concatOperand(secondOperand, number),
       });
       return;
     }
-    this.setState({
+    handleParentState({
       firstOperand: this.#concatOperand(firstOperand, number),
     });
   };
@@ -37,7 +29,7 @@ export default class DigitButtons extends Component {
 
   render() {
     return (
-      <>
+      <div className="digits flex">
         {Array.from({ length: 10 }).map((val, index) => {
           const buttonNumber = 9 - index;
           return (
@@ -51,7 +43,7 @@ export default class DigitButtons extends Component {
             </button>
           );
         })}
-      </>
+      </div>
     );
   }
 }

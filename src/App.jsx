@@ -2,22 +2,15 @@ import React, { Component } from 'react';
 
 import './App.css';
 
-import DigitButtons from './DigitButtons';
+import DigitButtons from './components/DigitButtons';
+
+import OperationButtons from './components/OperationButtons';
+
+import AllClearButton from './components/AllClearButton';
 
 class App extends Component {
-  #calculation;
-
-  #operatorButtons;
-
   constructor() {
     super();
-
-    this.#calculation = {
-      '+': (a, b) => a + b,
-      '-': (a, b) => a - b,
-      X: (a, b) => a * b,
-      '/': (a, b) => Math.floor(a / b),
-    };
 
     this.initialState = {
       firstOperand: '0',
@@ -25,20 +18,10 @@ class App extends Component {
       operator: null,
       isError: false,
     };
+
     this.state = {
       ...(JSON.parse(localStorage.getItem('state')) || this.initialState),
     };
-
-    this.#operatorButtons = Object.keys(this.#calculation).map((val) => (
-      <button
-        key={val}
-        type="button"
-        className="operation"
-        onClick={this.#handleOperatorClick}
-      >
-        {val}
-      </button>
-    ));
   }
 
   componentDidMount() {
@@ -64,55 +47,13 @@ class App extends Component {
     e.returnValue = '';
   };
 
-  #handleAllClear = () => {
-    this.setState({
-      firstOperand: '0',
-      secondOperand: '',
-      operator: null,
-      isError: false,
-    });
+  #handleParentState = (state) => {
+    this.setState({ ...state });
   };
 
-  #handleOperatorClick = ({ target }) => {
-    if (!target.classList.contains('operation')) return;
-
-    const { secondOperand } = this.state;
-    if (secondOperand) return;
-
-    const operator = target.textContent;
-
-    if (operator !== '=') {
-      this.setState({
-        operator: target.textContent,
-      });
-    }
+  #triggerError = () => {
+    this.setState({ ...this.initialState, isError: true });
   };
-
-  #handleResultButton = () => {
-    const { secondOperand } = this.state;
-    if (!secondOperand) return;
-
-    this.#showResult();
-  };
-
-  #showResult() {
-    const result = this.#calculate();
-
-    if (result === Infinity) {
-      this.setState({ ...this.initialState, isError: true });
-
-      return;
-    }
-
-    this.setState({ ...this.initialState, firstOperand: String(result) });
-  }
-
-  #calculate() {
-    const { operator, firstOperand, secondOperand } = this.state;
-
-    const calc = this.#calculation[operator];
-    return calc(Number(firstOperand), Number(secondOperand));
-  }
 
   render() {
     const { isError, firstOperand, operator, secondOperand } = this.state;
@@ -129,24 +70,14 @@ class App extends Component {
               {secondOperand}
             </h1>
           )}
-          <div className="digits flex">
-            <DigitButtons state={this.state} setState={this.setState} />
-          </div>
-          <div className="modifiers subgrid">
-            <button type="button" className="modifier" onClick={this.#handleAllClear}>
-              AC
-            </button>
-          </div>
-          <div className="operations subgrid">
-            {this.#operatorButtons}
-            <button
-              className="operation result-button"
-              type="button"
-              onClick={this.#handleResultButton}
-            >
-              =
-            </button>
-          </div>
+          <DigitButtons state={this.state} handleParentState={this.#handleParentState} />
+          <AllClearButton handleParentState={this.#handleParentState} />
+          <OperationButtons
+            state={this.state}
+            initialState={this.initialState}
+            handleParentState={this.#handleParentState}
+            triggerError={this.#triggerError}
+          />
         </div>
       </div>
     );
