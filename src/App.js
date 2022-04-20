@@ -11,6 +11,12 @@ export default class App extends Component {
     result: 0,
   };
 
+  componentDidMount() {
+    const prevValue = localStorage.getItem("prevValue") || 0;
+    this.setFirstNumber(prevValue);
+    this.setResult(prevValue);
+  }
+
   initState = () => {
     this.setState({
       firstNumber: 0,
@@ -65,6 +71,7 @@ export default class App extends Component {
       this.initState();
       this.setFirstNumber(res);
       this.setResult(res);
+      localStorage.setItem("prevValue", res);
     });
   };
 
