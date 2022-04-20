@@ -47,9 +47,15 @@ class Calculator extends React.Component {
 
     if (operationInput === '=') {
       switch (operation) {
-        case '+':
+        case '+': {
           const total = Number(num1) + Number(num2);
           this.setState({ ...this.state, total });
+          break;
+        }
+        case '-': {
+          const total = Number(num1) - Number(num2);
+          this.setState({ ...this.state, total });
+        }
         // no default
       }
       return;
