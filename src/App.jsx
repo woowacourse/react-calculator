@@ -2,17 +2,23 @@ import React, { Component } from 'react';
 
 import './App.css';
 
-import { MAX_DIGIT_LENGTH } from './constants';
+import DigitButtons from './DigitButtons';
 
 class App extends Component {
+  #calculation;
+
+  #operatorButtons;
+
   constructor() {
     super();
-    this.calculation = {
+
+    this.#calculation = {
       '+': (a, b) => a + b,
       '-': (a, b) => a - b,
       X: (a, b) => a * b,
       '/': (a, b) => Math.floor(a / b),
     };
+
     this.initialState = {
       firstOperand: '0',
       secondOperand: '',
@@ -22,16 +28,34 @@ class App extends Component {
     this.state = {
       ...(JSON.parse(localStorage.getItem('state')) || this.initialState),
     };
+
+    this.#operatorButtons = Object.keys(this.#calculation).map((val) => (
+      <button
+        key={val}
+        type="button"
+        className="operation"
+        onClick={this.#handleOperatorClick}
+      >
+        {val}
+      </button>
+    ));
   }
 
-  digitButtons = Array.from({ length: 10 }).map((val, index) => {
-    const buttonNumber = 9 - index;
-    return (
-      <button key={buttonNumber} className="digit">
-        {buttonNumber}
-      </button>
-    );
-  });
+  componentDidMount() {
+    window.localStorage.removeItem('state');
+
+    window.addEventListener('beforeunload', this.#handleBeforeUnload);
+
+    window.addEventListener('pagehide', () => {
+      const { firstOperand, operator } = this.state;
+
+      if (firstOperand !== '0' || operator) {
+        window.localStorage.setItem('state', JSON.stringify(this.state));
+      }
+
+      window.removeEventListener('beforeunload', this.#handleBeforeUnload);
+    });
+  }
 
   #handleBeforeUnload = (e) => {
     e.preventDefault();
@@ -40,60 +64,33 @@ class App extends Component {
     e.returnValue = '';
   };
 
-  componentDidMount() {
-    window.localStorage.removeItem('state');
-
-    window.addEventListener('beforeunload', this.#handleBeforeUnload);
-
-    window.addEventListener('pagehide', () => {
-      if (this.state.firstOperand !== '0' || this.state.operator) {
-        window.localStorage.setItem('state', JSON.stringify(this.state));
-      }
-
-      window.removeEventListener('beforeunload', this.#handleBeforeUnload);
-    });
-  }
-
-  #handleDigitClick = (e) => {
-    if (e.target.className !== 'digit') return;
-    const number = e.target.textContent;
-
-    if (this.state.operator) {
-      this.setState({
-        secondOperand: this.#concatOperand(this.state.secondOperand, number),
-      });
-
-      return;
-    }
+  #handleAllClear = () => {
     this.setState({
-      firstOperand: this.#concatOperand(this.state.firstOperand, number),
+      firstOperand: '0',
+      secondOperand: '',
+      operator: null,
+      isError: false,
     });
   };
 
-  #concatOperand(currentOperand, number) {
-    if (currentOperand && currentOperand.length >= MAX_DIGIT_LENGTH)
-      return currentOperand;
-    if (currentOperand === '0') return number;
-    return currentOperand + number;
-  }
+  #handleOperatorClick = ({ target }) => {
+    if (!target.classList.contains('operation')) return;
 
-  #handleOperatorClick = (e) => {
-    if (!e.target.classList.contains('operation')) return;
-    if (this.state.secondOperand) return;
+    const { secondOperand } = this.state;
+    if (secondOperand) return;
 
-    const operator = e.target.textContent;
+    const operator = target.textContent;
 
     if (operator !== '=') {
       this.setState({
-        operator: e.target.textContent,
+        operator: target.textContent,
       });
-
-      return;
     }
   };
 
   #handleResultButton = () => {
-    if (!this.state.secondOperand) return;
+    const { secondOperand } = this.state;
+    if (!secondOperand) return;
 
     this.#showResult();
   };
@@ -112,54 +109,39 @@ class App extends Component {
 
   #calculate() {
     const { operator, firstOperand, secondOperand } = this.state;
-    if (!operator || !firstOperand || !secondOperand) {
-      return;
-    }
 
-    const calc = this.calculation[operator];
+    const calc = this.#calculation[operator];
     return calc(Number(firstOperand), Number(secondOperand));
   }
 
-  #handleAllClear = () => {
-    this.setState({
-      firstOperand: '0',
-      secondOperand: '',
-      operator: null,
-      isError: false,
-    });
-  };
-
   render() {
+    const { isError, firstOperand, operator, secondOperand } = this.state;
+
     return (
       <div className="App">
         <div className="calculator">
-          {this.state.isError ? (
+          {isError ? (
             <h1 id="total">오류</h1>
           ) : (
             <h1 id="total">
-              {this.state.firstOperand}
-              {this.state.operator}
-              {this.state.secondOperand}
+              {firstOperand}
+              {operator}
+              {secondOperand}
             </h1>
           )}
-          <div className="digits flex" onClick={this.#handleDigitClick}>
-            {this.digitButtons}
+          <div className="digits flex">
+            <DigitButtons state={this.state} setState={this.setState} />
           </div>
           <div className="modifiers subgrid">
-            <button className="modifier" onClick={this.#handleAllClear}>
+            <button type="button" className="modifier" onClick={this.#handleAllClear}>
               AC
             </button>
           </div>
-          <div
-            className="operations subgrid"
-            onClick={this.#handleOperatorClick}
-          >
-            <button className="operation">/</button>
-            <button className="operation">X</button>
-            <button className="operation">-</button>
-            <button className="operation">+</button>
+          <div className="operations subgrid">
+            {this.#operatorButtons}
             <button
               className="operation result-button"
+              type="button"
               onClick={this.#handleResultButton}
             >
               =
