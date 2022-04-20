@@ -86,7 +86,7 @@ export default class Calculator extends Component {
         result = +operand[0] * +operand[1];
         break;
       case '/':
-        result = +operand[0] / +operand[1];
+        result = Math.floor(+operand[0] / +operand[1]);
         break;
       default:
         break;
