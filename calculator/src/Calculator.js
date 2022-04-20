@@ -9,7 +9,7 @@ class Calculator extends React.Component {
       num1: '',
       num2: '',
       operation: '',
-      total: 0,
+      total: localStorage.getItem('total') ?? 0,
     };
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
