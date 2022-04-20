@@ -59,11 +59,12 @@ class App extends React.Component {
 
     if (prevNumber === INFINITY_CASE_TEXT) return;
 
-    if (selectedOperator !== '=') {
-      if (operator) {
-        alert(ERROR_MESSAGE.ALLOW_ONE_OPERATOR);
-        return;
-      }
+    if (selectedOperator !== '=' && operator) {
+      alert(ERROR_MESSAGE.ALLOW_ONE_OPERATOR);
+      return;
+    }
+
+    if (selectedOperator !== '=' && !operator) {
       this.setState({
         ...this.state,
         operator: selectedOperator,
@@ -86,31 +87,16 @@ class App extends React.Component {
 
     switch (operator) {
       case '+':
-        return this.add(num1, num2);
+        return num1 + num2;
       case '-':
-        return this.minus(num1, num2);
+        return num1 - num2;
       case 'X':
-        return this.multiply(num1, num2);
+        return num1 * num2;
       case '/':
-        return this.divide(num1, num2);
+        return num2 === 0 ? INFINITY_CASE_TEXT : Number.parseInt(num1 / num2);
       default:
         alert(ERROR_MESSAGE.STRANGE_OPERATOR(operator));
     }
-  }
-
-  add(num1, num2) {
-    return num1 + num2;
-  }
-  minus(num1, num2) {
-    return num1 - num2;
-  }
-  multiply(num1, num2) {
-    return num1 * num2;
-  }
-  divide(num1, num2) {
-    if (num2 === 0) return INFINITY_CASE_TEXT;
-
-    return Number.parseInt(num1 / num2);
   }
 
   componentDidMount() {
