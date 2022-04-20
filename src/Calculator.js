@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import OperationButton from './OperationButton';
 import './Calculator.css';
 
 class Calculator extends Component {
   constructor(props) {
     super(props);
 
-    // 분리
     const savedState = localStorage.getItem('CALCULATOR_STATE');
 
     if (savedState) {
@@ -56,10 +56,6 @@ class Calculator extends Component {
     this.setState({ numbers: newStateNumbers });
   };
 
-  onClickOperator = ({ target }) => {
-    this.setState({ operator: target.textContent });
-  };
-
   onClickResult = () => {
     const { operator, numbers } = this.state;
 
@@ -86,46 +82,27 @@ class Calculator extends Component {
     });
   };
 
+  setOperator = (operator) => {
+    this.setState({ operator });
+  };
+
   render() {
     const { operator, numbers } = this.state;
     let totalNumber = !operator || numbers[1] === 0 ? numbers[0] : numbers[1];
     if (totalNumber === Infinity) totalNumber = '오류';
+
+    const digitList = Array.from({ length: 10 }, (_, index) => 9 - index);
 
     return (
       <div className="App">
         <div className="calculator">
           <h1 id="total">{totalNumber}</h1>
           <div className="digits flex">
-            <button className="digit" onClick={this.onClickDigit}>
-              9
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              8
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              7
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              6
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              5
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              4
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              3
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              2
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              1
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              0
-            </button>
+            {digitList.map((digit) => (
+              <button key={digit} className="digit" onClick={this.onClickDigit}>
+                {digit}
+              </button>
+            ))}
           </div>
           <div className="modifiers subgrid">
             <button className="modifier" onClick={this.onClickAllClear}>
@@ -133,32 +110,18 @@ class Calculator extends Component {
             </button>
           </div>
           <div className="operations subgrid">
-            {/* 연산자 컴포넌트로 나누기 */}
-            <button
-              className={'operation' + ((operator === '/' && ' pressed') || '')}
-              onClick={this.onClickOperator}
-            >
+            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
               /
-            </button>
-            <button
-              className={'operation' + ((operator === 'X' && ' pressed') || '')}
-              onClick={this.onClickOperator}
-            >
+            </OperationButton>
+            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
               X
-            </button>
-            <button
-              className={'operation' + ((operator === '-' && ' pressed') || '')}
-              onClick={this.onClickOperator}
-            >
+            </OperationButton>
+            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
               -
-            </button>
-            <button
-              className={'operation' + (operator === '+' && ' pressed')}
-              onClick={this.onClickOperator}
-            >
+            </OperationButton>
+            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
               +
-            </button>
-
+            </OperationButton>
             <button className="operation" onClick={this.onClickResult}>
               =
             </button>
