@@ -37,12 +37,23 @@ button {
   background-color: #ccc;
 }
 
+.modifiers button:active {
+  background-color: white;
+}
+
 .operations button {
   background-color: orange;
 }
 
+.operations button:active {
+  background-color: rgba(255, 166, 0, 0.5);
+}
 .digits button {
   background-color: #efefef;
+}
+
+.digits button:active {
+  background-color: white;
 }
 
 #total {
