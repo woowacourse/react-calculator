@@ -5,11 +5,33 @@ export default class Calculator extends Component {
   constructor() {
     super();
     this.state = {
-      prevNumber: 0,
+      prevNumber: Number(localStorage.getItem('result')) ?? 0,
       nextNumber: null,
       operator: '',
     };
   }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.confirmExit);
+    window.addEventListener('unload', this.saveResult);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.confirmExit);
+    window.removeEventListener('unload', this.saveResult);
+  }
+
+  confirmExit = (e) => {
+    e.preventDefault();
+    e.returnValue = '';
+  };
+
+  saveResult = () => {
+    localStorage.setItem(
+      'result',
+      this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber
+    );
+  };
 
   changeNumber = (e) => {
     if (!Number.isFinite(this.state.prevNumber)) {
