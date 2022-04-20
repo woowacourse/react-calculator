@@ -60,6 +60,14 @@ class Calculator extends React.Component {
         case 'X': {
           const total = Number(num1) * Number(num2);
           this.setState({ ...this.state, total });
+          break;
+        }
+        case '/': {
+          const result = parseInt(Number(num1) / Number(num2), 10);
+          const total = Number.isNaN(result)
+            ? ERROR_MESSAGE.INFINITY_TOTAL
+            : result;
+          this.setState({ ...this.state, total });
         }
         // no default
       }
