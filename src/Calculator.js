@@ -82,7 +82,7 @@ class Calculator extends React.Component {
     );
 
     this.setState({
-      firstNumber: result === Infinity ? ERROR_MESSAGE : String(result),
+      firstNumber: Number.isFinite(result) ? String(result) : ERROR_MESSAGE,
       secondNumber: '',
       operand: '',
     });
