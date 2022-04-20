@@ -69,6 +69,7 @@ class Calculator extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onBeforeUnload);
+    localStorage.setItem('prevState', JSON.stringify(this.state));
   }
 
   onClickDigits = ({ target }) => {
@@ -133,6 +134,7 @@ class Calculator extends Component {
     e.preventDefault();
     const { firstOperand, secondOperand, operation } = this.state;
     if (firstOperand !== '0' || secondOperand !== '' || operation !== null) {
+      localStorage.setItem('prevState', JSON.stringify(this.state));
       e.returnValue = '';
     }
   };
