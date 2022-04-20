@@ -14,17 +14,6 @@ export default class OperationButtons extends Component {
       X: (a, b) => a * b,
       '/': (a, b) => Math.floor(a / b),
     };
-
-    this.#operatorButtons = Object.keys(this.#calculation).map((operator) => (
-      <button
-        key={operator}
-        type="button"
-        className="operation"
-        onClick={this.#handleOperatorClick}
-      >
-        {operator}
-      </button>
-    ));
   }
 
   #handleOperatorClick = ({ target }) => {
@@ -70,7 +59,16 @@ export default class OperationButtons extends Component {
   render() {
     return (
       <div className="operations subgrid">
-        {this.#operatorButtons}
+        {Object.keys(this.#calculation).map((operator) => (
+          <button
+            key={operator}
+            type="button"
+            className="operation"
+            onClick={this.#handleOperatorClick}
+          >
+            {operator}
+          </button>
+        ))}
         <button
           className="operation result-button"
           type="button"
