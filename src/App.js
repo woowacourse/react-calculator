@@ -28,9 +28,7 @@ export default class App extends Component {
   };
 
   setOperator = (operator) => {
-    this.setState({
-      operator: operator,
-    });
+    this.setState({ operator });
   };
 
   setSecondNumber = (number) => {
@@ -39,10 +37,8 @@ export default class App extends Component {
     });
   };
 
-  setResult = (number) => {
-    this.setState({
-      result: number,
-    });
+  setResult = (result) => {
+    this.setState({ result });
   };
 
   setIsFirstNumber = (isFirstNumber) => {
@@ -65,7 +61,11 @@ export default class App extends Component {
       }
     })();
 
-    this.setState({ result: res }, () => console.log(this.state));
+    this.setState({ result: res }, () => {
+      this.initState();
+      this.setFirstNumber(res);
+      this.setResult(res);
+    });
   };
 
   add() {
