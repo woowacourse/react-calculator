@@ -74,7 +74,7 @@ class Calculator extends Component {
 
   updateOperator(operatorValue) {
     this.setState({
-      operator: operatorValue,
+      operator: operatorValue === '=' ? '' : operatorValue,
       isLastClickOperator: true,
     });
   }
