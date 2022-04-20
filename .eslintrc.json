@@ -16,5 +16,9 @@
     "sourceType": "module"
   },
   "plugins": ["react"],
-  "rules": {}
+  "rules": {
+    "react/prefer-stateless-function": [0],
+    "react/destructuring-assignment": [0],
+    "react/require-default-props": [0]
+  }
 }
