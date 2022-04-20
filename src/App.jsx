@@ -22,7 +22,6 @@ class App extends Component {
     this.state = {
       ...(JSON.parse(localStorage.getItem('state')) || this.initialState),
     };
-    console.log('constructor called');
   }
 
   digitButtons = Array.from({ length: 10 }).map((val, index) => {
@@ -34,21 +33,24 @@ class App extends Component {
     );
   });
 
+  #handleBeforeUnload = (e) => {
+    e.preventDefault();
+
+    // chorme에서 confirm 추가를 위해서 필요
+    e.returnValue = '';
+  };
+
   componentDidMount() {
-    console.log('didMount called');
     window.localStorage.removeItem('state');
 
-    window.addEventListener('beforeunload', (e) => {
-      e.preventDefault();
+    window.addEventListener('beforeunload', this.#handleBeforeUnload);
 
-      // chorme에서 confirm 추가를 위해서 필요
-      e.returnValue = '';
-    });
-
-    window.addEventListener('unload', () => {
+    window.addEventListener('pagehide', () => {
       if (this.state.firstOperand !== '0' || this.state.operator) {
         window.localStorage.setItem('state', JSON.stringify(this.state));
       }
+
+      window.removeEventListener('beforeunload', this.#handleBeforeUnload);
     });
   }
 
@@ -128,7 +130,6 @@ class App extends Component {
   };
 
   render() {
-    console.log('render');
     return (
       <div className="App">
         <div className="calculator">
