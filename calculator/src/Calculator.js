@@ -1,11 +1,72 @@
 import React from 'react';
+import { ERROR_MESSAGE, RULE } from './constants';
 
 class Calculator extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      num1: '',
+      num2: '',
+      operation: '',
+      total: 0,
+    };
+  }
+
+  handleDigitButtonClick = ({ target }) => {
+    const digit = target.textContent;
+    const { num1, num2, operation, total } = this.state;
+
+    if (!operation) {
+      if (num1.length >= RULE.MAX_DIGIT_LENGTH)
+        return alert(ERROR_MESSAGE.IS_OVER_MAX_DIGIT_LENGTH);
+
+      this.setState({
+        ...this.state,
+        num1: num1 + digit,
+        total: !Number(total) ? digit : total + digit,
+      });
+
+      return;
+    }
+
+    if (num2.length >= RULE.MAX_DIGIT_LENGTH)
+      return alert(ERROR_MESSAGE.IS_OVER_MAX_DIGIT_LENGTH);
+
+    this.setState({ ...this.state, num2: num2 + digit, total: total + digit });
+  };
+
+  handleOperationButtonClick = ({ target }) => {
+    const operationInput = target.textContent;
+    const { num1, num2, operation, total } = this.state;
+
+    if (!num1 || (operationInput === '=' && !num2)) return;
+
+    if (operation && operationInput !== '=')
+      return alert(ERROR_MESSAGE.IS_OVER_MAX_OPERATION_COUNT);
+
+    if (operationInput === '=') {
+      switch (operation) {
+        case '+':
+          const total = Number(num1) + Number(num2);
+          this.setState({ ...this.state, total });
+        // no default
+      }
+      return;
+    }
+
+    this.setState({
+      ...this.state,
+      operation: operationInput,
+      total: total + operationInput,
+    });
+  };
+
   render() {
     return (
       <div className="calculator">
-        <h1 id="total">0</h1>
-        <div className="digits flex">
+        <h1 id="total">{this.state.total}</h1>
+        <div className="digits flex" onClick={this.handleDigitButtonClick}>
           <button className="digit">9</button>
           <button className="digit">8</button>
           <button className="digit">7</button>
@@ -20,7 +81,10 @@ class Calculator extends React.Component {
         <div className="modifiers subgrid">
           <button className="modifier">AC</button>
         </div>
-        <div className="operations subgrid">
+        <div
+          className="operations subgrid"
+          onClick={this.handleOperationButtonClick}
+        >
           <button className="operation">/</button>
           <button className="operation">X</button>
           <button className="operation">-</button>
