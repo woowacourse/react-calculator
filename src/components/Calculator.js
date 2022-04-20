@@ -43,6 +43,16 @@ class Calculator extends Component {
     localStorage.setItem('prevState', JSON.stringify(this.state));
   }
 
+  initState = () => {
+    this.setState((prevState) => ({
+      ...prevState,
+      firstOperand: '0',
+      secondOperand: '',
+      operation: null,
+      isError: false,
+    }));
+  };
+
   onClickDigits = ({ target }) => {
     const { textContent: digit } = target;
 
@@ -63,16 +73,6 @@ class Calculator extends Component {
     });
   };
 
-  onClickModifier = () => {
-    // 함수로 분리하면 어떨까?
-    this.setState({
-      firstOperand: '0',
-      secondOperand: '',
-      operation: null,
-      isError: false,
-    });
-  };
-
   onClickOperations = ({ target }) => {
     const { textContent: operation } = target;
 
@@ -84,19 +84,14 @@ class Calculator extends Component {
           operation: this.state.operation,
         });
 
-        // isError는 어디갔니?
-        this.setState({
+        this.setState((prevState) => ({
+          ...prevState,
           firstOperand: result,
           secondOperand: '',
           operation: null,
-        });
+        }));
       } catch (error) {
-        this.setState({
-          firstOperand: '0',
-          secondOperand: '',
-          operation: null,
-          isError: true,
-        });
+        this.initState();
       }
       return;
     }
@@ -106,8 +101,8 @@ class Calculator extends Component {
   onBeforeUnload = (e) => {
     e.preventDefault();
     const { firstOperand, secondOperand, operation } = this.state;
+    localStorage.setItem('prevState', JSON.stringify(this.state));
     if (firstOperand !== '0' || secondOperand !== '' || operation !== null) {
-      localStorage.setItem('prevState', JSON.stringify(this.state));
       e.returnValue = '';
     }
   };
@@ -136,7 +131,7 @@ class Calculator extends Component {
           <button className="digit">1</button>
           <button className="digit">0</button>
         </div>
-        <div className="modifiers subgrid" onClick={this.onClickModifier}>
+        <div className="modifiers subgrid" onClick={this.initState}>
           <button className="modifier">AC</button>
         </div>
         <div className="operations subgrid" onClick={this.onClickOperations}>
