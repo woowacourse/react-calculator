@@ -1,0 +1,32 @@
+{
+  "name": "react-calculator",
+  "version": "1.0.0",
+  "description": "계산기 어플리케이션",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/airman5573/react-calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/airman5573/react-calculator/issues"
+  },
+  "homepage": "https://github.com/airman5573/react-calculator#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "commitizen": "^4.2.4",
+    "cz-customizable": "^6.3.0",
+    "husky": "^7.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
+  }
+}
