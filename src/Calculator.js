@@ -5,18 +5,50 @@ class Calculator extends Component {
   constructor(props) {
     super(props);
 
+    // 분리
+    const savedState = localStorage.getItem('CALCULATOR_STATE');
+
+    if (savedState) {
+      this.state = JSON.parse(savedState);
+      return;
+    }
+
     this.state = {
       numbers: [0, 0],
       operator: '',
     };
   }
 
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+  }
+
+  onBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = '';
+
+    localStorage.setItem('CALCULATOR_STATE', JSON.stringify(this.state));
+  };
+
   onClickDigit = ({ target }) => {
     const numberIndex = this.state.operator === '' ? 0 : 1;
     const newStateNumbers = [...this.state.numbers];
     newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(target.innerText);
 
-    if (newStateNumbers[numberIndex] >= 1000) {
+    if (newStateNumbers[numberIndex] === Infinity) {
+      alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
+      this.setState({
+        numbers: [0, 0],
+        operator: '',
+      });
+      return;
+    }
+
+    if (newStateNumbers[numberIndex] >= 1000 && newStateNumbers[numberIndex] !== Infinity) {
       alert('숫자는 세 자리까지 입력 가능합니다.');
       return;
     }
@@ -56,11 +88,13 @@ class Calculator extends Component {
 
   render() {
     const { operator, numbers } = this.state;
+    let totalNumber = !operator || numbers[1] === 0 ? numbers[0] : numbers[1];
+    if (totalNumber === Infinity) totalNumber = '오류';
 
     return (
       <div className="App">
         <div className="calculator">
-          <h1 id="total">{!operator || numbers[1] === 0 ? numbers[0] : numbers[1]}</h1>
+          <h1 id="total">{totalNumber}</h1>
           <div className="digits flex">
             <button className="digit" onClick={this.onClickDigit}>
               9
@@ -101,25 +135,25 @@ class Calculator extends Component {
           <div className="operations subgrid">
             {/* 연산자 컴포넌트로 나누기 */}
             <button
-              className={'operation' + (operator === '/' && 'pressed')}
+              className={'operation' + ((operator === '/' && ' pressed') || '')}
               onClick={this.onClickOperator}
             >
               /
             </button>
             <button
-              className={'operation' + (operator === 'X' && 'pressed')}
+              className={'operation' + ((operator === 'X' && ' pressed') || '')}
               onClick={this.onClickOperator}
             >
               X
             </button>
             <button
-              className={'operation' + (operator === '-' && 'pressed')}
+              className={'operation' + ((operator === '-' && ' pressed') || '')}
               onClick={this.onClickOperator}
             >
               -
             </button>
             <button
-              className={'operation' + (operator === '+' && 'pressed')}
+              className={'operation' + (operator === '+' && ' pressed')}
               onClick={this.onClickOperator}
             >
               +
