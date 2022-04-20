@@ -15,6 +15,16 @@ export default class App extends Component {
     const prevValue = localStorage.getItem("prevValue") || 0;
     this.setFirstNumber(prevValue);
     this.setResult(prevValue);
+    window.addEventListener("beforeunload", function (e) {
+      e.preventDefault();
+      e.returnValue = "";
+      localStorage.setItem(
+        "prevValue",
+        this.state.isFirstNumber
+          ? this.state.firstNumber
+          : this.state.secondNumber
+      );
+    });
   }
 
   initState = () => {
