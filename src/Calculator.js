@@ -1,4 +1,5 @@
 import React from 'react';
+import { ERROR_MESSAGE } from './constants';
 
 class Calculator extends React.Component {
   constructor(props) {
@@ -52,29 +53,31 @@ class Calculator extends React.Component {
   }
 
   add(firstNumber, secondNumber) {
-    return String(firstNumber + secondNumber);
+    return firstNumber + secondNumber;
   }
 
   subtract(firstNumber, secondNumber) {
-    return String(firstNumber - secondNumber);
+    return firstNumber - secondNumber;
   }
 
   multiply(firstNumber, secondNumber) {
-    return String(firstNumber * secondNumber);
+    return firstNumber * secondNumber;
   }
 
   divide(firstNumber, secondNumber) {
-    return String(Math.floor(firstNumber / secondNumber));
+    return Math.floor(firstNumber / secondNumber);
   }
 
   calculate() {
     if (!this.operation[this.state.operand]) return;
 
+    const result = this.operation[this.state.operand](
+      +this.state.firstNumber,
+      +this.state.secondNumber,
+    );
+
     this.setState({
-      firstNumber: this.operation[this.state.operand](
-        +this.state.firstNumber,
-        +this.state.secondNumber,
-      ),
+      firstNumber: result === Infinity ? ERROR_MESSAGE : String(result),
       secondNumber: '',
       operand: '',
     });
