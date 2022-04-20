@@ -64,7 +64,7 @@ class Calculator extends React.Component {
   }
 
   divide(firstNumber, secondNumber) {
-    return String(firstNumber / secondNumber);
+    return String(Math.floor(firstNumber / secondNumber));
   }
 
   calculate() {
