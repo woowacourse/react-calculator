@@ -1,14 +1,19 @@
 import React from 'react';
-import { ERROR_MESSAGE } from './constants';
+import { ERROR_MESSAGE, STORAGE_KEY } from './constants';
 
 class Calculator extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      firstNumber: '',
-      secondNumber: '',
-      operand: '',
-    };
+
+    const result = localStorage.getItem(STORAGE_KEY)
+      ? JSON.parse(localStorage.getItem(STORAGE_KEY))
+      : {
+          firstNumber: '',
+          secondNumber: '',
+          operand: '',
+        };
+
+    this.state = result;
   }
 
   operation = {
@@ -100,6 +105,20 @@ class Calculator extends React.Component {
     this.setState({
       operand: e.target.dataset.operator,
     });
+  }
+
+  saveResult(e) {
+    e.preventDefault();
+    e.returnValue = '';
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...this.state }));
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.saveResult.bind(this));
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.saveResult.bind(this));
   }
 
   render() {
