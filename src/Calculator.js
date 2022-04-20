@@ -41,6 +41,7 @@ class Calculator extends React.Component {
   }
 
   handleNumber(e) {
+    if (this.state.firstNumber === ERROR_MESSAGE) this.clearResult();
     if (this.state.operand === '') {
       this.setFirstNumber(e.target.dataset.number);
       return;
@@ -48,8 +49,12 @@ class Calculator extends React.Component {
     this.setSecondNumber(e.target.dataset.number);
   }
 
-  handleModifier(e) {
-    console.log('AC');
+  clearResult() {
+    this.setState({
+      firstNumber: '',
+      secondNumber: '',
+      operand: '',
+    });
   }
 
   add(firstNumber, secondNumber) {
@@ -84,6 +89,8 @@ class Calculator extends React.Component {
   }
 
   handleOperation(e) {
+    if (this.state.firstNumber === ERROR_MESSAGE) this.clearResult();
+
     if (e.target.dataset.operator === '=') {
       this.calculate();
       return;
@@ -134,7 +141,7 @@ class Calculator extends React.Component {
               0
             </button>
           </div>
-          <div className="modifiers subgrid" onClick={this.handleModifier.bind(this)}>
+          <div className="modifiers subgrid" onClick={this.clearResult.bind(this)}>
             <button className="modifier" id="clear-button">
               AC
             </button>
