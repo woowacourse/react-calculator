@@ -134,12 +134,10 @@ class Calculator extends Component {
     e.preventDefault();
     const { firstOperand, secondOperand, operation } = this.state;
     localStorage.setItem('prevState', JSON.stringify(this.state));
-    if (firstOperand !== '0' || secondOperand !== '' || operation !== null) {
+    if (hasInput({ ...this.state })) {
       e.returnValue = '';
     }
   };
-
-  // template을 만드는 함수를 만들어서 명시적으로 좀 해볼까?
 
   render() {
     return (
