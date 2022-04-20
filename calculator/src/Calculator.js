@@ -27,6 +27,42 @@ class Calculator extends React.Component {
     localStorage.setItem('total', this.state.total);
   };
 
+  render() {
+    return (
+      <div className="calculator">
+        <h1 id="total">{this.state.total}</h1>
+        <div className="digits flex" onClick={this.handleDigitButtonClick}>
+          {this.digitsTemplate}
+        </div>
+        <div className="modifiers subgrid">
+          <button className="modifier" onClick={this.handleModifierButtonClick}>
+            AC
+          </button>
+        </div>
+        <div
+          className="operations subgrid"
+          onClick={this.handleOperationButtonClick}
+        >
+          {this.operationTemplate}
+        </div>
+      </div>
+    );
+  }
+
+  digitsTemplate = Array.from(Array(10).keys())
+    .reverse()
+    .map((digit, idx) => (
+      <button className="digit" key={idx}>
+        {digit}
+      </button>
+    ));
+
+  operationTemplate = ['/', 'X', '-', '+', '='].map((operation, idx) => (
+    <button className="operation" key={idx}>
+      {operation}
+    </button>
+  ));
+
   handleDigitButtonClick = ({ target }) => {
     const digit = target.textContent;
     const { num1, num2, operation, total } = this.state;
@@ -69,35 +105,14 @@ class Calculator extends React.Component {
       return alert(ERROR_MESSAGE.IS_OVER_MAX_OPERATION_COUNT);
 
     if (operationInput === '=') {
-      let newTotal;
+      const newTotal = this.calculate();
 
-      switch (operation) {
-        case '+': {
-          newTotal = Number(num1) + Number(num2);
-          this.setState({ ...this.state, total: newTotal });
-          break;
-        }
-        case '-': {
-          newTotal = Number(num1) - Number(num2);
-          this.setState({ ...this.state, total: newTotal });
-          break;
-        }
-        case 'X': {
-          newTotal = Number(num1) * Number(num2);
-          this.setState({ ...this.state, total: newTotal });
-          break;
-        }
-        case '/': {
-          const result = parseInt(Number(num1) / Number(num2), 10);
-          newTotal = Number.isNaN(result)
-            ? ERROR_MESSAGE.INFINITY_TOTAL
-            : result;
-          this.setState({ ...this.state, total: newTotal });
-        }
-        // no default
-      }
-
-      this.setState({ num1: newTotal, num2: '', operation: '' });
+      this.setState({
+        num1: newTotal,
+        num2: '',
+        operation: '',
+        total: newTotal,
+      });
 
       return;
     }
@@ -109,39 +124,21 @@ class Calculator extends React.Component {
     });
   };
 
-  render() {
-    return (
-      <div className="calculator">
-        <h1 id="total">{this.state.total}</h1>
-        <div className="digits flex" onClick={this.handleDigitButtonClick}>
-          <button className="digit">9</button>
-          <button className="digit">8</button>
-          <button className="digit">7</button>
-          <button className="digit">6</button>
-          <button className="digit">5</button>
-          <button className="digit">4</button>
-          <button className="digit">3</button>
-          <button className="digit">2</button>
-          <button className="digit">1</button>
-          <button className="digit">0</button>
-        </div>
-        <div className="modifiers subgrid">
-          <button className="modifier" onClick={this.handleModifierButtonClick}>
-            AC
-          </button>
-        </div>
-        <div
-          className="operations subgrid"
-          onClick={this.handleOperationButtonClick}
-        >
-          <button className="operation">/</button>
-          <button className="operation">X</button>
-          <button className="operation">-</button>
-          <button className="operation">+</button>
-          <button className="operation">=</button>
-        </div>
-      </div>
-    );
+  calculate() {
+    const { num1, num2, operation } = this.state;
+
+    switch (operation) {
+      case '+':
+        return Number(num1) + Number(num2);
+      case '-':
+        return Number(num1) - Number(num2);
+      case 'X':
+        return Number(num1) * Number(num2);
+      case '/':
+        const result = parseInt(Number(num1) / Number(num2), 10);
+        return Number.isNaN(result) ? ERROR_MESSAGE.INFINITY_TOTAL : result;
+      // no default
+    }
   }
 }
 
