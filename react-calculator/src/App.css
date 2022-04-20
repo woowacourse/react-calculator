@@ -16,7 +16,7 @@ body {
   width: 300px;
   display: grid;
   grid-template-areas:
-    'total total total total'
+    'calculator-number calculator-number calculator-number calculator-number'
     'modif modif modif oper'
     'digit digit digit oper'
     'digit digit digit oper'
@@ -44,8 +44,8 @@ button {
   background-color: #efefef;
 }
 
-#total {
-  grid-area: total;
+#calculator-number {
+  grid-area: calculator-number;
   background-color: #333;
   color: white;
   margin: 0;
