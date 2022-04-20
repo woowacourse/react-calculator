@@ -2,13 +2,24 @@ import React, { Component } from 'react';
 
 class Operations extends Component {
   handleOperationButtonClick = (e) => {
-    const operation = e.target.textContent;
-    this.props.setOperation(operation);
+    this.props.setOperation(e.target.textContent);
+  };
+
+  handleEqualityButtonClick = () => {
+    const { operation } = this.props;
     switch (operation) {
       case '+':
         this.props.add();
         break;
-
+      case '-':
+        this.props.minus();
+        break;
+      case '/':
+        this.props.divide();
+        break;
+      case '*':
+        this.props.multiply();
+        break;
       default:
         break;
     }
@@ -29,7 +40,7 @@ class Operations extends Component {
         <button className="operation" onClick={this.handleOperationButtonClick}>
           +
         </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
+        <button className="operation" onClick={this.handleEqualityButtonClick}>
           =
         </button>
       </div>

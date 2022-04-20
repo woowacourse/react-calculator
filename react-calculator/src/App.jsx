@@ -39,7 +39,22 @@ class App extends Component {
 
   add = () => {
     const result = Number(this.state.firstNumber) + Number(this.state.secondNumber);
-    console.log('result', result);
+    this.renderCalculatorNumber(result);
+  };
+
+  minus = () => {
+    const result = Number(this.state.firstNumber) - Number(this.state.secondNumber);
+    this.renderCalculatorNumber(result);
+  };
+
+  divide = () => {
+    const result = Math.floor(Number(this.state.firstNumber) / Number(this.state.secondNumber));
+    this.renderCalculatorNumber(result);
+  };
+
+  multiply = () => {
+    const result = Number(this.state.firstNumber) * Number(this.state.secondNumber);
+    this.renderCalculatorNumber(result);
   };
 
   renderCalculatorNumber = (number) => {
@@ -57,7 +72,14 @@ class App extends Component {
           <div className="modifiers subgrid">
             <button className="modifier">AC</button>
           </div>
-          <Operations add={this.add} setOperation={this.setOperations} />
+          <Operations
+            operation={this.state.operation}
+            setOperation={this.setOperations}
+            add={this.add}
+            minus={this.minus}
+            divide={this.divide}
+            multiply={this.multiply}
+          />
         </div>
       </div>
     );
