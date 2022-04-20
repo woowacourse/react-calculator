@@ -16,35 +16,6 @@ class Calculator extends React.Component {
     this.state = result;
   }
 
-  operation = {
-    '+': this.add,
-    '-': this.subtract,
-    'x': this.multiply,
-    '/': this.divide,
-  };
-
-  isOverThreeDigit(number) {
-    return number.length >= 3;
-  }
-
-  setFirstNumber(number) {
-    if (this.isOverThreeDigit(this.state.firstNumber)) {
-      return;
-    }
-    this.setState((prevState) => ({
-      firstNumber: prevState.firstNumber + number,
-    }));
-  }
-
-  setSecondNumber(number) {
-    if (this.isOverThreeDigit(this.state.secondNumber)) {
-      return;
-    }
-    this.setState((prevState) => ({
-      secondNumber: prevState.secondNumber + number,
-    }));
-  }
-
   handleNumber(e) {
     if (this.state.firstNumber === ERROR_MESSAGE) this.clearResult();
     if (this.state.operand === '') {
@@ -54,28 +25,40 @@ class Calculator extends React.Component {
     this.setSecondNumber(e.target.dataset.number);
   }
 
-  clearResult() {
+  handleOperation(e) {
+    if (this.state.firstNumber === ERROR_MESSAGE) this.clearResult();
+
+    if (e.target.dataset.operator === '=') {
+      this.calculate();
+      return;
+    }
+
+    if (this.state.operand !== '') return;
     this.setState({
-      firstNumber: '',
-      secondNumber: '',
-      operand: '',
+      operand: e.target.dataset.operator,
     });
   }
 
-  add(firstNumber, secondNumber) {
-    return firstNumber + secondNumber;
+  setFirstNumber(value) {
+    if (this.isOverThreeDigit(this.state.firstNumber)) {
+      return;
+    }
+    this.setState((prevState) => ({
+      firstNumber: prevState.firstNumber + value,
+    }));
   }
 
-  subtract(firstNumber, secondNumber) {
-    return firstNumber - secondNumber;
+  setSecondNumber(value) {
+    if (this.isOverThreeDigit(this.state.secondNumber)) {
+      return;
+    }
+    this.setState((prevState) => ({
+      secondNumber: prevState.secondNumber + value,
+    }));
   }
 
-  multiply(firstNumber, secondNumber) {
-    return firstNumber * secondNumber;
-  }
-
-  divide(firstNumber, secondNumber) {
-    return Math.floor(firstNumber / secondNumber);
+  isOverThreeDigit(number) {
+    return number.length >= 3;
   }
 
   calculate() {
@@ -93,17 +76,34 @@ class Calculator extends React.Component {
     });
   }
 
-  handleOperation(e) {
-    if (this.state.firstNumber === ERROR_MESSAGE) this.clearResult();
+  operation = {
+    '+': this.add,
+    '-': this.subtract,
+    'x': this.multiply,
+    '/': this.divide,
+  };
 
-    if (e.target.dataset.operator === '=') {
-      this.calculate();
-      return;
-    }
+  add(firstNumber, secondNumber) {
+    return firstNumber + secondNumber;
+  }
 
-    if (this.state.operand !== '') return;
+  subtract(firstNumber, secondNumber) {
+    return firstNumber - secondNumber;
+  }
+
+  multiply(firstNumber, secondNumber) {
+    return firstNumber * secondNumber;
+  }
+
+  divide(firstNumber, secondNumber) {
+    return Math.floor(firstNumber / secondNumber);
+  }
+
+  clearResult() {
     this.setState({
-      operand: e.target.dataset.operator,
+      firstNumber: '',
+      secondNumber: '',
+      operand: '',
     });
   }
 
