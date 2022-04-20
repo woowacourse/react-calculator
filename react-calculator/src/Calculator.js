@@ -8,8 +8,26 @@ import { isOverMaxLength } from './validator/index';
 export default class Calculator extends Component {
   constructor() {
     super();
-    this.state = { screenNumber: 0, 숫자입력중: true };
+    const screenNumber = Number(localStorage.getItem('calculator-data'));
+    this.state = { screenNumber, 숫자입력중: true, firstNumber: 0 };
   }
+
+  componentDidUpdate() {
+    if (this.state.screenNumber === 0) {
+      localStorage.setItem('calculator-data', JSON.stringify(0));
+      this.removeBeforeUnloadEvent();
+      return;
+    }
+    this.addBeforeUnloadEvent();
+  }
+
+  setFirstNumber = () => {
+    this.setState({ firstNumber: this.state.screenNumber });
+  };
+
+  resetFirstNumber = () => {
+    this.setState({ firstNumber: 0 });
+  };
 
   changeScreenNumber = (targetNumber) => {
     this.setState({ screenNumber: targetNumber });
@@ -31,6 +49,23 @@ export default class Calculator extends Component {
     }
   };
 
+  handleBeforeUnload = (e) => {
+    e.preventDefault();
+    localStorage.setItem(
+      'calculator-data',
+      JSON.stringify(this.state.screenNumber)
+    );
+    e.returnValue = '';
+  };
+
+  addBeforeUnloadEvent = (e) => {
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+  };
+
+  removeBeforeUnloadEvent = (e) => {
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+  };
+
   render() {
     return (
       <div className="calculator">
@@ -41,8 +76,14 @@ export default class Calculator extends Component {
           screenNumber={this.state.screenNumber}
           changeStep={this.changeStep}
           숫자입력중={this.state.숫자입력중}
+          firstNumber={this.state.firstNumber}
+          setFirstNumber={this.setFirstNumber}
+          resetFirstNumber={this.resetFirstNumber}
         ></Operators>
-        <ClearButton changeScreenNumber={this.changeScreenNumber}></ClearButton>
+        <ClearButton
+          changeScreenNumber={this.changeScreenNumber}
+          resetFirstNumber={this.resetFirstNumber}
+        ></ClearButton>
       </div>
     );
   }
