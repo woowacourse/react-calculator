@@ -24,6 +24,30 @@ export default class Calculator extends Component {
 
   handleClickOperation(operation) {
     const lastResult = this.state.result[this.state.result.length - 1];
+    const numberReg = /^[0-9]+$/;
+    const { result } = this.state;
+
+    if (operation === '=') {
+      if (numberReg.test(result)) {
+        return;
+      }
+      if (['+', '-', 'X', '/'].includes(result[0])) {
+        return;
+      }
+      if (['+', '-', 'X', '/'].includes(result[result.length - 1])) {
+        return;
+      }
+
+      for (let i = 0; i < result.length; i += 1) {
+        if (['+', '-', 'X', '/'].includes(result[i])) {
+          const operator = result[i];
+          const operand = result.split(operator);
+          this.calculate(operand, operator);
+          return;
+        }
+      }
+    }
+
     // 마지막 입력값 연산자 중복 입력
     if (['+', '-', 'X', '/'].includes(lastResult)) {
       this.setState(preState => ({
@@ -33,11 +57,37 @@ export default class Calculator extends Component {
     }
 
     // 연산자 2개 이상 추가되지 않도록
-    const check = /^[0-9]+$/;
-    if (!check.test(this.state.result)) {
+    if (!numberReg.test(result)) {
       return;
     }
     this.setState(preState => ({ result: preState.result + operation }));
+  }
+
+  handleClickModifier() {
+    this.setState({ result: '0' });
+  }
+
+  calculate(operand, operator) {
+    console.log(operand, operator);
+    let result = null;
+    switch (operator) {
+      case '+':
+        result = +operand[0] + +operand[1];
+        break;
+      case '-':
+        result = +operand[0] - +operand[1];
+        break;
+      case 'X':
+        result = +operand[0] * +operand[1];
+        break;
+      case '/':
+        result = +operand[0] / +operand[1];
+        break;
+      default:
+        break;
+    }
+
+    this.setState({ result: String(result) });
   }
 
   renderDigit(i) {
@@ -50,7 +100,7 @@ export default class Calculator extends Component {
 
   renderModifier() {
     return (
-      <button type="button" className="modifier">
+      <button type="button" className="modifier" onClick={this.handleClickModifier.bind(this)}>
         AC
       </button>
     );
