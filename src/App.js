@@ -13,17 +13,12 @@ export default class App extends Component {
 
   componentDidMount() {
     const prevValue = localStorage.getItem("prevValue") || 0;
-    this.setFirstNumber(prevValue);
-    this.setResult(prevValue);
+    this.setFirstNumber(Number(prevValue));
+    this.setResult(Number(prevValue));
+
     window.addEventListener("beforeunload", function (e) {
       e.preventDefault();
       e.returnValue = "";
-      localStorage.setItem(
-        "prevValue",
-        this.state.isFirstNumber
-          ? this.state.firstNumber
-          : this.state.secondNumber
-      );
     });
   }
 
@@ -38,9 +33,12 @@ export default class App extends Component {
   };
 
   setFirstNumber = (number) => {
-    this.setState({
-      firstNumber: Number(number),
-    });
+    this.setState(
+      {
+        firstNumber: Number(number),
+      },
+      localStorage.setItem("prevValue", number)
+    );
   };
 
   setOperator = (operator) => {
@@ -48,9 +46,12 @@ export default class App extends Component {
   };
 
   setSecondNumber = (number) => {
-    this.setState({
-      secondNumber: Number(number),
-    });
+    this.setState(
+      {
+        secondNumber: Number(number),
+      },
+      localStorage.setItem("prevValue", number)
+    );
   };
 
   setResult = (result) => {
@@ -79,6 +80,14 @@ export default class App extends Component {
 
     this.setState({ result: res }, () => {
       this.initState();
+
+      if (res === Infinity || isNaN(res)) {
+        this.setFirstNumber(0);
+        this.setResult("오류");
+        localStorage.setItem("prevValue", "오류");
+        return;
+      }
+
       this.setFirstNumber(res);
       this.setResult(res);
       localStorage.setItem("prevValue", res);

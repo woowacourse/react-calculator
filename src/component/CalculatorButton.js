@@ -35,6 +35,7 @@ export default class CalculatorButton extends Component {
 
   onClickModifier = () => {
     this.props.initState();
+    localStorage.setItem("prevValue", 0);
   };
 
   render() {
