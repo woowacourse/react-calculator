@@ -28,14 +28,39 @@ class App extends React.Component {
   };
 
   handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
+    if (this.state.expression.prevNumber === '오류') {
+      this.setState({
+        expression: {
+          ...this.state.expression,
+          prevNumber: selectedDigit,
+        },
+      });
+      return;
+    }
+
     this.updateNumber(
       this.state.expression.operator ? 'nextNumber' : 'prevNumber',
       selectedDigit
     );
   };
 
+  updateNumber(numberKey, selectedDigit) {
+    if (this.state.expression[numberKey].length >= MAX_NUMBER_LENGTH) {
+      alert(ERROR_MESSAGE.EXCEED_MAX_NUMBER_LENGTH);
+      return;
+    }
+    this.setState({
+      expression: {
+        ...this.state.expression,
+        [numberKey]: this.state.expression[numberKey] + selectedDigit,
+      },
+    });
+  }
+
   handleClickOperator = ({ target: { textContent: selectedOperator } }) => {
     const { prevNumber, operator, nextNumber } = this.state.expression;
+
+    if (prevNumber === '오류') return;
 
     if (selectedOperator !== '=') {
       if (operator) {
@@ -94,21 +119,9 @@ class App extends React.Component {
     return num1 * num2;
   }
   divide(num1, num2) {
-    return Number.parseInt(num1 / num2);
-  }
+    if (num2 === 0) return '오류';
 
-  updateNumber(numberKey, selectedDigit) {
-    if (this.state.expression[numberKey].length >= MAX_NUMBER_LENGTH) {
-      alert(ERROR_MESSAGE.EXCEED_MAX_NUMBER_LENGTH);
-      return;
-    }
-    this.setState({
-      ...this.state,
-      expression: {
-        ...this.state.expression,
-        [numberKey]: this.state.expression[numberKey] + selectedDigit,
-      },
-    });
+    return Number.parseInt(num1 / num2);
   }
 
   render() {
