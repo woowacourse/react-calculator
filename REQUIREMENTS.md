@@ -10,9 +10,9 @@
 - [x] 계산 결과를 표현할 때 소수점 이하는 버림한다.
 - [x] 연산의 결과값이 Infinity일 경우 오류라는 문자열을 보여준다. (아이폰 참고)
 
-- [] 출력값 있는 상황에 사용자의 페이지 이탈시 confirm을 활용해 사용자의 이탈 여
-  부를 확인한다. (componentWillUnMount)
-- [] 항상 사용자의 이탈시 마지막 출력값을 Local Storage에 저장한다.
-  (componentWillUnMount)
-- [] 초기 로딩시 이전 값이 Local Storage에 존재한다면 초기 값으로 적용한다.
-  (componentDidMount)
+- [x] 출력값 있는 상황에 사용자의 페이지 이탈시 confirm을 활용해 사용자의 이탈
+      여부를 확인한다. (componentWillUnMount)
+- [x] 항상 사용자의 이탈시 마지막 출력값을 Local Storage에 저장한다.
+      (componentWillUnMount)
+- [x] 초기 로딩시 이전 값이 Local Storage에 존재한다면 초기 값으로 적용한다.
+      (componentDidMount)

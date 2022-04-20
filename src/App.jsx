@@ -124,6 +124,37 @@ class App extends React.Component {
     return Number.parseInt(num1 / num2);
   }
 
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.beforeunload);
+    window.addEventListener('unload', this.handleUnload);
+
+    try {
+      const expression = JSON.parse(localStorage.getItem('expression'));
+      if (!expression) return;
+
+      this.setState({
+        expression,
+      });
+    } catch {
+      localStorage.removeItem('expression');
+      alert('데이터를 불러오는 데 실패하였습니다.');
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.beforeunload);
+    window.removeEventListener('unload', this.handleUnload);
+  }
+
+  beforeunload = (e) => {
+    e.preventDefault();
+    e.returnValue = '';
+  };
+
+  handleUnload = () => {
+    localStorage.setItem('expression', JSON.stringify(this.state.expression));
+  };
+
   render() {
     return (
       <div id="app">
