@@ -10,6 +10,15 @@ export default class App extends Component {
     result: 0,
   };
 
+  initState = () => {
+    this.setState({
+      firstNumber: null,
+      operator: null,
+      secondNumber: null,
+      result: 0,
+    });
+  };
+
   onSetFirstNumber = (number) => {
     this.setState({
       firstNumber: Number(number),
@@ -29,6 +38,12 @@ export default class App extends Component {
       },
       () => this.calculate()
     );
+  };
+
+  onSetResult = (number) => {
+    this.setState({
+      result: number,
+    });
   };
 
   calculate = () => {
@@ -71,12 +86,15 @@ export default class App extends Component {
       <>
         <div id="app">
           <div className="calculator">
-            <DisplayResult />
+            <DisplayResult result={this.state.result} />
             <CalculatorButton
               onSetFirstNumber={this.onSetFirstNumber}
               onSetOperator={this.onSetOperator}
               onSetSecondNumber={this.onSetSecondNumber}
               calculate={this.calculate}
+              onSetResult={this.onSetResult}
+              result={this.state.result}
+              initState={this.initState}
             />
           </div>
         </div>
