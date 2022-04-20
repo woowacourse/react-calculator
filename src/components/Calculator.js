@@ -19,6 +19,10 @@ const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   }
 };
 
+const hasInput = ({ firstOperand, secondOperand, operation }) => {
+  return firstOperand !== '0' || secondOperand !== '' || operation !== null;
+};
+
 /** 생명 주기 -> 각자 어떤 부분을 학습해볼까? 애기해보기 */
 class Calculator extends Component {
   constructor() {
@@ -57,20 +61,16 @@ class Calculator extends Component {
     const { textContent: digit } = target;
 
     if (this.state.operation) {
-      this.setState(({ secondOperand }) => {
-        return {
-          secondOperand: `${Number(secondOperand + digit)}`,
-          isError: false,
-        };
-      });
+      this.setState(({ secondOperand }) => ({
+        secondOperand: `${Number(secondOperand + digit)}`,
+        isError: false,
+      }));
       return;
     }
-    this.setState(({ firstOperand }) => {
-      return {
-        firstOperand: `${Number(firstOperand + digit)}`,
-        isError: false,
-      };
-    });
+    this.setState(({ firstOperand }) => ({
+      firstOperand: `${Number(firstOperand + digit)}`,
+      isError: false,
+    }));
   };
 
   onClickOperations = ({ target }) => {
@@ -100,14 +100,11 @@ class Calculator extends Component {
 
   onBeforeUnload = (e) => {
     e.preventDefault();
-    const { firstOperand, secondOperand, operation } = this.state;
     localStorage.setItem('prevState', JSON.stringify(this.state));
-    if (firstOperand !== '0' || secondOperand !== '' || operation !== null) {
+    if (hasInput({ ...this.state })) {
       e.returnValue = '';
     }
   };
-
-  // template을 만드는 함수를 만들어서 명시적으로 좀 해볼까?
 
   render() {
     return (
