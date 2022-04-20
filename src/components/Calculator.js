@@ -38,13 +38,9 @@ class Calculator extends Component {
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
-  // setItem 하는 로직은 상태가 업데이트 될때 하는게 맞나 ?
-  componentDidUpdate() {
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-  }
-
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.onBeforeUnload);
+    localStorage.setItem('prevState', JSON.stringify(this.state));
   }
 
   onClickDigits = ({ target }) => {
@@ -111,6 +107,7 @@ class Calculator extends Component {
     e.preventDefault();
     const { firstOperand, secondOperand, operation } = this.state;
     if (firstOperand !== '0' || secondOperand !== '' || operation !== null) {
+      localStorage.setItem('prevState', JSON.stringify(this.state));
       e.returnValue = '';
     }
   };
