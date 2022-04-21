@@ -16,6 +16,7 @@ module.exports = {
     'no-console': 'off',
     'no-plusplus': 'off',
     'class-methods-use-this': 'off',
+    'no-alert': 'off',
     radix: 'off',
     'no-unused-vars': 'off',
     'no-restricted-properties': 'off',

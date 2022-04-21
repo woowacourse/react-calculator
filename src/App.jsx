@@ -3,6 +3,15 @@
 import React, { Component } from 'react';
 import Button from './components/Button';
 import './App.css';
+import {
+  EMPTY_SECOND_OPERAND_ERROR_MESSAGE,
+  INFINITY_ERROR_TEXT,
+  CALCULATOR_DATA_KEY,
+  OPERATOR,
+  FIXED_POINT_LENGTH,
+  CALCULATOR_NUMBER_LIST,
+  CALCULATOR_OPERATOR_LIST,
+} from './constants';
 
 class App extends Component {
   constructor() {
@@ -17,7 +26,7 @@ class App extends Component {
       const lastResult = Number(this.totalRef.current.textContent);
 
       localStorage.setItem(
-        'calculatorData',
+        CALCULATOR_DATA_KEY,
         JSON.stringify({ ...this.state, lastResult })
       );
     });
@@ -32,9 +41,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-    if (localStorage.getItem('calculatorData')) {
+    if (localStorage.getItem(CALCULATOR_DATA_KEY)) {
       const { firstOperand, secondOperand, operator, result, lastResult } =
-        JSON.parse(localStorage.getItem('calculatorData'));
+        JSON.parse(localStorage.getItem(CALCULATOR_DATA_KEY));
 
       this.setState({
         firstOperand,
@@ -47,15 +56,16 @@ class App extends Component {
     }
   }
 
-  componentDidUpdate() {
-    console.log('update', this.state);
-  }
-
   handleDigitClick = (e) => {
     const total = this.totalRef.current.textContent;
     const digit = e.target.textContent;
 
-    const list = ['/', 'X', '-', '+'];
+    const list = [
+      OPERATOR.DIVIDE,
+      OPERATOR.MULTIPLY,
+      OPERATOR.MINUS,
+      OPERATOR.PLUS,
+    ];
 
     if (list.includes(total)) {
       this.totalRef.current.textContent = digit;
@@ -85,9 +95,15 @@ class App extends Component {
     const operation = e.target.textContent;
     let total = this.totalRef.current.textContent;
 
-    const list = ['/', 'X', '-', '+'];
+    const list = [
+      OPERATOR.DIVIDE,
+      OPERATOR.MULTIPLY,
+      OPERATOR.MINUS,
+      OPERATOR.PLUS,
+    ];
+
     if (list.includes(total)) {
-      alert('2번째 피연산자를 입력해주세요.');
+      alert(EMPTY_SECOND_OPERAND_ERROR_MESSAGE);
 
       this.totalRef.current.textContent = 0;
 
@@ -103,23 +119,25 @@ class App extends Component {
 
     total = Number(total);
 
-    if (operation === '=') {
+    if (operation === OPERATOR.EQUAL) {
       const { operator, firstOperand } = this.state;
       let result;
 
       switch (operator) {
-        case '+':
+        case OPERATOR.PLUS:
           result = firstOperand + total;
           break;
-        case '-':
+        case OPERATOR.MINUS:
           result = firstOperand - total;
           break;
-        case 'X':
+        case OPERATOR.MULTIPLY:
           result = firstOperand * total;
           break;
-        case '/':
+        case OPERATOR.DIVIDE:
           result =
-            total === 0 ? '오류' : Number((firstOperand / total).toFixed(2));
+            total === 0
+              ? INFINITY_ERROR_TEXT
+              : Number((firstOperand / total).toFixed(FIXED_POINT_LENGTH));
           break;
         default:
           break;
@@ -146,8 +164,6 @@ class App extends Component {
   };
 
   render() {
-    const numbers = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-
     return (
       <>
         <h1>⚛️ React 계산기 🧮</h1>
@@ -156,7 +172,7 @@ class App extends Component {
             0
           </h2>
           <div className="digits flex" onClick={this.handleDigitClick}>
-            {numbers.map((number, index) => (
+            {CALCULATOR_NUMBER_LIST.map((number, index) => (
               <Button key={index} text={number} className="digit" />
             ))}
           </div>
@@ -167,11 +183,9 @@ class App extends Component {
             className="operations subgrid"
             onClick={this.handleOperationClick}
           >
-            <Button className="operation" text="/" />
-            <Button className="operation" text="X" />
-            <Button className="operation" text="-" />
-            <Button className="operation" text="+" />
-            <Button className="operation" text="=" />
+            {CALCULATOR_OPERATOR_LIST.map((operator) => (
+              <Button className="operation" text={operator} />
+            ))}
           </div>
         </div>
       </>
