@@ -1,7 +1,3 @@
-/* eslint-disable react/no-unused-state */
-/* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 
 export default class Calculator extends Component {
@@ -90,7 +86,6 @@ export default class Calculator extends Component {
       return;
     }
 
-    // 마지막 입력값 연산자 중복 입력
     if (['+', '-', 'X', '/'].includes(lastResult)) {
       this.setState(preState => ({
         result: preState.result.substr(0, preState.result.length - 1) + operator,
@@ -98,7 +93,6 @@ export default class Calculator extends Component {
       return;
     }
 
-    // 연산자 2개 이상 추가되지 않도록
     if (this.state.operator) {
       return;
     }
