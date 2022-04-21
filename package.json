@@ -7,7 +7,9 @@
     "build": "webpack --progress",
     "clean": "npm cache clean --force && rd /s /q node_modules && del /f package-lock.json",
     "start": "webpack serve --open --progress --port 9000",
-    "lint": "node_modules/.bin/eslint --ext=.jsx,.js,.tsx,.ts  ."
+    "lint": "node_modules/.bin/eslint --ext=.jsx,.js,.tsx,.ts  .",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -17,9 +19,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/airman5573/react-calculator/issues"
+    "url": "https://github.com/intae92/react-calculator/issues"
   },
-  "homepage": "https://github.com/airman5573/react-calculator#readme",
+  "homepage": "https://github.com/intae92/react-calculator",
   "devDependencies": {
     "@commitlint/cli": "^16.2.3",
     "@types/react": "^18.0.5",
@@ -34,6 +36,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
+    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^7.0.0",
     "mini-css-extract-plugin": "^2.6.0",
