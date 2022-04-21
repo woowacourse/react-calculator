@@ -48,6 +48,10 @@ class App extends Component {
   };
 
   divide = () => {
+    if (this.state.secondNumber === '0') {
+      this.renderCalculatorNumber('오류');
+      return;
+    }
     const result = Math.floor(Number(this.state.firstNumber) / Number(this.state.secondNumber));
     this.renderCalculatorNumber(result);
   };
