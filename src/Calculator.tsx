@@ -6,7 +6,6 @@ enum Operator {
   minus = 'minus',
   multiply = 'multiply',
   divide = 'divide',
-  
 }
 
 type State = {
