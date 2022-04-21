@@ -1,35 +1,33 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './App.css';
-import Button from './Button';
-
-const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-const OPERATORS = ['/', 'X', '-', '+'];
-const EQUAL = '=';
-
-const tryCatcher = (func) => {
-  return (...args) => {
-    try {
-      func(...args);
-    } catch (error) {
-      alert(error);
-    }
-  };
-};
+import Keypad from './components/Keypad';
+// import Button from './components/Button';
+import {
+  DIGITS,
+  NUMBERS,
+  OPERATORS,
+  MODIFIERS,
+  DEFAULT_STATE,
+  ERROR_RESULT,
+  ERROR_MESSAGES,
+} from './constants/constants';
+import { tryCatcher } from './utils/commonUtils';
 
 const calculate = (firstNumber, secondNumber, operator) => {
   switch (operator) {
-    case '+':
+    case OPERATORS.ADD:
       return firstNumber + secondNumber;
-    case '-':
+    case OPERATORS.SUBTRACT:
       return firstNumber - secondNumber;
-    case 'X':
+    case OPERATORS.MULTIPLY:
       return firstNumber * secondNumber;
-    case '/':
+    case OPERATORS.DIVIDE:
       return secondNumber === 0
         ? Infinity
         : parseInt(firstNumber / secondNumber, 10);
     default:
-      throw new Error('calculate');
+      throw new Error(ERROR_MESSAGES.INVALID_OPERATOR);
   }
 };
 
@@ -45,27 +43,21 @@ const appendCharToLastElem = (list, char) => {
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      numberStrings: [''],
-      operator: null,
-      displayedText: '0',
-    };
+    this.state = DEFAULT_STATE;
 
     this.handleDigitClick = this.handleDigitClick.bind(this);
     this.handleOperatorClick = this.handleOperatorClick.bind(this);
     this.handleEqualClick = this.handleEqualClick.bind(this);
     this.handleACClick = this.handleACClick.bind(this);
     this.confirmLeave = this.confirmLeave.bind(this);
-    this.handleUnload = this.handleUnload.bind(this);
+    this.saveStates = this.saveStates.bind(this);
   }
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.confirmLeave);
-    window.addEventListener('unload', this.handleUnload);
+    window.addEventListener('unload', this.saveStates);
 
-    const state = JSON.parse(localStorage.getItem('calculator'));
-
-    this.setState(state);
+    this.loadStates();
   }
 
   componentWillUnmount() {
@@ -75,8 +67,8 @@ export default class App extends Component {
   handleDigitClick(digit) {
     const { numberStrings } = this.state;
 
-    if (numberStrings[numberStrings.length - 1].length >= 3) {
-      throw new Error('error');
+    if (numberStrings[numberStrings.length - 1].length >= DIGITS.MAX_LENGTH) {
+      throw new Error(ERROR_MESSAGES.DIGIT_MAX_LENGTH_EXCEEDED);
     }
 
     const updatedNumberStrings = appendCharToLastElem(
@@ -91,13 +83,18 @@ export default class App extends Component {
   }
 
   handleOperatorClick(operator) {
+    if (operator === '=') {
+      tryCatcher(this.handleEqualClick)();
+
+      return;
+    }
     const { numberStrings } = this.state;
 
     if (
-      numberStrings.length >= 2 &&
+      numberStrings.length >= NUMBERS.MAX_COUNT &&
       numberStrings[numberStrings.length - 1] !== ''
     ) {
-      throw new Error('error');
+      throw new Error(ERROR_MESSAGES.NO_SECOND_NUMBER_SUBMITTED);
     }
 
     this.setState((prevState) => {
@@ -126,22 +123,27 @@ export default class App extends Component {
     );
 
     this.setState({
-      numberStrings: [''],
-      operator: null,
-      displayedText: result === Infinity ? '오류' : result.toString(),
+      numberStrings: DEFAULT_STATE.numberStrings,
+      operator: DEFAULT_STATE.operator,
+      displayedText: result === Infinity ? ERROR_RESULT : result.toString(),
     });
   }
 
   handleACClick() {
-    this.setState({
-      numberStrings: [''],
-      operator: null,
-      displayedText: '0',
-    });
+    this.setState(DEFAULT_STATE);
   }
 
-  handleUnload() {
-    localStorage.setItem('calculator', JSON.stringify(this.state));
+  saveStates() {
+    const { store } = this.props;
+
+    store.save(this.state);
+  }
+
+  loadStates() {
+    const { store } = this.props;
+    const state = store.load();
+
+    this.setState(state);
   }
 
   confirmLeave(e) {
@@ -157,40 +159,34 @@ export default class App extends Component {
       <div className="App">
         <div className="calculator">
           <h1 id="total">{this.state.displayedText}</h1>
-          <div className="digits flex">
-            {DIGITS.map((digit) => (
-              <Button
-                key={digit}
-                className="digit keypad"
-                onClick={tryCatcher(this.handleDigitClick)}
-                text={digit.toString()}
-              />
-            ))}
-          </div>
-          <div className="modifiers subgrid">
-            <Button
-              onClick={tryCatcher(this.handleACClick)}
-              className="modifier keypad"
-              text="AC"
-            />
-          </div>
-          <div className="operators subgrid">
-            {OPERATORS.map((operator) => (
-              <Button
-                key={operator}
-                onClick={tryCatcher(this.handleOperatorClick)}
-                className="operator keypad"
-                text={operator}
-              />
-            ))}
-            <Button
-              onClick={tryCatcher(this.handleEqualClick)}
-              className="operator keypad"
-              text={EQUAL}
-            />
-          </div>
+          <Keypad
+            className="digits flex"
+            keyClassName="digit keypad"
+            keypad={DIGITS.ORDERED_LIST}
+            onClick={tryCatcher(this.handleDigitClick)}
+          />
+          <Keypad
+            className="modifiers subgrid"
+            keyClassName="modifier keypad"
+            keypad={MODIFIERS.ORDERED_LIST}
+            onClick={tryCatcher(this.handleACClick)}
+          />
+          <Keypad
+            className="operators subgrid"
+            keyClassName="operator keypad"
+            keypad={OPERATORS.ORDERED_LIST}
+            onClick={tryCatcher(this.handleOperatorClick)}
+          />
         </div>
       </div>
     );
   }
 }
+
+App.propTypes = {
+  store: PropTypes.shape({
+    key: PropTypes.string,
+    save: PropTypes.func,
+    load: PropTypes.func,
+  }),
+};
