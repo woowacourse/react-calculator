@@ -5,10 +5,16 @@ export default class Calculator extends Component {
   constructor() {
     super();
 
+    const {
+      prevNumber = 0,
+      nextNumber = null,
+      operator = '',
+    } = JSON.parse(localStorage.getItem('storedOperation')) ?? {};
+
     this.state = {
-      prevNumber: Number(localStorage.getItem('result')) ?? 0,
-      nextNumber: null,
-      operator: '',
+      prevNumber: Number(prevNumber),
+      nextNumber: Number(nextNumber),
+      operator: operator,
     };
   }
 
@@ -28,9 +34,7 @@ export default class Calculator extends Component {
   };
 
   saveResult = () => {
-    const result =
-      this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber;
-    localStorage.setItem('result', result);
+    localStorage.setItem('storedOperation', JSON.stringify(this.state));
   };
 
   changeNumber = (e) => {
