@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Digits from './components/digits.jsx';
 import Operations from './components/operations.jsx';
+import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
 
 class App extends Component {
   constructor(props) {
@@ -20,7 +21,9 @@ class App extends Component {
       const secondNumberResult = this.state.secondNumber + number;
       this.setState({
         secondNumber:
-          this.state.secondNumber.length === 3 ? this.state.secondNumber : secondNumberResult,
+          this.state.secondNumber.length === MAX_NUMBER_LENGTH
+            ? this.state.secondNumber
+            : secondNumberResult,
       });
       this.renderCalculatorNumber(secondNumberResult);
       return;
@@ -28,7 +31,10 @@ class App extends Component {
 
     const firstNumberResult = this.state.firstNumber + number;
     this.setState({
-      firstNumber: this.state.firstNumber.length === 3 ? this.state.firstNumber : firstNumberResult,
+      firstNumber:
+        this.state.firstNumber.length === MAX_NUMBER_LENGTH
+          ? this.state.firstNumber
+          : firstNumberResult,
     });
     this.renderCalculatorNumber(firstNumberResult);
   };
@@ -48,8 +54,8 @@ class App extends Component {
   };
 
   divide = () => {
-    if (this.state.secondNumber === '0') {
-      this.renderCalculatorNumber('오류');
+    if (this.state.secondNumber === INDIVISIBLE_NUMBER) {
+      this.renderCalculatorNumber(RESULT.ERROR_MESSAGE);
       return;
     }
     const result = Math.floor(Number(this.state.firstNumber) / Number(this.state.secondNumber));
@@ -66,7 +72,7 @@ class App extends Component {
   };
 
   handleModifierButtonClick = () => {
-    this.renderCalculatorNumber(0);
+    this.renderCalculatorNumber(RESULT.RESET);
     this.setState({
       operation: '',
       firstNumber: '',
