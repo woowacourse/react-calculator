@@ -99,21 +99,11 @@ export default class Calculator extends Component {
           </button>
         </div>
         <div className="operations subgrid">
-          <button className="operation" onClick={this.calculate}>
-            /
-          </button>
-          <button className="operation" onClick={this.calculate}>
-            X
-          </button>
-          <button className="operation" onClick={this.calculate}>
-            -
-          </button>
-          <button className="operation" onClick={this.calculate}>
-            +
-          </button>
-          <button className="operation" onClick={this.calculate}>
-            =
-          </button>
+          {['/', 'X', '-', '+', '='].map((operator, idx) => (
+            <button key={idx} className="operation" onClick={this.calculate}>
+              {operator}
+            </button>
+          ))}
         </div>
       </div>
     );
