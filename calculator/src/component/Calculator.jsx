@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import './Calculator.css';
 import { calculator } from '../domain/calculator';
+import { CALCULATOR, ERROR_MESSAGE, LOCAL_STORAGE_KEY } from '../constant';
 export default class Calculator extends Component {
   constructor() {
     super();
@@ -9,7 +10,7 @@ export default class Calculator extends Component {
       prevNumber = 0,
       nextNumber = null,
       operator = '',
-    } = JSON.parse(localStorage.getItem('storedOperation')) ?? {};
+    } = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) ?? {};
 
     this.state = {
       prevNumber: Number(prevNumber),
@@ -34,7 +35,7 @@ export default class Calculator extends Component {
   };
 
   saveResult = () => {
-    localStorage.setItem('storedOperation', JSON.stringify(this.state));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state));
   };
 
   changeNumber = (e) => {
@@ -43,7 +44,7 @@ export default class Calculator extends Component {
     }
 
     this.setState({
-      nextNumber: this.state.nextNumber * 10 + Number(e.target.textContent),
+      nextNumber: this.state.nextNumber * CALCULATOR.UNIT + Number(e.target.textContent),
     });
   };
 
@@ -87,11 +88,17 @@ export default class Calculator extends Component {
       this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber;
     return (
       <div className="calculator">
-        <h1 id="total">{Number.isFinite(this.state.prevNumber) ? result : '오류'}</h1>
+        <h1 id="total">
+          {Number.isFinite(this.state.prevNumber) ? result : ERROR_MESSAGE.INFINITY_ERROR}
+        </h1>
         <div className="digits flex">
-          {new Array(10).fill().map((_, idx) => (
-            <button className="digit" key={9 - idx} onClick={this.changeNumber}>
-              {9 - idx}
+          {new Array(CALCULATOR.MAX_NUMBER + 1).fill().map((_, idx) => (
+            <button
+              className="digit"
+              key={CALCULATOR.MAX_NUMBER - idx}
+              onClick={this.changeNumber}
+            >
+              {CALCULATOR.MAX_NUMBER - idx}
             </button>
           ))}
         </div>
@@ -101,7 +108,7 @@ export default class Calculator extends Component {
           </button>
         </div>
         <div className="operations subgrid">
-          {['/', 'X', '-', '+', '='].map((operator, idx) => (
+          {[...CALCULATOR.OPERATOR].map((operator, idx) => (
             <button key={idx} className="operation" onClick={this.calculate}>
               {operator}
             </button>
