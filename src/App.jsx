@@ -22,12 +22,12 @@ class App extends Component {
   constructor() {
     super();
 
-    this.totalRef = React.createRef();
+    this.expressionRef = React.createRef();
     this.state = {
       firstOperand: 0,
       secondOperand: 0,
       operator: '',
-      result: 0,
+      calculationResult: 0,
     };
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
@@ -36,17 +36,22 @@ class App extends Component {
 
   componentDidMount() {
     if (storage.get(CALCULATOR_DATA_KEY)) {
-      const { firstOperand, secondOperand, operator, result, lastResult } =
-        storage.get(CALCULATOR_DATA_KEY);
+      const {
+        firstOperand,
+        secondOperand,
+        operator,
+        calculationResult,
+        lastExpression,
+      } = storage.get(CALCULATOR_DATA_KEY);
 
       this.setState({
         firstOperand,
         secondOperand,
         operator,
-        result,
+        calculationResult,
       });
 
-      this.totalRef.current.textContent = lastResult ?? 0;
+      this.expressionRef.current.textContent = lastExpression ?? 0;
     }
   }
 
@@ -56,20 +61,20 @@ class App extends Component {
   };
 
   handleUnload = () => {
-    const lastResult = Number(this.totalRef.current.textContent);
-    storage.set(CALCULATOR_DATA_KEY, { ...this.state, lastResult });
+    const lastExpression = Number(this.expressionRef.current.textContent);
+    storage.set(CALCULATOR_DATA_KEY, { ...this.state, lastExpression });
   };
 
   handleDigitClick = (e) => {
-    const total = this.totalRef.current.textContent;
+    const expression = this.expressionRef.current.textContent;
     const digit = e.target.textContent;
 
-    if (isArithmeticOperator(total) || total === '0') {
-      this.totalRef.current.textContent = digit;
+    if (isArithmeticOperator(expression) || expression === '0') {
+      this.expressionRef.current.textContent = digit;
       return;
     }
 
-    this.totalRef.current.textContent += digit;
+    this.expressionRef.current.textContent += digit;
   };
 
   handleModifierClick = (e) => {
@@ -78,10 +83,10 @@ class App extends Component {
 
   handleOperationClick = (e) => {
     const operation = e.target.textContent;
-    const total = this.totalRef.current.textContent;
+    const expression = this.expressionRef.current.textContent;
 
     try {
-      validateOperatorIsDuplicated(total);
+      validateOperatorIsDuplicated(expression);
     } catch ({ message }) {
       alert(message);
       this.initialize();
@@ -90,46 +95,48 @@ class App extends Component {
 
     if (operation === OPERATOR.EQUAL) {
       const { operator, firstOperand } = this.state;
-      const result = this.calculate(operator, {
+      const calculationResult = this.calculate(operator, {
         firstOperand,
-        total: Number(total),
+        secondOperand: Number(expression),
       });
 
-      this.totalRef.current.textContent = result;
+      this.expressionRef.current.textContent = calculationResult;
       this.setState((state) => ({
         ...state,
-        secondOperand: Number(total),
-        result,
+        secondOperand: Number(expression),
+        calculationResult,
       }));
 
       return;
     }
 
-    this.totalRef.current.textContent = operation;
+    this.expressionRef.current.textContent = operation;
     this.setState((state) => ({
       ...state,
-      firstOperand: Number(total),
+      firstOperand: Number(expression),
       operator: operation,
     }));
   };
 
   initialize() {
-    this.totalRef.current.textContent = 0;
+    this.expressionRef.current.textContent = 0;
     this.setState({
       firstOperand: 0,
       secondOperand: 0,
       operator: '',
-      result: 0,
+      calculationResult: 0,
     });
   }
 
-  calculate(operator, { firstOperand, total }) {
+  calculate(operator, { firstOperand, secondOperand }) {
     const operation = {
-      [OPERATOR.PLUS]: () => firstOperand + total,
-      [OPERATOR.MINUS]: () => firstOperand - total,
-      [OPERATOR.MULTIPLY]: () => firstOperand * total,
+      [OPERATOR.PLUS]: () => firstOperand + secondOperand,
+      [OPERATOR.MINUS]: () => firstOperand - secondOperand,
+      [OPERATOR.MULTIPLY]: () => firstOperand * secondOperand,
       [OPERATOR.DIVIDE]: () =>
-        total === 0 ? INFINITY_ERROR_TEXT : toFixedValue(firstOperand / total),
+        secondOperand === 0
+          ? INFINITY_ERROR_TEXT
+          : toFixedValue(firstOperand / secondOperand),
     };
 
     return operation[operator]();
@@ -140,7 +147,7 @@ class App extends Component {
       <>
         <h1>⚛️ React 계산기 🧮</h1>
         <div className="calculator">
-          <h2 id="total" ref={this.totalRef}>
+          <h2 id="expression" ref={this.expressionRef}>
             0
           </h2>
           <div className="digits flex" onClick={this.handleDigitClick}>

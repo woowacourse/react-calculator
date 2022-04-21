@@ -18,7 +18,7 @@ body {
   display: grid;
 
   grid-template-areas:
-    'total total total total'
+    'expression expression expression expression'
     'modif modif modif oper'
     'digit digit digit oper'
     'digit digit digit oper'
@@ -46,8 +46,8 @@ button {
   background-color: #efefef;
 }
 
-#total {
-  grid-area: total;
+#expression {
+  grid-area: expression;
   background-color: #333;
   color: white;
   margin: 0;
