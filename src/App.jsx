@@ -6,14 +6,17 @@ const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 const OPERATORS = ['/', 'X', '-', '+'];
 const EQUAL = '=';
 
-const calculate = (expression) => {
-  const operator = Array.from(expression).find((char) =>
-    OPERATORS.includes(char)
-  );
-  const [firstNumber, secondNumber] = expression
-    .split(operator)
-    .map((numberString) => Number(numberString));
+const tryCatcher = (func) => {
+  return (...args) => {
+    try {
+      func(...args);
+    } catch (error) {
+      alert(error);
+    }
+  };
+};
 
+const calculate = (firstNumber, secondNumber, operator) => {
   switch (operator) {
     case '+':
       return firstNumber + secondNumber;
@@ -26,52 +29,99 @@ const calculate = (expression) => {
         ? Infinity
         : parseInt(firstNumber / secondNumber, 10);
     default:
-      throw new Error('error');
+      throw new Error('calculate');
   }
+};
+
+const appendCharToLastElem = (list, char) => {
+  const listClone = [...list];
+  const lastIndex = listClone.length - 1;
+
+  listClone[lastIndex] += char;
+
+  return listClone;
 };
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      expression: '',
-      result: '0',
+      numberStrings: [''],
+      operator: null,
+      displayedText: '',
     };
 
     this.handleDigitClick = this.handleDigitClick.bind(this);
-    this.handleOperationClick = this.handleOperationClick.bind(this);
+    this.handleOperatorClick = this.handleOperatorClick.bind(this);
     this.handleEqualClick = this.handleEqualClick.bind(this);
     this.handleACClick = this.handleACClick.bind(this);
   }
 
   handleDigitClick(digit) {
-    this.setState((prevState) => ({
-      expression: `${prevState.expression}${digit}`,
-      result: `${prevState.expression}${digit}`,
-    }));
+    const { numberStrings } = this.state;
+
+    if (numberStrings[numberStrings.length - 1].length >= 3) {
+      throw new Error('error');
+    }
+
+    const updatedNumberStrings = appendCharToLastElem(
+      numberStrings,
+      digit.toString()
+    );
+
+    this.setState({
+      numberStrings: updatedNumberStrings,
+      displayedText: updatedNumberStrings[updatedNumberStrings.length - 1],
+    });
   }
 
-  handleOperationClick(operation) {
-    this.setState((prevState) => ({
-      expression: `${prevState.expression}${operation}`,
-      result: `${prevState.expression}${operation}`,
-    }));
+  handleOperatorClick(operator) {
+    const { numberStrings } = this.state;
+
+    if (
+      numberStrings.length >= 2 &&
+      numberStrings[numberStrings.length - 1] !== ''
+    ) {
+      throw new Error('error');
+    }
+
+    this.setState((prevState) => {
+      const prevNumberStrings = prevState.numberStrings;
+
+      if (prevNumberStrings[prevNumberStrings.length - 1] !== '') {
+        prevNumberStrings.push('');
+      }
+
+      return {
+        numberStrings: prevNumberStrings,
+        operator,
+      };
+    });
   }
 
   handleEqualClick() {
-    const { expression } = this.state;
-    const result = calculate(expression);
+    const {
+      numberStrings: [firstNumber, secondNumber],
+      operator,
+    } = this.state;
+    const result = calculate(
+      Number(firstNumber),
+      Number(secondNumber),
+      operator
+    );
 
     this.setState({
-      expression: '',
-      result: result === Infinity ? '오류' : result.toString(),
+      numberStrings: [''],
+      operator: null,
+      displayedText: result === Infinity ? '오류' : result.toString(),
     });
   }
 
   handleACClick() {
     this.setState({
-      expression: '',
-      result: '0',
+      numberStrings: [''],
+      operator: null,
+      displayedText: '',
     });
   }
 
@@ -79,36 +129,36 @@ export default class App extends Component {
     return (
       <div className="App">
         <div className="calculator">
-          <h1 id="total">{this.state.result}</h1>
+          <h1 id="total">{this.state.displayedText}</h1>
           <div className="digits flex">
             {DIGITS.map((digit) => (
               <Button
                 key={digit}
                 className="digit keypad"
-                onClick={this.handleDigitClick}
+                onClick={tryCatcher(this.handleDigitClick)}
                 text={digit.toString()}
               />
             ))}
           </div>
           <div className="modifiers subgrid">
             <Button
-              onClick={this.handleACClick}
+              onClick={tryCatcher(this.handleACClick)}
               className="modifier keypad"
               text="AC"
             />
           </div>
-          <div className="operations subgrid">
+          <div className="operators subgrid">
             {OPERATORS.map((operator) => (
               <Button
                 key={operator}
-                onClick={this.handleOperationClick}
-                className="operation keypad"
+                onClick={tryCatcher(this.handleOperatorClick)}
+                className="operator keypad"
                 text={operator}
               />
             ))}
             <Button
-              onClick={this.handleEqualClick}
-              className="operation keypad"
+              onClick={tryCatcher(this.handleEqualClick)}
+              className="operator keypad"
               text={EQUAL}
             />
           </div>
