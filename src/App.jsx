@@ -43,7 +43,7 @@ class App extends Component {
         result,
       });
 
-      this.totalRef.current.textContent = lastResult;
+      this.totalRef.current.textContent = lastResult ?? 0;
     }
   }
 
