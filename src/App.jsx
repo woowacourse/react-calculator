@@ -1,12 +1,27 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import './App.css';
 import React, { Component } from 'react';
 import Button from './components/Button';
+import './App.css';
 
 class App extends Component {
   constructor() {
     super();
+
+    window.addEventListener('beforeunload', (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    });
+
+    window.addEventListener('unload', () => {
+      const lastResult = this.totalRef.current.textContent;
+
+      localStorage.setItem(
+        'calculatorData',
+        JSON.stringify({ ...this.state, lastResult })
+      );
+    });
+
     this.totalRef = React.createRef();
     this.state = {
       firstOperand: 0,
@@ -16,9 +31,20 @@ class App extends Component {
     };
   }
 
-  // for error
   componentDidMount() {
-    console.log('test', this.state);
+    if (localStorage.getItem('calculatorData')) {
+      const { firstOperand, secondOperand, operator, result, lastResult } =
+        JSON.parse(localStorage.getItem('calculatorData'));
+
+      this.setState({
+        firstOperand,
+        secondOperand,
+        operator,
+        result,
+      });
+
+      this.totalRef.current.textContent = lastResult;
+    }
   }
 
   componentDidUpdate() {
@@ -61,7 +87,7 @@ class App extends Component {
 
     const list = ['/', 'X', '-', '+'];
     if (list.includes(total)) {
-      alert('경고');
+      alert('2번째 피연산자를 입력해주세요.');
 
       this.totalRef.current.textContent = 0;
 
