@@ -6,7 +6,7 @@ class Operations extends Component {
   };
 
   handleEqualityButtonClick = () => {
-    const { operation } = this.props;
+    const { operation, resetState } = this.props;
     switch (operation) {
       case '+':
         this.props.add();
@@ -23,6 +23,7 @@ class Operations extends Component {
       default:
         break;
     }
+    resetState();
   };
 
   render() {

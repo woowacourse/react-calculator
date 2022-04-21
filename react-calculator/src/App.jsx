@@ -86,6 +86,10 @@ class App extends Component {
 
   handleModifierButtonClick = () => {
     this.renderCalculatorNumber(RESULT.RESET);
+    this.resetState();
+  };
+
+  resetState = () => {
     this.setState({
       operation: '',
       firstNumber: '',
@@ -113,6 +117,7 @@ class App extends Component {
             minus={this.minus}
             divide={this.divide}
             multiply={this.multiply}
+            resetState={this.resetState}
           />
         </div>
       </div>
