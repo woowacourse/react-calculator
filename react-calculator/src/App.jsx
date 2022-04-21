@@ -7,13 +7,26 @@ import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.myRef = React.createRef();
+    this.resultRef = React.createRef();
   }
 
   state = {
     operation: '',
     firstNumber: '',
     secondNumber: '',
+    result: '',
+  };
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.onBeforeUnload);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+  }
+
+  onBeforeUnload = (e) => {
+    e.preventDefault();
   };
 
   handleDigit = (number) => {
@@ -67,8 +80,9 @@ class App extends Component {
     this.renderCalculatorNumber(result);
   };
 
-  renderCalculatorNumber = (number) => {
-    this.myRef.current.textContent = number;
+  renderCalculatorNumber = (result) => {
+    this.setState({ result });
+    this.resultRef.current.textContent = result;
   };
 
   handleModifierButtonClick = () => {
@@ -84,7 +98,7 @@ class App extends Component {
     return (
       <div id="app">
         <div className="calculator">
-          <h1 id="calculator-number" ref={this.myRef}>
+          <h1 id="calculator-number" ref={this.resultRef}>
             0
           </h1>
           <Digits handleDigit={this.handleDigit} />
@@ -106,5 +120,4 @@ class App extends Component {
     );
   }
 }
-
 export default App;
