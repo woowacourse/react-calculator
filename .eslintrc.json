@@ -8,10 +8,10 @@
   "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
     "airbnb",
+    "plugin:react/recommended",
     "plugin:import/recommended",
     "plugin:prettier/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier/@typescript-eslint"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parserOptions": {
     "sourceType": "module",
@@ -26,6 +26,9 @@
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "class-methods-use-this": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "prettier/prettier": ["error"]
+    "prettier/prettier": ["error"],
+    "react/jsx-filename-extension":["warn",{"extensions":[".tsx"]}],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"]
   }
 }
