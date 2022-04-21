@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable class-methods-use-this */
@@ -6,24 +7,48 @@ import React, { Component } from 'react';
 export default class Calculator extends Component {
   constructor() {
     super();
+
     this.state = {
       result: '0',
+      operand: ['', ''],
+      operator: '',
+      index: 0,
     };
   }
 
   componentDidMount() {}
 
-  handleClickDigit(i) {
-    const currentNumber = this.state.result;
-
-    if (currentNumber === '0' || currentNumber === '오류') {
-      this.setState({ result: i });
+  handleClickDigit(digit) {
+    if (+(this.state.operand[this.state.index] + digit) >= 1000) {
+      alert('숫자는 한번에 최대 3자리 수까지 입력 가능합니다.');
       return;
     }
-    this.setState(prevState => ({ result: prevState.result + i }));
+
+    switch (this.state.index) {
+      case 0:
+        this.setState(prevState => ({
+          operand: [String(+(prevState.operand[0] + digit)), ''],
+        }));
+        break;
+
+      case 1:
+        this.setState(prevState => ({
+          operand: [String(+prevState.operand[0]), String(+(prevState.operand[1] + digit))],
+        }));
+        break;
+
+      default:
+        break;
+    }
+
+    if (this.state.result === '0' || this.state.result === '오류') {
+      this.setState({ result: digit });
+      return;
+    }
+    this.setState(prevState => ({ result: prevState.result + digit }));
   }
 
-  handleClickOperation(operation) {
+  handleClickOperation(operator) {
     const lastResult = this.state.result[this.state.result.length - 1];
     const numberReg = /^[0-9]+$/;
     const { result } = this.state;
@@ -32,7 +57,7 @@ export default class Calculator extends Component {
       return;
     }
 
-    if (operation === '=') {
+    if (operator === '=') {
       if (numberReg.test(result)) {
         return;
       }
@@ -43,20 +68,14 @@ export default class Calculator extends Component {
         return;
       }
 
-      for (let i = 0; i < result.length; i += 1) {
-        if (['+', '-', 'X', '/'].includes(result[i])) {
-          const operator = result[i];
-          const operand = result.split(operator);
-          this.calculate(operand, operator);
-          return;
-        }
-      }
+      this.calculate(this.state.operand, this.state.operator);
+      return;
     }
 
     // 마지막 입력값 연산자 중복 입력
     if (['+', '-', 'X', '/'].includes(lastResult)) {
       this.setState(preState => ({
-        result: preState.result.substr(0, preState.result.length - 1) + operation,
+        result: preState.result.substr(0, preState.result.length - 1) + operator,
       }));
       return;
     }
@@ -65,15 +84,19 @@ export default class Calculator extends Component {
     if (!numberReg.test(result)) {
       return;
     }
-    this.setState(preState => ({ result: preState.result + operation }));
+    this.setState(preState => ({ result: preState.result + operator }));
+    this.setState({ operator });
+    this.setState({ index: 1 });
   }
 
   handleClickModifier() {
     this.setState({ result: '0' });
+    this.setState({ operand: ['', ''] });
+    this.setState({ operator: '' });
+    this.setState({ index: 0 });
   }
 
   calculate(operand, operator) {
-    console.log(operand, operator);
     let result = null;
     switch (operator) {
       case '+':
@@ -97,7 +120,10 @@ export default class Calculator extends Component {
       return;
     }
 
-    this.setState({ result: String(result) });
+    this.setState({ result });
+    this.setState({ operand: [String(result), ''] });
+    this.setState({ operator: '' });
+    this.setState({ index: 0 });
   }
 
   renderDigit(i) {
@@ -116,8 +142,14 @@ export default class Calculator extends Component {
     );
   }
 
-  renderResult(result) {
-    return <h1 id="total">{result}</h1>;
+  renderResult() {
+    return (
+      <h1 id="total">
+        {this.state.operand[0]}
+        {this.state.operator}
+        {this.state.operand[1]}
+      </h1>
+    );
   }
 
   renderOperation(operation) {
@@ -135,18 +167,18 @@ export default class Calculator extends Component {
   render() {
     return (
       <div className="calculator">
-        {this.renderResult(this.state.result)}
+        {this.renderResult()}
         <div className="digits flex">
-          {this.renderDigit('0')}
-          {this.renderDigit('1')}
+          {this.renderDigit('9')}
+          {this.renderDigit('8')}
+          {this.renderDigit('7')}
+          {this.renderDigit('6')}
+          {this.renderDigit('5')}
+          {this.renderDigit('4')}
           {this.renderDigit('3')}
           {this.renderDigit('2')}
-          {this.renderDigit('4')}
-          {this.renderDigit('5')}
-          {this.renderDigit('6')}
-          {this.renderDigit('7')}
-          {this.renderDigit('8')}
-          {this.renderDigit('9')}
+          {this.renderDigit('1')}
+          {this.renderDigit('0')}
         </div>
         <div className="modifiers subgrid">{this.renderModifier()}</div>
         <div className="operations subgrid">
