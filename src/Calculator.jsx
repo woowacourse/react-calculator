@@ -5,7 +5,6 @@ export default class Calculator extends Component {
     super();
 
     this.state = {
-      result: '0',
       operand: ['0', ''],
       operator: '',
       index: 0,
@@ -21,7 +20,6 @@ export default class Calculator extends Component {
     const localState = JSON.parse(localStorage.getItem('state'));
 
     if (localState) {
-      this.setState({ result: localState.result });
       this.setState({ operand: localState.operand });
       this.setState({ operator: localState.operator });
       this.setState({ index: localState.index });
@@ -33,6 +31,11 @@ export default class Calculator extends Component {
   }
 
   handleClickDigit(digit) {
+    if (this.state.operand[0] === '오류') {
+      alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
+      return;
+    }
+
     if (+(this.state.operand[this.state.index] + digit) >= 1000) {
       alert('숫자는 한번에 최대 3자리 수까지 입력 가능합니다.');
       return;
@@ -54,61 +57,37 @@ export default class Calculator extends Component {
       default:
         break;
     }
-
-    if (this.state.result === '0' || this.state.result === '오류') {
-      this.setState({ result: digit });
-      return;
-    }
-    this.setState(prevState => ({ result: prevState.result + digit }));
   }
 
   handleClickOperation(operator) {
-    const numberReg = /^[0-9]+$/;
-    const { result } = this.state;
-    const lastResult = result[result.length - 1];
-
-    if (result === '오류') {
+    if (this.state.operand[0] === '오류') {
+      alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
       return;
     }
 
     if (operator === '=') {
-      if (numberReg.test(result)) {
-        return;
-      }
-      if (['+', 'X', '/'].includes(result[0])) {
-        return;
-      }
-      if (['+', '-', 'X', '/'].includes(lastResult)) {
-        return;
-      }
-
       this.calculate(this.state.operand, this.state.operator);
-      return;
-    }
-
-    if (['+', '-', 'X', '/'].includes(lastResult)) {
-      this.setState(preState => ({
-        result: preState.result.substr(0, preState.result.length - 1) + operator,
-      }));
       return;
     }
 
     if (this.state.operator) {
       return;
     }
-    this.setState(preState => ({ result: preState.result + operator }));
+
     this.setState({ operator });
     this.setState({ index: 1 });
   }
 
   handleClickModifier() {
-    this.setState({ result: '0' });
     this.setState({ operand: ['0', ''] });
     this.setState({ operator: '' });
     this.setState({ index: 0 });
   }
 
   calculate(operand, operator) {
+    if (!this.state.operator) {
+      return;
+    }
     let result = null;
     switch (operator) {
       case '+':
@@ -128,11 +107,11 @@ export default class Calculator extends Component {
     }
 
     if (result === Infinity) {
-      this.setState({ result: '오류' });
+      this.setState({ operand: ['오류', ''] });
+      this.setState({ operator: '' });
       return;
     }
 
-    this.setState({ result });
     this.setState({ operand: [String(result), ''] });
     this.setState({ operator: '' });
     this.setState({ index: 0 });
