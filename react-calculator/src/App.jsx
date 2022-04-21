@@ -61,6 +61,15 @@ class App extends Component {
     this.myRef.current.textContent = number;
   };
 
+  handleModifierButtonClick = () => {
+    this.renderCalculatorNumber(0);
+    this.setState({
+      operation: '',
+      firstNumber: '',
+      secondNumber: '',
+    });
+  };
+
   render() {
     return (
       <div id="app">
@@ -70,7 +79,9 @@ class App extends Component {
           </h1>
           <Digits handleDigit={this.handleDigit} />
           <div className="modifiers subgrid">
-            <button className="modifier">AC</button>
+            <button className="modifier" onClick={this.handleModifierButtonClick}>
+              AC
+            </button>
           </div>
           <Operations
             operation={this.state.operation}
