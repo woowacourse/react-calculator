@@ -14,7 +14,7 @@ export default class Calculator extends Component {
 
     this.state = {
       prevNumber: Number(prevNumber),
-      nextNumber: Number(nextNumber),
+      nextNumber: nextNumber && Number(nextNumber),
       operator: operator,
     };
   }
