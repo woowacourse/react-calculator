@@ -55,6 +55,21 @@ export default class App extends Component {
     this.handleOperatorClick = this.handleOperatorClick.bind(this);
     this.handleEqualClick = this.handleEqualClick.bind(this);
     this.handleACClick = this.handleACClick.bind(this);
+    this.confirmLeave = this.confirmLeave.bind(this);
+    this.handleUnload = this.handleUnload.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.confirmLeave);
+    window.addEventListener('unload', this.handleUnload);
+
+    const state = JSON.parse(localStorage.getItem('calculator'));
+
+    this.setState(state);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.confirmLeave);
   }
 
   handleDigitClick(digit) {
@@ -123,6 +138,18 @@ export default class App extends Component {
       operator: null,
       displayedText: '0',
     });
+  }
+
+  handleUnload() {
+    localStorage.setItem('calculator', JSON.stringify(this.state));
+  }
+
+  confirmLeave(e) {
+    e.preventDefault();
+
+    e.returnValue = '';
+
+    return '';
   }
 
   render() {
