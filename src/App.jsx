@@ -3,33 +3,24 @@
 import React, { Component } from 'react';
 import Button from './components/Button';
 import './App.css';
+
+import storage from './storage/storage';
 import {
-  EMPTY_SECOND_OPERAND_ERROR_MESSAGE,
   INFINITY_ERROR_TEXT,
   CALCULATOR_DATA_KEY,
   OPERATOR,
-  FIXED_POINT_LENGTH,
   CALCULATOR_NUMBER_LIST,
   CALCULATOR_OPERATOR_LIST,
 } from './constants';
+import {
+  validateOperatorIsDuplicated,
+  isArithmeticOperator,
+  toFixedValue,
+} from './utils';
 
 class App extends Component {
   constructor() {
     super();
-
-    window.addEventListener('beforeunload', (e) => {
-      e.preventDefault();
-      e.returnValue = '';
-    });
-
-    window.addEventListener('unload', () => {
-      const lastResult = Number(this.totalRef.current.textContent);
-
-      localStorage.setItem(
-        CALCULATOR_DATA_KEY,
-        JSON.stringify({ ...this.state, lastResult })
-      );
-    });
 
     this.totalRef = React.createRef();
     this.state = {
@@ -38,12 +29,15 @@ class App extends Component {
       operator: '',
       result: 0,
     };
+
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+    window.addEventListener('unload', this.handleUnload);
   }
 
   componentDidMount() {
-    if (localStorage.getItem(CALCULATOR_DATA_KEY)) {
+    if (storage.get(CALCULATOR_DATA_KEY)) {
       const { firstOperand, secondOperand, operator, result, lastResult } =
-        JSON.parse(localStorage.getItem(CALCULATOR_DATA_KEY));
+        storage.get(CALCULATOR_DATA_KEY);
 
       this.setState({
         firstOperand,
@@ -56,23 +50,21 @@ class App extends Component {
     }
   }
 
+  handleBeforeUnload = (e) => {
+    e.preventDefault();
+    e.returnValue = '';
+  };
+
+  handleUnload = () => {
+    const lastResult = Number(this.totalRef.current.textContent);
+    storage.set(CALCULATOR_DATA_KEY, { ...this.state, lastResult });
+  };
+
   handleDigitClick = (e) => {
     const total = this.totalRef.current.textContent;
     const digit = e.target.textContent;
 
-    const list = [
-      OPERATOR.DIVIDE,
-      OPERATOR.MULTIPLY,
-      OPERATOR.MINUS,
-      OPERATOR.PLUS,
-    ];
-
-    if (list.includes(total)) {
-      this.totalRef.current.textContent = digit;
-      return;
-    }
-
-    if (total === '0') {
+    if (isArithmeticOperator(total) || total === '0') {
       this.totalRef.current.textContent = digit;
       return;
     }
@@ -81,73 +73,32 @@ class App extends Component {
   };
 
   handleModifierClick = (e) => {
-    this.totalRef.current.textContent = 0;
-
-    this.setState({
-      firstOperand: 0,
-      secondOperand: 0,
-      operator: '',
-      result: 0,
-    });
+    this.initialize();
   };
 
   handleOperationClick = (e) => {
     const operation = e.target.textContent;
-    let total = this.totalRef.current.textContent;
+    const total = this.totalRef.current.textContent;
 
-    const list = [
-      OPERATOR.DIVIDE,
-      OPERATOR.MULTIPLY,
-      OPERATOR.MINUS,
-      OPERATOR.PLUS,
-    ];
-
-    if (list.includes(total)) {
-      alert(EMPTY_SECOND_OPERAND_ERROR_MESSAGE);
-
-      this.totalRef.current.textContent = 0;
-
-      this.setState({
-        firstOperand: 0,
-        secondOperand: 0,
-        operator: '',
-        result: 0,
-      });
-
+    try {
+      validateOperatorIsDuplicated(total);
+    } catch ({ message }) {
+      alert(message);
+      this.initialize();
       return;
     }
 
-    total = Number(total);
-
     if (operation === OPERATOR.EQUAL) {
       const { operator, firstOperand } = this.state;
-      let result;
-
-      switch (operator) {
-        case OPERATOR.PLUS:
-          result = firstOperand + total;
-          break;
-        case OPERATOR.MINUS:
-          result = firstOperand - total;
-          break;
-        case OPERATOR.MULTIPLY:
-          result = firstOperand * total;
-          break;
-        case OPERATOR.DIVIDE:
-          result =
-            total === 0
-              ? INFINITY_ERROR_TEXT
-              : Number((firstOperand / total).toFixed(FIXED_POINT_LENGTH));
-          break;
-        default:
-          break;
-      }
+      const result = this.calculate(operator, {
+        firstOperand,
+        total: Number(total),
+      });
 
       this.totalRef.current.textContent = result;
-
       this.setState((state) => ({
         ...state,
-        secondOperand: total,
+        secondOperand: Number(total),
         result,
       }));
 
@@ -155,13 +106,34 @@ class App extends Component {
     }
 
     this.totalRef.current.textContent = operation;
-
     this.setState((state) => ({
       ...state,
       firstOperand: Number(total),
       operator: operation,
     }));
   };
+
+  initialize() {
+    this.totalRef.current.textContent = 0;
+    this.setState({
+      firstOperand: 0,
+      secondOperand: 0,
+      operator: '',
+      result: 0,
+    });
+  }
+
+  calculate(operator, { firstOperand, total }) {
+    const operation = {
+      [OPERATOR.PLUS]: () => firstOperand + total,
+      [OPERATOR.MINUS]: () => firstOperand - total,
+      [OPERATOR.MULTIPLY]: () => firstOperand * total,
+      [OPERATOR.DIVIDE]: () =>
+        total === 0 ? INFINITY_ERROR_TEXT : toFixedValue(firstOperand / total),
+    };
+
+    return operation[operator]();
+  }
 
   render() {
     return (
@@ -183,8 +155,8 @@ class App extends Component {
             className="operations subgrid"
             onClick={this.handleOperationClick}
           >
-            {CALCULATOR_OPERATOR_LIST.map((operator) => (
-              <Button className="operation" text={operator} />
+            {CALCULATOR_OPERATOR_LIST.map((operator, index) => (
+              <Button key={index} className="operation" text={operator} />
             ))}
           </div>
         </div>
