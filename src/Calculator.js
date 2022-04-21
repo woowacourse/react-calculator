@@ -3,20 +3,34 @@ import OperationButton from './OperationButton';
 import './Calculator.css';
 
 class Calculator extends Component {
+  MAX_NUMBER = 1000;
+  DIGIT_LIST = Array.from({ length: 10 }, (_, index) => 9 - index);
+  OPERATION_LIST = ['/', 'X', '-', '+'];
+
   constructor(props) {
     super(props);
 
-    const savedState = localStorage.getItem('CALCULATOR_STATE');
+    this.state = this.initState();
+  }
 
-    if (savedState) {
-      this.state = JSON.parse(savedState);
-      return;
-    }
-
-    this.state = {
+  get defaultState() {
+    return {
       numbers: [0, 0],
       operator: '',
     };
+  }
+
+  initState() {
+    const savedState = localStorage.getItem('CALCULATOR_STATE');
+    if (savedState) {
+      return JSON.parse(savedState);
+    }
+
+    return this.defaultState;
+  }
+
+  #isExceedMaxNumber(number) {
+    return number >= this.MAX_NUMBER && number !== Infinity;
   }
 
   componentDidMount() {
@@ -34,6 +48,10 @@ class Calculator extends Component {
     localStorage.setItem('CALCULATOR_STATE', JSON.stringify(this.state));
   };
 
+  onClickAllClear = () => {
+    this.setState(this.defaultState);
+  };
+
   onClickDigit = ({ target }) => {
     const numberIndex = this.state.operator === '' ? 0 : 1;
     const newStateNumbers = [...this.state.numbers];
@@ -41,14 +59,11 @@ class Calculator extends Component {
 
     if (newStateNumbers[numberIndex] === Infinity) {
       alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
-      this.setState({
-        numbers: [0, 0],
-        operator: '',
-      });
+      this.resetState();
       return;
     }
 
-    if (newStateNumbers[numberIndex] >= 1000 && newStateNumbers[numberIndex] !== Infinity) {
+    if (this.#isExceedMaxNumber(newStateNumbers[numberIndex])) {
       alert('숫자는 세 자리까지 입력 가능합니다.');
       return;
     }
@@ -75,13 +90,6 @@ class Calculator extends Component {
     this.setState({ numbers: [resultNumber, 0], operator: '' });
   };
 
-  onClickAllClear = () => {
-    this.setState({
-      numbers: [0, 0],
-      operator: '',
-    });
-  };
-
   setOperator = (operator) => {
     this.setState({ operator });
   };
@@ -91,14 +99,17 @@ class Calculator extends Component {
     let totalNumber = !operator || numbers[1] === 0 ? numbers[0] : numbers[1];
     if (totalNumber === Infinity) totalNumber = '오류';
 
-    const digitList = Array.from({ length: 10 }, (_, index) => 9 - index);
+    const operationButtonProps = {
+      currentOperator: operator,
+      setOperator: this.setOperator,
+    };
 
     return (
       <div className="App">
         <div className="calculator">
           <h1 id="total">{totalNumber}</h1>
           <div className="digits flex">
-            {digitList.map((digit) => (
+            {this.DIGIT_LIST.map((digit) => (
               <button key={digit} className="digit" onClick={this.onClickDigit}>
                 {digit}
               </button>
@@ -110,18 +121,11 @@ class Calculator extends Component {
             </button>
           </div>
           <div className="operations subgrid">
-            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
-              /
-            </OperationButton>
-            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
-              X
-            </OperationButton>
-            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
-              -
-            </OperationButton>
-            <OperationButton currentOperator={operator} setOperator={this.setOperator}>
-              +
-            </OperationButton>
+            {this.OPERATION_LIST.map((operation) => (
+              <OperationButton key={operation} {...operationButtonProps}>
+                {operation}
+              </OperationButton>
+            ))}
             <button className="operation" onClick={this.onClickResult}>
               =
             </button>

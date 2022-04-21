@@ -1,11 +1,13 @@
 html,
-body {
+body,
+#root {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  min-height: 100%;
 }
 
-#app {
+.App {
   height: 100vh;
   display: flex;
   justify-content: center;

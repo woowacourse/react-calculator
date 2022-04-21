@@ -9,7 +9,7 @@ class OperationButton extends Component {
     const { children, currentOperator, setOperator } = this.props;
     return (
       <button
-        className={'operation ' + ((currentOperator === children && 'pressed') || '')}
+        className={'operation' + ((currentOperator === children && ' pressed') || '')}
         onClick={() => {
           setOperator(children);
         }}
