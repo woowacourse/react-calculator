@@ -49,9 +49,9 @@ export default class Calculator extends Component {
   }
 
   handleClickOperation(operator) {
-    const lastResult = this.state.result[this.state.result.length - 1];
     const numberReg = /^[0-9]+$/;
     const { result } = this.state;
+    const lastResult = result[result.length - 1];
 
     if (result === '오류') {
       return;
@@ -61,10 +61,10 @@ export default class Calculator extends Component {
       if (numberReg.test(result)) {
         return;
       }
-      if (['+', '-', 'X', '/'].includes(result[0])) {
+      if (['+', 'X', '/'].includes(result[0])) {
         return;
       }
-      if (['+', '-', 'X', '/'].includes(result[result.length - 1])) {
+      if (['+', '-', 'X', '/'].includes(lastResult)) {
         return;
       }
 
@@ -81,7 +81,7 @@ export default class Calculator extends Component {
     }
 
     // 연산자 2개 이상 추가되지 않도록
-    if (!numberReg.test(result)) {
+    if (this.state.operator) {
       return;
     }
     this.setState(preState => ({ result: preState.result + operator }));
