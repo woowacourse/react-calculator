@@ -48,7 +48,7 @@ export default class App extends Component {
     this.state = {
       numberStrings: [''],
       operator: null,
-      displayedText: '',
+      displayedText: '0',
     };
 
     this.handleDigitClick = this.handleDigitClick.bind(this);
@@ -121,7 +121,7 @@ export default class App extends Component {
     this.setState({
       numberStrings: [''],
       operator: null,
-      displayedText: '',
+      displayedText: '0',
     });
   }
 
