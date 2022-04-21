@@ -4,6 +4,7 @@ import { calculator } from '../domain/calculator';
 export default class Calculator extends Component {
   constructor() {
     super();
+
     this.state = {
       prevNumber: Number(localStorage.getItem('result')) ?? 0,
       nextNumber: null,
@@ -27,16 +28,16 @@ export default class Calculator extends Component {
   };
 
   saveResult = () => {
-    localStorage.setItem(
-      'result',
-      this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber
-    );
+    const result =
+      this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber;
+    localStorage.setItem('result', result);
   };
 
   changeNumber = (e) => {
     if (!Number.isFinite(this.state.prevNumber)) {
       this.initialize();
     }
+
     this.setState({
       nextNumber: this.state.nextNumber * 10 + Number(e.target.textContent),
     });
@@ -44,6 +45,7 @@ export default class Calculator extends Component {
 
   calculate = (e) => {
     if (!Number.isFinite(this.state.prevNumber)) return;
+
     if (this.state.nextNumber === null || this.state.operator === '=') {
       this.setState({ operator: e.target.textContent });
       return;
@@ -77,15 +79,11 @@ export default class Calculator extends Component {
   };
 
   render() {
+    const result =
+      this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber;
     return (
       <div className="calculator">
-        <h1 id="total">
-          {Number.isFinite(this.state.prevNumber)
-            ? this.state.nextNumber === null
-              ? this.state.prevNumber
-              : this.state.nextNumber
-            : '오류'}
-        </h1>
+        <h1 id="total">{Number.isFinite(this.state.prevNumber) ? result : '오류'}</h1>
         <div className="digits flex">
           {new Array(10).fill().map((_, idx) => (
             <button className="digit" key={9 - idx} onClick={this.changeNumber}>
