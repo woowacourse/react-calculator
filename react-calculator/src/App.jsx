@@ -3,30 +3,29 @@ import './App.css';
 import Digits from './components/digits.jsx';
 import Operations from './components/operations.jsx';
 import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
+import store from './utils/store.js';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.resultRef = React.createRef();
+    this.state = {
+      operation: '',
+      firstNumber: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
+      secondNumber: '',
+      result: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
+    };
   }
-
-  state = {
-    operation: '',
-    firstNumber: '',
-    secondNumber: '',
-    result: '',
-  };
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.onBeforeUnload);
-  }
-
   onBeforeUnload = (e) => {
     e.preventDefault();
+    e.returnValue = '';
+    if (this.state.result === '' || this.state.result === RESULT.RESET) return;
+    store.setLocalStorage('prevResult', this.state.result);
   };
 
   handleDigit = (number) => {
@@ -99,7 +98,7 @@ class App extends Component {
       <div id="app">
         <div className="calculator">
           <h1 id="calculator-number" ref={this.resultRef}>
-            0
+            {this.state.result ? this.state.result : 0}
           </h1>
           <Digits handleDigit={this.handleDigit} />
           <div className="modifiers subgrid">
