@@ -16,6 +16,7 @@
 button {
   font-size: 2rem;
   border: 0.5px solid #98999b;
+  cursor: pointer;
 }
 
 .modifiers button {
@@ -70,4 +71,16 @@ button {
 
 .subgrid {
   display: grid;
+}
+
+.modifiers button:focus {
+  background-color: rgb(155, 155, 155);
+}
+
+.operations button:focus {
+  background-color: rgb(255, 188, 0);
+}
+
+button:hover {
+  opacity: 0.7;
 }
