@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import NumberButtons from './NumberButtons';
 import OperatorButtons from './OperandButtons';
-import { expressionStorage } from './store/store';
+import { expressionStorage } from '../store/store';
 import {
   NUMBER_LIMIT,
   ERROR_MSG,
   CONFIRM_MSG,
   OPERATOR,
   OPERATOR_LIST,
-} from './constants/constant';
+} from '../constants/constant';
 import AllClearButton from './AllCearButton';
 import Screen from './Screen';
 class Calculator extends Component {
