@@ -10,13 +10,26 @@ export default class Calculator extends Component {
 
     this.state = {
       result: '0',
-      operand: ['', ''],
+      operand: ['0', ''],
       operator: '',
       index: 0,
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    const localState = JSON.parse(localStorage.getItem('state'));
+
+    if (localState) {
+      this.setState({ result: localState.result });
+      this.setState({ operand: localState.operand });
+      this.setState({ operator: localState.operator });
+      this.setState({ index: localState.index });
+    }
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem('state', JSON.stringify(this.state));
+  }
 
   handleClickDigit(digit) {
     if (+(this.state.operand[this.state.index] + digit) >= 1000) {
@@ -91,7 +104,7 @@ export default class Calculator extends Component {
 
   handleClickModifier() {
     this.setState({ result: '0' });
-    this.setState({ operand: ['', ''] });
+    this.setState({ operand: ['0', ''] });
     this.setState({ operator: '' });
     this.setState({ index: 0 });
   }
