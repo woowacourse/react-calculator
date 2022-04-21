@@ -14,7 +14,7 @@ class App extends Component {
     });
 
     window.addEventListener('unload', () => {
-      const lastResult = this.totalRef.current.textContent;
+      const lastResult = Number(this.totalRef.current.textContent);
 
       localStorage.setItem(
         'calculatorData',
@@ -149,26 +149,32 @@ class App extends Component {
     const numbers = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 
     return (
-      <div className="calculator">
-        <h1 id="total" ref={this.totalRef}>
-          0
-        </h1>
-        <div className="digits flex" onClick={this.handleDigitClick}>
-          {numbers.map((number, index) => (
-            <Button key={index} text={number} className="digit" />
-          ))}
+      <>
+        <h1>⚛️ React 계산기 🧮</h1>
+        <div className="calculator">
+          <h2 id="total" ref={this.totalRef}>
+            0
+          </h2>
+          <div className="digits flex" onClick={this.handleDigitClick}>
+            {numbers.map((number, index) => (
+              <Button key={index} text={number} className="digit" />
+            ))}
+          </div>
+          <div className="modifiers subgrid" onClick={this.handleModifierClick}>
+            <Button className="modifier" text="AC" />
+          </div>
+          <div
+            className="operations subgrid"
+            onClick={this.handleOperationClick}
+          >
+            <Button className="operation" text="/" />
+            <Button className="operation" text="X" />
+            <Button className="operation" text="-" />
+            <Button className="operation" text="+" />
+            <Button className="operation" text="=" />
+          </div>
         </div>
-        <div className="modifiers subgrid" onClick={this.handleModifierClick}>
-          <Button className="modifier" text="AC" />
-        </div>
-        <div className="operations subgrid" onClick={this.handleOperationClick}>
-          <Button className="operation" text="/" />
-          <Button className="operation" text="X" />
-          <Button className="operation" text="-" />
-          <Button className="operation" text="+" />
-          <Button className="operation" text="=" />
-        </div>
-      </div>
+      </>
     );
   }
 }
