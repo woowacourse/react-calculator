@@ -14,6 +14,11 @@ export default class Calculator extends Component {
       operator: '',
       index: 0,
     };
+
+    window.addEventListener('beforeunload', e => {
+      e.preventDefault();
+      e.returnValue = '';
+    });
   }
 
   componentDidMount() {
