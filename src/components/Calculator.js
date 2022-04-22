@@ -3,7 +3,7 @@ import '../styles/Calculator.css';
 
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   if (operation === '/') {
-    return firstOperand / secondOperand;
+    return Math.floor(firstOperand / secondOperand);
   }
   if (operation === 'X') {
     return firstOperand * secondOperand;
