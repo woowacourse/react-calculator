@@ -11,6 +11,7 @@ import {
 } from '../constants/constant';
 import AllClearButton from './AllCearButton';
 import Screen from './Screen';
+
 class Calculator extends Component {
   constructor() {
     super();
@@ -42,47 +43,47 @@ class Calculator extends Component {
   onClickNumber = e => {
     const number = e.target.dataset.number;
     const isPrev = this.state.operator === '';
-    try {
-      if (isPrev) {
-        if (this.state.prevNumbers.length >= NUMBER_LIMIT) {
-          throw new Error(ERROR_MSG.OVER_NUMBER_LIMIT);
-        }
-        this.setState({ prevNumber: [...this.state.prevNumbers, number] });
-        return;
-      }
-      if (this.state.nextNumbers.length >= NUMBER_LIMIT) {
-        throw new Error(ERROR_MSG.OVER_NUMBER_LIMIT);
-      }
-      this.setState({ nextNumber: [...this.state.nextNumbers, number] });
-    } catch ({ message }) {
-      alert(message);
+
+    if (this.state.prevNumbers.length >= NUMBER_LIMIT) {
+      alert(ERROR_MSG.OVER_NUMBER_LIMIT);
+      return;
     }
+
+    if (isPrev) {
+      this.setState({ prevNumber: [...this.state.prevNumbers, number] });
+      return;
+    }
+
+    this.setState({ nextNumber: [...this.state.nextNumbers, number] });
   };
 
   onClickOperator = e => {
+    const prevNumbers = Number(this.state.prevNumbers.join(''));
+    const nextNumbers = Number(this.state.nextNumbers.join(''));
     const operand = e.target.dataset.operator;
-    if (operand === OPERATOR.EQUAL) {
-      const prevNumbers = Number(this.state.prevNumbers.join(''));
-      const nextNumbers = Number(this.state.nextNumbers.join(''));
-      switch (this.state.operator) {
-        case OPERATOR.PLUS:
-          this.setState({ sum: prevNumbers + nextNumbers });
-          break;
-        case OPERATOR.SUBSTRACT:
-          this.setState({ sum: prevNumbers - nextNumbers });
-          break;
-        case OPERATOR.MULTI:
-          this.setState({ sum: prevNumbers * nextNumbers });
-          break;
-        case OPERATOR.DIVIDE:
-          if (!isFinite(prevNumbers / nextNumbers)) {
-            this.setState({ sum: ERROR_MSG.INFINITY });
-            break;
-          }
-          this.setState({ sum: prevNumbers / nextNumbers });
-      }
+
+    if (operand !== OPERATOR.EQUAL) {
+      this.setState({ operator: operand });
+      return;
     }
-    this.setState({ operator: operand });
+
+    switch (this.state.operator) {
+      case OPERATOR.PLUS:
+        this.setState({ sum: prevNumbers + nextNumbers });
+        break;
+      case OPERATOR.SUBSTRACT:
+        this.setState({ sum: prevNumbers - nextNumbers });
+        break;
+      case OPERATOR.MULTI:
+        this.setState({ sum: prevNumbers * nextNumbers });
+        break;
+      case OPERATOR.DIVIDE:
+        if (!isFinite(prevNumbers / nextNumbers)) {
+          this.setState({ sum: ERROR_MSG.INFINITY });
+          break;
+        }
+        this.setState({ sum: prevNumbers / nextNumbers });
+    }
   };
 
   onClickAllClear = () => {
