@@ -1,8 +1,9 @@
 import React from 'react';
 import { OPERATOR, ERROR_MSG } from '../constants/constant';
 
-const OperatorButtons = ({ operand, state, setSum, setOperator }) => {
+const OperatorButtons = ({ operand, state, set }) => {
   const { prevNumbers, operator, nextNumbers } = state;
+  const { setSum, setOperator } = set;
 
   const onClickOperator = () => {
     const prevNumber = Number(prevNumbers.join(''));

@@ -1,8 +1,9 @@
 import React from 'react';
 import { NUMBER_LIMIT, ERROR_MSG } from '../constants/constant';
 
-const NumberButtons = ({ number, state, setPrevNumbers, setNextNumbers }) => {
+const NumberButtons = ({ number, state, set }) => {
   const { prevNumbers, operator, nextNumbers } = state;
+  const { setPrevNumbers, setNextNumbers } = set;
 
   const onClickNumber = () => {
     const isPrev = operator === '';

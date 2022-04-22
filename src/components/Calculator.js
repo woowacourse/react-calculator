@@ -47,8 +47,7 @@ const Calculator = () => {
               key={index}
               number={-(index - 9)}
               state={{ prevNumbers, operator, nextNumbers }}
-              setPrevNumbers={setPrevNumbers}
-              setNextNumbers={setNextNumbers}
+              set={{ setPrevNumbers, setNextNumbers }}
             />
           ))}
         </div>
@@ -61,8 +60,7 @@ const Calculator = () => {
               key={index}
               operand={operand}
               state={{ prevNumbers, operator, nextNumbers }}
-              setSum={setSum}
-              setOperator={setOperator}
+              set={{ setSum, setOperator }}
             />
           ))}
         </div>
