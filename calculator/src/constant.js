@@ -1,0 +1,7 @@
+export const SCREEN = {
+  FONT_SIZE_SCALE_STANDARD: 7,
+  MAX_TEXT_LENGTH: 10,
+  ERROR_MESSAGE: "오류",
+};
+
+export const EXPONENTIAL_LIMIT_POINT = 3;
