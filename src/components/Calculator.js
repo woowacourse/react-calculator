@@ -94,8 +94,9 @@ class Calculator extends Component {
 
   onClickOperations = ({ target }) => {
     const { textContent: operation } = target;
+
     if (operation !== '=') {
-      this.setState((prevState) => ({ ...prevState, operation }));
+      this.setState({ operation });
       return;
     }
 
