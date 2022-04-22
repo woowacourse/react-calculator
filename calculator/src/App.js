@@ -14,6 +14,7 @@ export default class App extends Component {
     operation: "",
     secondNumber: "",
   };
+  setCalculateInfo = this.setState.bind(this);
 
   convertToLocaleString = (number) => number.toLocaleString("ko-KR");
 
@@ -46,15 +47,12 @@ export default class App extends Component {
         </h1>
         <DigitComponent
           calculateInfo={this.state}
-          setCalculateInfo={this.setState.bind(this)}
+          setCalculateInfo={this.setCalculateInfo}
         />
-        <AllClearComponent
-          calculateInfo={this.state}
-          setCalculateInfo={this.setState.bind(this)}
-        />
+        <AllClearComponent setCalculateInfo={this.setCalculateInfo} />
         <OperationComponent
           calculateInfo={this.state}
-          setCalculateInfo={this.setState.bind(this)}
+          setCalculateInfo={this.setCalculateInfo}
         />
       </div>
     );
