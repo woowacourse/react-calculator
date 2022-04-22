@@ -18,52 +18,52 @@ class Calculator extends Component {
   }
   state = {
     sum: '',
-    prevNumber: [],
+    prevNumbers: [],
     operator: '',
-    nextNumber: [],
+    nextNumbers: [],
   };
 
   componentDidMount() {
     const expression = expressionStorage.getExpression();
-    if (!expression) {
-      return;
-    }
+    if (!expression) return;
+
     const { sum, prevNumber, operator, nextNumber } = expression;
     this.setState({ sum, prevNumber, operator, nextNumber });
   }
 
-  confirmExist = (e) => {
+  confirmExist = e => {
     e.preventDefault();
     e.returnValue = CONFIRM_MSG;
-    const { sum, prevNumber, operator, nextNumber } = this.state;
-    expressionStorage.setExpression({ sum, prevNumber, operator, nextNumber });
+
+    const { sum, prevNumbers, operator, nextNumbers } = this.state;
+    expressionStorage.setExpression({ sum, prevNumbers, operator, nextNumbers });
   };
 
-  onClickNumber = (e) => {
+  onClickNumber = e => {
     const number = e.target.dataset.number;
     const isPrev = this.state.operator === '';
     try {
       if (isPrev) {
-        if (this.state.prevNumber.length >= NUMBER_LIMIT) {
+        if (this.state.prevNumbers.length >= NUMBER_LIMIT) {
           throw new Error(ERROR_MSG.OVER_NUMBER_LIMIT);
         }
-        this.setState({ prevNumber: [...this.state.prevNumber, number] });
+        this.setState({ prevNumber: [...this.state.prevNumbers, number] });
         return;
       }
-      if (this.state.nextNumber.length >= NUMBER_LIMIT) {
+      if (this.state.nextNumbers.length >= NUMBER_LIMIT) {
         throw new Error(ERROR_MSG.OVER_NUMBER_LIMIT);
       }
-      this.setState({ nextNumber: [...this.state.nextNumber, number] });
+      this.setState({ nextNumber: [...this.state.nextNumbers, number] });
     } catch ({ message }) {
       alert(message);
     }
   };
 
-  onClickOperator = (e) => {
+  onClickOperator = e => {
     const operand = e.target.dataset.operator;
     if (operand === OPERATOR.EQUAL) {
-      const prevNumbers = Number(this.state.prevNumber.join(''));
-      const nextNumbers = Number(this.state.nextNumber.join(''));
+      const prevNumbers = Number(this.state.prevNumbers.join(''));
+      const nextNumbers = Number(this.state.nextNumbers.join(''));
       switch (this.state.operator) {
         case OPERATOR.PLUS:
           this.setState({ sum: prevNumbers + nextNumbers });
@@ -80,8 +80,6 @@ class Calculator extends Component {
             break;
           }
           this.setState({ sum: prevNumbers / nextNumbers });
-        default:
-          return;
       }
     }
     this.setState({ operator: operand });
@@ -98,18 +96,18 @@ class Calculator extends Component {
 
   render() {
     return (
-      <div id='app'>
-        <div className='calculator'>
+      <div id="app">
+        <div className="calculator">
           <Screen state={this.state} func={this.onClickAllClear} />
-          <div className='digits flex'>
+          <div className="digits flex">
             {Array.from({ length: 10 }).map((_, index) => (
               <NumberButtons key={index} func={this.onClickNumber} number={-(index - 9)} />
             ))}
           </div>
-          <div className='modifiers subgrid'>
+          <div className="modifiers subgrid">
             <AllClearButton func={this.onClickAllClear} />
           </div>
-          <div className='operations subgrid'>
+          <div className="operations subgrid">
             {OPERATOR_LIST.map((operand, index) => (
               <OperatorButtons key={index} operator={operand} func={this.onClickOperator} />
             ))}

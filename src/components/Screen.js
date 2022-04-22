@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 
 class Screen extends Component {
   render() {
-    const { prevNumber, operator, nextNumber, sum } = this.props.state;
+    const { prevNumbers, operator, nextNumbers, sum } = this.props.state;
 
     return (
-      <h1 className='total'>{sum === '' ? [...prevNumber, ...operator, ...nextNumber] : sum}</h1>
+      <h1 className="total">{sum === '' ? [...prevNumbers, ...operator, ...nextNumbers] : sum}</h1>
     );
   }
 }
