@@ -13,6 +13,8 @@ export default class Operators extends Component {
   }
 
   onClickOperator = (operator) => {
+    this.props.setStep(false);
+
     if (operator !== "=") {
       if (this.props.isNumberStep && this.props.recordNumber !== 0) {
         alert(ERROR_MESSAGE.OVER_INPUT_NUMBER_COUNT);
@@ -24,7 +26,6 @@ export default class Operators extends Component {
       return;
     }
 
-    this.props.setStep(false);
     this.props.setRecordNumber(0);
     this.setState({ operator: "" });
 
