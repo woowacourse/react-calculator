@@ -1,38 +1,35 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import NumberButtons from './NumberButtons';
 import OperatorButtons from './OperandButtons';
 import { expressionStorage } from '../store/store';
-import {
-  NUMBER_LIMIT,
-  ERROR_MSG,
-  CONFIRM_MSG,
-  OPERATOR,
-  OPERATOR_LIST,
-} from '../constants/constant';
+import { CONFIRM_MSG, OPERATOR_LIST } from '../constants/constant';
 import AllClearButton from './AllCearButton';
 import Screen from './Screen';
 
-class Calculator extends Component {
-  constructor() {
-    super();
-    window.addEventListener('beforeunload', this.confirmExist);
-  }
-  state = {
-    sum: '',
-    prevNumbers: [],
-    operator: '',
-    nextNumbers: [],
-  };
+const Calculator = () => {
+  const [sum, setSum] = useState('');
+  const [prevNumbers, setPrevNumbers] = useState([]);
+  const [operator, setOperator] = useState('');
+  const [nextNumbers, setNextNumbers] = useState([]);
 
-  componentDidMount() {
+  useEffect(() => {
+    window.addEventListener('beforeunload', confirmExist);
+
     const expression = expressionStorage.getExpression();
     if (!expression) return;
 
-    const { sum, prevNumber, operator, nextNumber } = expression;
-    this.setState({ sum, prevNumber, operator, nextNumber });
-  }
+    const { sum, prevNumbers, operator, nextNumbers } = expression;
+    setSum(sum);
+    setPrevNumbers(prevNumbers);
+    setOperator(operator);
+    setNextNumbers(nextNumbers);
 
-  confirmExist = e => {
+    return () => {
+      window.removeEventListener('beforeunload', confirmExist);
+    };
+  }, []);
+
+  const confirmExist = e => {
     e.preventDefault();
     e.returnValue = CONFIRM_MSG;
 
@@ -40,83 +37,38 @@ class Calculator extends Component {
     expressionStorage.setExpression({ sum, prevNumbers, operator, nextNumbers });
   };
 
-  onClickNumber = e => {
-    const number = e.target.dataset.number;
-    const isPrev = this.state.operator === '';
-
-    if (this.state.prevNumbers.length >= NUMBER_LIMIT) {
-      alert(ERROR_MSG.OVER_NUMBER_LIMIT);
-      return;
-    }
-
-    if (isPrev) {
-      this.setState({ prevNumber: [...this.state.prevNumbers, number] });
-      return;
-    }
-
-    this.setState({ nextNumber: [...this.state.nextNumbers, number] });
-  };
-
-  onClickOperator = e => {
-    const prevNumbers = Number(this.state.prevNumbers.join(''));
-    const nextNumbers = Number(this.state.nextNumbers.join(''));
-    const operand = e.target.dataset.operator;
-
-    if (operand !== OPERATOR.EQUAL) {
-      this.setState({ operator: operand });
-      return;
-    }
-
-    switch (this.state.operator) {
-      case OPERATOR.PLUS:
-        this.setState({ sum: prevNumbers + nextNumbers });
-        break;
-      case OPERATOR.SUBSTRACT:
-        this.setState({ sum: prevNumbers - nextNumbers });
-        break;
-      case OPERATOR.MULTI:
-        this.setState({ sum: prevNumbers * nextNumbers });
-        break;
-      case OPERATOR.DIVIDE:
-        if (!isFinite(prevNumbers / nextNumbers)) {
-          this.setState({ sum: ERROR_MSG.INFINITY });
-          break;
-        }
-        this.setState({ sum: prevNumbers / nextNumbers });
-    }
-  };
-
-  onClickAllClear = () => {
-    this.setState({
-      sum: '',
-      prevNumber: [],
-      operator: '',
-      nextNumber: [],
-    });
-  };
-
-  render() {
-    return (
-      <div id="app">
-        <div className="calculator">
-          <Screen state={this.state} func={this.onClickAllClear} />
-          <div className="digits flex">
-            {Array.from({ length: 10 }).map((_, index) => (
-              <NumberButtons key={index} func={this.onClickNumber} number={-(index - 9)} />
-            ))}
-          </div>
-          <div className="modifiers subgrid">
-            <AllClearButton func={this.onClickAllClear} />
-          </div>
-          <div className="operations subgrid">
-            {OPERATOR_LIST.map((operand, index) => (
-              <OperatorButtons key={index} operator={operand} func={this.onClickOperator} />
-            ))}
-          </div>
+  return (
+    <div id="app">
+      <div className="calculator">
+        <Screen state={{ sum, prevNumbers, operator, nextNumbers }} />
+        <div className="digits flex">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <NumberButtons
+              key={index}
+              number={-(index - 9)}
+              state={{ prevNumbers, operator, nextNumbers }}
+              setPrevNumbers={setPrevNumbers}
+              setNextNumbers={setNextNumbers}
+            />
+          ))}
+        </div>
+        <div className="modifiers subgrid">
+          <AllClearButton set={{ setSum, setNextNumbers, setOperator, setPrevNumbers }} />
+        </div>
+        <div className="operations subgrid">
+          {OPERATOR_LIST.map((operand, index) => (
+            <OperatorButtons
+              key={index}
+              operand={operand}
+              state={{ prevNumbers, operator, nextNumbers }}
+              setSum={setSum}
+              setOperator={setOperator}
+            />
+          ))}
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Calculator;

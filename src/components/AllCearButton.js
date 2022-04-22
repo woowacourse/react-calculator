@@ -1,17 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class AllClearButton extends Component {
-  onClickAllClear = (event) => {
-    this.props.func(event);
+const AllClearButton = ({ set }) => {
+  const { setSum, setNextNumbers, setOperator, setPrevNumbers } = set;
+
+  const onClickAllClear = () => {
+    setSum('');
+    setPrevNumbers([]);
+    setOperator('');
+    setNextNumbers([]);
   };
 
-  render() {
-    return (
-      <button className='modifier' onClick={this.onClickAllClear}>
-        AC
-      </button>
-    );
-  }
-}
+  return (
+    <button className="modifier" onClick={onClickAllClear}>
+      AC
+    </button>
+  );
+};
 
 export default AllClearButton;
