@@ -8,10 +8,6 @@ import AllClearComponent from "./Components/AllClearComponent";
 
 import { SCREEN } from "./constant";
 
-window.onbeforeunload = () => {
-  return 0;
-};
-
 export default class App extends Component {
   constructor() {
     super();
@@ -28,6 +24,11 @@ export default class App extends Component {
   convertToLocaleString = (number) => number.toLocaleString("ko-KR");
 
   componentDidMount() {
+    window.addEventListener("beforeunload", (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    });
+
     const calculateInfo = JSON.parse(localStorage.getItem("calculateInfo"));
 
     this.setState(calculateInfo);
