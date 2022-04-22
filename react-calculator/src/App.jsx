@@ -9,11 +9,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.resultRef = React.createRef();
+    const prevResult = store.getLocalStorage('prevResult');
     this.state = {
       operation: '',
-      firstNumber: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
+      firstNumber: prevResult || '',
       secondNumber: '',
-      result: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
+      result: prevResult || '',
     };
   }
 
@@ -51,8 +52,8 @@ class App extends Component {
     this.renderCalculatorNumber(firstNumberResult);
   };
 
-  setOperations = (selectedOperation) => {
-    this.setState({ operation: selectedOperation });
+  setOperations = (operation) => {
+    this.setState({ operation });
   };
 
   add = () => {
@@ -102,7 +103,7 @@ class App extends Component {
       <div id="app">
         <div className="calculator">
           <h1 id="calculator-number" ref={this.resultRef}>
-            {this.state.result ? this.state.result : 0}
+            {this.state.result || 0}
           </h1>
           <Digits handleDigit={this.handleDigit} />
           <div className="modifiers subgrid">
