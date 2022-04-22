@@ -1,4 +1,4 @@
-import React, { Component, createRef } from "react";
+import React, { Component } from "react";
 
 import "./App.css";
 
@@ -9,17 +9,11 @@ import AllClearComponent from "./Components/AllClearComponent";
 import { SCREEN } from "./constant";
 
 export default class App extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      firstNumber: 0,
-      operation: "",
-      secondNumber: "",
-    };
-
-    this.calculateScreenElement = createRef();
-  }
+  state = {
+    firstNumber: 0,
+    operation: "",
+    secondNumber: "",
+  };
 
   convertToLocaleString = (number) => number.toLocaleString("ko-KR");
 
@@ -35,26 +29,20 @@ export default class App extends Component {
   }
 
   componentDidUpdate() {
-    const calculateScreenElement = this.calculateScreenElement.current;
-
-    calculateScreenElement.textContent = this.convertToLocaleString(
-      this.state.secondNumber === ""
-        ? this.state.firstNumber
-        : this.state.secondNumber
-    );
-
-    calculateScreenElement.textContent.length > SCREEN.FONT_SIZE_SCALE_STANDARD
-      ? (calculateScreenElement.style.fontSize = "3rem")
-      : (calculateScreenElement.style.fontSize = "4rem");
-
     localStorage.setItem("calculateInfo", JSON.stringify(this.state));
   }
 
   render() {
+    const resultNumber = this.state.secondNumber || this.state.firstNumber;
+    const headingFontSize =
+      String(resultNumber).length > SCREEN.FONT_SIZE_SCALE_STANDARD
+        ? "3rem"
+        : "4rem";
+
     return (
       <div className="calculator">
-        <h1 className="total" ref={this.calculateScreenElement}>
-          0
+        <h1 className="total" style={{ fontSize: headingFontSize }}>
+          {this.convertToLocaleString(resultNumber)}
         </h1>
         <DigitComponent
           calculateInfo={this.state}
