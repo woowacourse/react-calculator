@@ -2,8 +2,9 @@ import './App.css';
 import React, { useEffect, useRef } from 'react';
 import CalculationResult from './components/CalculationResult';
 import CalculatorInputField from './components/CalculatorInputField';
-import { ERROR_MESSAGE, LOCAL_STORAGE_EXPRESSION_KEY } from './constants';
+import { LOCAL_STORAGE_EXPRESSION_KEY } from './constants';
 import useExpression from './hooks/useExpression';
+import { CustomLocalStorage } from './utils/CustomLocalStorage';
 
 function App() {
   const {
@@ -21,7 +22,10 @@ function App() {
   }, [expression]);
 
   useEffect(() => {
-    getLocalStorage();
+    const expression = CustomLocalStorage.load(LOCAL_STORAGE_EXPRESSION_KEY);
+    if (expression) {
+      setExpression(expression);
+    }
 
     window.addEventListener('beforeunload', handleBeforeunload);
     window.addEventListener('unload', handleUnload);
@@ -32,29 +36,15 @@ function App() {
     };
   }, []);
 
-  const getLocalStorage = () => {
-    try {
-      const expression = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_EXPRESSION_KEY)
-      );
-      if (!expression) return;
-
-      setExpression(expression);
-    } catch {
-      localStorage.removeItem(LOCAL_STORAGE_EXPRESSION_KEY);
-      alert(ERROR_MESSAGE.FAIL_TO_GET_DATA);
-    }
-  };
-
   const handleBeforeunload = (e) => {
     e.preventDefault();
     e.returnValue = '';
   };
 
   const handleUnload = () => {
-    localStorage.setItem(
+    CustomLocalStorage.save(
       LOCAL_STORAGE_EXPRESSION_KEY,
-      JSON.stringify(expressionRef.current)
+      expressionRef.current
     );
   };
 
