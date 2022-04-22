@@ -20,6 +20,12 @@ const hasInput = ({ firstOperand, secondOperand, operation }) => {
   return firstOperand !== '0' || secondOperand !== '' || operation !== null;
 };
 
+const computeNextOperand = (currentOperand, digit) => {
+  return currentOperand.length >= 3
+    ? `${currentOperand.slice(0, -1)}${digit}`
+    : `${Number(currentOperand + digit)}`;
+};
+
 class Calculator extends Component {
   constructor() {
     super();
@@ -44,44 +50,39 @@ class Calculator extends Component {
   }
 
   initState = () => {
-    this.setState((prevState) => ({
-      ...prevState,
+    this.setState({
       firstOperand: '0',
       secondOperand: '',
       operation: null,
       isError: false,
-    }));
+    });
   };
 
   onClickDigits = ({ target }) => {
-    const { textContent: digit } = target;
+    const { textContent: digit, className } = target;
+
+    if (className !== 'digit') {
+      return;
+    }
 
     if (this.state.operation) {
       this.setState(({ secondOperand }) => ({
-        secondOperand:
-          secondOperand.length >= 3
-            ? `${secondOperand.slice(0, -1)}${digit}`
-            : `${Number(secondOperand + digit)}`,
+        secondOperand: computeNextOperand(secondOperand, digit),
         isError: false,
       }));
       return;
     }
-    this.setState(({ firstOperand }) => {
-      console.log(firstOperand);
-      return {
-        firstOperand:
-          firstOperand.length >= 3
-            ? `${firstOperand.slice(0, -1)}${digit}`
-            : `${Number(firstOperand + digit)}`,
-        isError: false,
-      };
-    });
+    this.setState(({ firstOperand }) => ({
+      firstOperand: computeNextOperand(firstOperand, digit),
+      isError: false,
+    }));
   };
 
   onClickOperations = ({ target }) => {
     const { textContent: operation } = target;
+
     if (operation !== '=') {
-      this.setState((prevState) => ({ ...prevState, operation }));
+      this.setState({ operation });
       return;
     }
 
@@ -92,17 +93,15 @@ class Calculator extends Component {
     });
 
     if (isFinite(result)) {
-      this.setState((prevState) => ({
-        ...prevState,
+      this.setState({
         firstOperand: `${result}`,
         secondOperand: '',
         operation: null,
-      }));
+      });
       return;
     }
 
-    this.setState((prevState) => ({
-      ...prevState,
+    this.setState(() => ({
       isError: true,
     }));
   };
