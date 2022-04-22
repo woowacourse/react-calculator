@@ -22,6 +22,10 @@ class App extends Component {
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.onBeforeUnload);
+  }
+
   onBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = '';
