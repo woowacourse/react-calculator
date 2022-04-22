@@ -104,6 +104,10 @@ class App extends React.Component {
     window.addEventListener('beforeunload', this.beforeunload);
     window.addEventListener('unload', this.handleUnload);
 
+    this.getLocalStorage();
+  }
+
+  getLocalStorage() {
     try {
       const expression = JSON.parse(
         localStorage.getItem(LOCAL_STORAGE_EXPRESSION_KEY)
