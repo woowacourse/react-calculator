@@ -82,7 +82,9 @@ class Calculator extends Component {
     const { textContent: operation } = target;
 
     if (operation !== '=') {
-      this.setState({ operation });
+      this.setState({
+        operation,
+      });
       return;
     }
 
