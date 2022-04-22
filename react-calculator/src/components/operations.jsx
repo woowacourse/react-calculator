@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
+import { CALCULATOR } from '../constants.js';
 
 class Operations extends Component {
-  handleOperationButtonClick = (e) => {
-    this.props.setOperation(e.target.textContent);
-  };
-
-  handleEqualityButtonClick = () => {
+  confirmOperation = () => {
     const { operation, resetState } = this.props;
     switch (operation) {
       case '+':
@@ -26,24 +23,23 @@ class Operations extends Component {
     resetState();
   };
 
+  OperationButtonClick = (e) => {
+    const operation = e.target.textContent;
+    if (operation === '=') {
+      this.confirmOperation();
+      return;
+    }
+    this.props.setOperation(operation);
+  };
+
   render() {
     return (
-      <div className="operations subgrid">
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          /
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          X
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          -
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          +
-        </button>
-        <button className="operation" onClick={this.handleEqualityButtonClick}>
-          =
-        </button>
+      <div className="operations subgrid" onClick={this.handleOperationButtonClick}>
+        {CALCULATOR.OPERATIONS.map((operation, index) => (
+          <button className="operation" key={index}>
+            {operation}
+          </button>
+        ))}
       </div>
     );
   }

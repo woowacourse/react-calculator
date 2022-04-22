@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DIGIT_LIST } from '../constants.js';
+import { CALCULATOR } from '../constants.js';
 
 class Digits extends Component {
   handleDigitButtonClick = (e) => {
@@ -9,7 +9,7 @@ class Digits extends Component {
   render() {
     return (
       <div className="digits flex" onClick={this.handleDigitButtonClick}>
-        {DIGIT_LIST.map((digit, index) => (
+        {CALCULATOR.DIGITS.map((digit, index) => (
           <button className="digit" key={index}>
             {digit}
           </button>
