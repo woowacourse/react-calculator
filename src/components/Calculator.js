@@ -65,17 +65,17 @@ class Calculator extends Component {
       return;
     }
 
-    if (this.state.operation) {
-      this.setState(({ secondOperand }) => ({
-        secondOperand: computeNextOperand(secondOperand, digit),
-        isError: false,
-      }));
-      return;
-    }
-    this.setState(({ firstOperand }) => ({
-      firstOperand: computeNextOperand(firstOperand, digit),
-      isError: false,
-    }));
+    this.setState(({ firstOperand, secondOperand, operation }) => {
+      return operation
+        ? {
+            secondOperand: computeNextOperand(secondOperand, digit),
+            isError: false,
+          }
+        : {
+            firstOperand: computeNextOperand(firstOperand, digit),
+            isError: false,
+          };
+    });
   };
 
   onClickOperations = ({ target }) => {
