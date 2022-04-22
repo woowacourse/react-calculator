@@ -101,7 +101,7 @@ class Calculator extends Component {
   onBeforeUnload = (e) => {
     e.preventDefault();
     localStorage.setItem('prevState', JSON.stringify(this.state));
-    if (hasInput({ ...this.state })) {
+    if (hasInput(this.state)) {
       e.returnValue = '';
     }
   };
