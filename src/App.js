@@ -112,26 +112,24 @@ export default class App extends Component {
 
   render() {
     return (
-      <>
-        <div id="app">
-          <div className="calculator">
-            <DisplayResult result={this.state.result} />
-            <CalculatorButton
-              setFirstNumber={this.setFirstNumber}
-              setOperator={this.setOperator}
-              setSecondNumber={this.setSecondNumber}
-              setIsFirstNumber={this.setIsFirstNumber}
-              calculate={this.calculate}
-              setResult={this.setResult}
-              result={this.state.result}
-              initState={this.initState}
-              isFirstNumber={this.state.isFirstNumber}
-              firstNumber={this.state.firstNumber}
-              secondNumber={this.state.secondNumber}
-            />
-          </div>
+      <div id="app">
+        <div className="calculator">
+          <DisplayResult result={this.state.result} />
+          <CalculatorButton
+            setFirstNumber={this.setFirstNumber}
+            setOperator={this.setOperator}
+            setSecondNumber={this.setSecondNumber}
+            setIsFirstNumber={this.setIsFirstNumber}
+            calculate={this.calculate}
+            setResult={this.setResult}
+            result={this.state.result}
+            initState={this.initState}
+            isFirstNumber={this.state.isFirstNumber}
+            firstNumber={this.state.firstNumber}
+            secondNumber={this.state.secondNumber}
+          />
         </div>
-      </>
+      </div>
     );
   }
 }
