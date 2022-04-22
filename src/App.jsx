@@ -31,7 +31,6 @@ class App extends React.Component {
   handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
     if (this.state.prevNumber === INFINITY_CASE_TEXT) {
       this.setState({
-        ...this.state,
         prevNumber: selectedDigit,
       });
       return;
@@ -49,13 +48,12 @@ class App extends React.Component {
       return;
     }
     this.setState({
-      ...this.state,
       [numberKey]: this.state[numberKey] + selectedDigit,
     });
   }
 
   handleClickOperator = ({ target: { textContent: selectedOperator } }) => {
-    const { prevNumber, operator, nextNumber } = this.state;
+    const { prevNumber, operator } = this.state;
 
     if (prevNumber === INFINITY_CASE_TEXT) return;
 
@@ -66,18 +64,21 @@ class App extends React.Component {
 
     if (selectedOperator !== '=' && !operator) {
       this.setState({
-        ...this.state,
         operator: selectedOperator,
       });
       return;
     }
 
     if (operator) {
-      this.setState({
-        prevNumber: this.calculateExpression(prevNumber, operator, nextNumber),
+      this.setState((prevState) => ({
+        prevNumber: this.calculateExpression(
+          prevState.prevNumber,
+          prevState.operator,
+          prevState.nextNumber
+        ),
         operator: '',
         nextNumber: '',
-      });
+      }));
     }
   };
 
