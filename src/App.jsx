@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CalculationResult from './components/CalculationResult';
 import CalculatorInputField from './components/CalculatorInputField';
 import { ERROR_MESSAGE, LOCAL_STORAGE_EXPRESSION_KEY } from './constants';
@@ -14,11 +14,17 @@ function App() {
     handleClickOperator,
   } = useExpression();
 
+  const expressionRef = useRef(expression);
+
   useEffect(() => {
+    expressionRef.current = expression;
+  }, [expression]);
+
+  useEffect(() => {
+    getLocalStorage();
+
     window.addEventListener('beforeunload', handleBeforeunload);
     window.addEventListener('unload', handleUnload);
-
-    getLocalStorage();
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeunload);
@@ -48,7 +54,7 @@ function App() {
   const handleUnload = () => {
     localStorage.setItem(
       LOCAL_STORAGE_EXPRESSION_KEY,
-      JSON.stringify(expression)
+      JSON.stringify(expressionRef.current)
     );
   };
 
