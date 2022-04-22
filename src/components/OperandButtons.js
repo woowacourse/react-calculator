@@ -29,7 +29,7 @@ const OperatorButtons = ({ operand, state, set }) => {
           setSum(ERROR_MSG.INFINITY);
           break;
         }
-        setSum(prevNumber / nextNumber);
+        setSum(Math.floor(prevNumber / nextNumber));
     }
   };
 
