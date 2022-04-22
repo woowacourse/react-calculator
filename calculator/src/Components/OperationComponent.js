@@ -6,14 +6,26 @@ export default class OperationComponent extends Component {
   calculateResultNumber = () => {
     const firstNumber = Number(this.props.calculateInfo.firstNumber);
     const secondNumber = Number(this.props.calculateInfo.secondNumber);
-    const calculateMethod = {
-      X: firstNumber * secondNumber,
-      "/": firstNumber / secondNumber,
-      "+": firstNumber + secondNumber,
-      "-": firstNumber - secondNumber,
-    };
+    let resultNumber = 0;
 
-    return calculateMethod[this.props.calculateInfo.operation] || firstNumber;
+    switch (this.props.calculateInfo.operation) {
+      case "X":
+        resultNumber = firstNumber * secondNumber;
+        break;
+      case "/":
+        resultNumber = firstNumber / secondNumber;
+        break;
+      case "+":
+        resultNumber = firstNumber + secondNumber;
+        break;
+      case "-":
+        resultNumber = firstNumber - secondNumber;
+        break;
+      default:
+        break;
+    }
+
+    return resultNumber ?? firstNumber;
   };
 
   generateResultNumber(number) {
