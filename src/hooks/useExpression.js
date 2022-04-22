@@ -23,19 +23,17 @@ const calculateExpression = (prevNumber, operator, nextNumber) => {
   }
 };
 
+const initialExpression = {
+  prevNumber: '',
+  operator: '',
+  nextNumber: '',
+};
+
 export default function useExpression() {
-  const [expression, setExpression] = useState({
-    prevNumber: '',
-    operator: '',
-    nextNumber: '',
-  });
+  const [expression, setExpression] = useState(initialExpression);
 
   const handleClickAC = () => {
-    setExpression({
-      prevNumber: '',
-      operator: '',
-      nextNumber: '',
-    });
+    setExpression(initialExpression);
   };
 
   const handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
@@ -71,30 +69,43 @@ export default function useExpression() {
 
     if (prevNumber === INFINITY_CASE_TEXT) return;
 
-    if (selectedOperator !== '=' && operator) {
-      alert(ERROR_MESSAGE.ALLOW_ONE_OPERATOR);
-      return;
-    }
+    const pattern = {
+      equal_calculate: {
+        case: selectedOperator === '=' && operator,
+        func() {
+          setExpression((prevState) => ({
+            ...initialExpression,
+            prevNumber: calculateExpression(
+              prevState.prevNumber,
+              prevState.operator,
+              prevState.nextNumber
+            ),
+          }));
+        },
+      },
+      add_operator: {
+        case: selectedOperator !== '=' && !operator,
+        func() {
+          setExpression((prevState) => ({
+            ...prevState,
+            operator: selectedOperator,
+          }));
+        },
+      },
+      over_two_operator: {
+        case: selectedOperator !== '=' && operator,
+        func() {
+          alert(ERROR_MESSAGE.ALLOW_ONE_OPERATOR);
+        },
+      },
+      other: {
+        case: true,
+        func() {},
+      },
+    };
 
-    if (selectedOperator !== '=' && !operator) {
-      setExpression((prevState) => ({
-        ...prevState,
-        operator: selectedOperator,
-      }));
-      return;
-    }
-
-    if (operator) {
-      setExpression((prevState) => ({
-        prevNumber: calculateExpression(
-          prevState.prevNumber,
-          prevState.operator,
-          prevState.nextNumber
-        ),
-        operator: '',
-        nextNumber: '',
-      }));
-    }
+    const currentCase = Object.keys(pattern).find((key) => pattern[key].case);
+    pattern[currentCase].func();
   };
 
   return {
