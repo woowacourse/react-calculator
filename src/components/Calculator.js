@@ -16,9 +16,8 @@ const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   }
 };
 
-const hasInput = ({ firstOperand, secondOperand, operation }) => {
-  return firstOperand !== '0' || secondOperand !== '' || operation !== null;
-};
+const hasInput = ({ firstOperand, secondOperand, operation }) =>
+  firstOperand !== '0' || secondOperand !== '' || operation !== null;
 
 const computeNextOperand = (currentOperand, digit) => {
   return currentOperand.length >= 3
