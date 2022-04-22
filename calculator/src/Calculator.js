@@ -1,4 +1,8 @@
 import React from 'react';
+
+import Digits from './Digits';
+import Operations from './Operations';
+
 import { ERROR_MESSAGE, RULE } from './constants';
 
 class Calculator extends React.Component {
@@ -26,20 +30,6 @@ class Calculator extends React.Component {
 
     localStorage.setItem('total', this.state.total);
   };
-
-  digitsTemplate = Array.from(Array(10).keys())
-    .reverse()
-    .map((digit, idx) => (
-      <button className='digit' key={idx}>
-        {digit}
-      </button>
-    ));
-
-  operationTemplate = ['/', 'X', '-', '+', '='].map((operation, idx) => (
-    <button className='operation' key={idx}>
-      {operation}
-    </button>
-  ));
 
   handleDigitButtonClick = ({ target }) => {
     const digit = target.textContent;
@@ -124,7 +114,7 @@ class Calculator extends React.Component {
       <div className='calculator'>
         <h1 id='total'>{this.state.total}</h1>
         <div className='digits flex' onClick={this.handleDigitButtonClick}>
-          {this.digitsTemplate}
+          <Digits />
         </div>
         <div className='modifiers subgrid'>
           <button className='modifier' onClick={this.handleModifierButtonClick}>
@@ -135,7 +125,7 @@ class Calculator extends React.Component {
           className='operations subgrid'
           onClick={this.handleOperationButtonClick}
         >
-          {this.operationTemplate}
+          <Operations />
         </div>
       </div>
     );
