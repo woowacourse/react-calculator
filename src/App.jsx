@@ -122,11 +122,11 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.beforeunload);
+    window.removeEventListener('beforeunload', this.handleBeforeunload);
     window.removeEventListener('unload', this.handleUnload);
   }
 
-  beforeunload = (e) => {
+  handleBeforeunload = (e) => {
     e.preventDefault();
     e.returnValue = '';
   };
