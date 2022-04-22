@@ -1,5 +1,5 @@
 import './App.css';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CalculationResult from './components/CalculationResult';
 import CalculatorInputField from './components/CalculatorInputField';
 import {
@@ -9,51 +9,51 @@ import {
   MAX_NUMBER_LENGTH,
 } from './constants';
 
-class App extends React.Component {
-  constructor() {
-    super();
+function App() {
+  const [expression, setExpression] = useState({
+    prevNumber: '',
+    operator: '',
+    nextNumber: '',
+  });
 
-    this.state = {
-      prevNumber: '',
-      operator: '',
-      nextNumber: '',
-    };
-  }
-
-  handleClickAC = () => {
-    this.setState({
+  const handleClickAC = () => {
+    setExpression({
       prevNumber: '',
       operator: '',
       nextNumber: '',
     });
   };
 
-  handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
-    if (this.state.prevNumber === INFINITY_CASE_TEXT) {
-      this.setState({
+  const handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
+    if (expression.prevNumber === INFINITY_CASE_TEXT) {
+      setExpression((prevState) => ({
+        ...prevState,
         prevNumber: selectedDigit,
-      });
+      }));
       return;
     }
 
-    this.updateNumber(
-      this.state.operator ? 'nextNumber' : 'prevNumber',
+    updateNumber(
+      expression.operator ? 'nextNumber' : 'prevNumber',
       selectedDigit
     );
   };
 
-  updateNumber(numberKey, selectedDigit) {
-    if (this.state[numberKey].length >= MAX_NUMBER_LENGTH) {
+  const updateNumber = (numberKey, selectedDigit) => {
+    if (expression[numberKey].length >= MAX_NUMBER_LENGTH) {
       alert(ERROR_MESSAGE.EXCEED_MAX_NUMBER_LENGTH);
       return;
     }
-    this.setState({
-      [numberKey]: this.state[numberKey] + selectedDigit,
-    });
-  }
+    setExpression((prevState) => ({
+      ...prevState,
+      [numberKey]: prevState[numberKey] + selectedDigit,
+    }));
+  };
 
-  handleClickOperator = ({ target: { textContent: selectedOperator } }) => {
-    const { prevNumber, operator } = this.state;
+  const handleClickOperator = ({
+    target: { textContent: selectedOperator },
+  }) => {
+    const { prevNumber, operator } = expression;
 
     if (prevNumber === INFINITY_CASE_TEXT) return;
 
@@ -63,15 +63,16 @@ class App extends React.Component {
     }
 
     if (selectedOperator !== '=' && !operator) {
-      this.setState({
+      setExpression((prevState) => ({
+        ...prevState,
         operator: selectedOperator,
-      });
+      }));
       return;
     }
 
     if (operator) {
-      this.setState((prevState) => ({
-        prevNumber: this.calculateExpression(
+      setExpression((prevState) => ({
+        prevNumber: calculateExpression(
           prevState.prevNumber,
           prevState.operator,
           prevState.nextNumber
@@ -82,7 +83,7 @@ class App extends React.Component {
     }
   };
 
-  calculateExpression(prevNumber, operator, nextNumber) {
+  const calculateExpression = (prevNumber, operator, nextNumber) => {
     const num1 = Number(prevNumber);
     const num2 = Number(nextNumber);
 
@@ -98,60 +99,58 @@ class App extends React.Component {
       default:
         alert(ERROR_MESSAGE.STRANGE_OPERATOR(operator));
     }
-  }
+  };
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.beforeunload);
-    window.addEventListener('unload', this.handleUnload);
+  useEffect(() => {
+    window.addEventListener('beforeunload', handleBeforeunload);
+    window.addEventListener('unload', handleUnload);
 
-    this.getLocalStorage();
-  }
+    getLocalStorage();
 
-  getLocalStorage() {
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeunload);
+      window.removeEventListener('unload', handleUnload);
+    };
+  }, []);
+
+  const getLocalStorage = () => {
     try {
       const expression = JSON.parse(
         localStorage.getItem(LOCAL_STORAGE_EXPRESSION_KEY)
       );
       if (!expression) return;
 
-      this.setState(expression);
+      setExpression(expression);
     } catch {
       localStorage.removeItem(LOCAL_STORAGE_EXPRESSION_KEY);
       alert(ERROR_MESSAGE.FAIL_TO_GET_DATA);
     }
-  }
+  };
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.handleBeforeunload);
-    window.removeEventListener('unload', this.handleUnload);
-  }
-
-  handleBeforeunload = (e) => {
+  const handleBeforeunload = (e) => {
     e.preventDefault();
     e.returnValue = '';
   };
 
-  handleUnload = () => {
+  const handleUnload = () => {
     localStorage.setItem(
       LOCAL_STORAGE_EXPRESSION_KEY,
       JSON.stringify(this.state)
     );
   };
 
-  render() {
-    return (
-      <div id="app">
-        <div className="calculator">
-          <CalculationResult expression={this.state} />
-          <CalculatorInputField
-            handleClickAC={this.handleClickAC}
-            handleClickDigit={this.handleClickDigit}
-            handleClickOperator={this.handleClickOperator}
-          />
-        </div>
+  return (
+    <div id="app">
+      <div className="calculator">
+        <CalculationResult expression={expression} />
+        <CalculatorInputField
+          handleClickAC={handleClickAC}
+          handleClickDigit={handleClickDigit}
+          handleClickOperator={handleClickOperator}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
