@@ -16,7 +16,7 @@ class Calculator extends React.Component {
     window.addEventListener('unload', this.handleUnload);
   }
 
-  handleBeforeUnload = e => {
+  handleBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = '';
   };
@@ -27,38 +27,16 @@ class Calculator extends React.Component {
     localStorage.setItem('total', this.state.total);
   };
 
-  render() {
-    return (
-      <div className="calculator">
-        <h1 id="total">{this.state.total}</h1>
-        <div className="digits flex" onClick={this.handleDigitButtonClick}>
-          {this.digitsTemplate}
-        </div>
-        <div className="modifiers subgrid">
-          <button className="modifier" onClick={this.handleModifierButtonClick}>
-            AC
-          </button>
-        </div>
-        <div
-          className="operations subgrid"
-          onClick={this.handleOperationButtonClick}
-        >
-          {this.operationTemplate}
-        </div>
-      </div>
-    );
-  }
-
   digitsTemplate = Array.from(Array(10).keys())
     .reverse()
     .map((digit, idx) => (
-      <button className="digit" key={idx}>
+      <button className='digit' key={idx}>
         {digit}
       </button>
     ));
 
   operationTemplate = ['/', 'X', '-', '+', '='].map((operation, idx) => (
-    <button className="operation" key={idx}>
+    <button className='operation' key={idx}>
       {operation}
     </button>
   ));
@@ -139,6 +117,28 @@ class Calculator extends React.Component {
         return Number.isNaN(result) ? ERROR_MESSAGE.INFINITY_TOTAL : result;
       // no default
     }
+  }
+
+  render() {
+    return (
+      <div className='calculator'>
+        <h1 id='total'>{this.state.total}</h1>
+        <div className='digits flex' onClick={this.handleDigitButtonClick}>
+          {this.digitsTemplate}
+        </div>
+        <div className='modifiers subgrid'>
+          <button className='modifier' onClick={this.handleModifierButtonClick}>
+            AC
+          </button>
+        </div>
+        <div
+          className='operations subgrid'
+          onClick={this.handleOperationButtonClick}
+        >
+          {this.operationTemplate}
+        </div>
+      </div>
+    );
   }
 }
 
