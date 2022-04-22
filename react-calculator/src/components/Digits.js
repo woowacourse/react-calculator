@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import Digit from '../elements/Digit';
-import { DIGITS } from '../constants';
+import React, { Component } from "react";
+import Digit from "../elements/Digit";
+import { DIGITS } from "../constants";
 
 export default class Digits extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ export default class Digits extends Component {
               digit={digit}
               key={index}
               onClickDigit={this.state.onClickDigit}
-            ></Digit>
+            />
           );
         })}
       </div>

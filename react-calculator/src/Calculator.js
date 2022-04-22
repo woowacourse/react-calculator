@@ -68,8 +68,8 @@ export default class Calculator extends Component {
     const { screenNumber, isNumberStep, recordNumber } = this.state;
     return (
       <div className="calculator">
-        <Screen screenNumber={screenNumber}></Screen>
-        <Digits onClickDigit={this.onClickDigit}></Digits>
+        <Screen screenNumber={screenNumber} />
+        <Digits onClickDigit={this.onClickDigit} />
         <Operators
           setScreenNumber={this.setScreenNumber}
           screenNumber={screenNumber}
@@ -77,11 +77,11 @@ export default class Calculator extends Component {
           isNumberStep={isNumberStep}
           recordNumber={recordNumber}
           setRecordNumber={this.setRecordNumber}
-        ></Operators>
+        />
         <ClearButton
           setScreenNumber={this.setScreenNumber}
           setRecordNumber={this.setRecordNumber}
-        ></ClearButton>
+        />
       </div>
     );
   }
