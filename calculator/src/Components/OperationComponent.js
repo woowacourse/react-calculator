@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 
 import { EXPONENTIAL_LIMIT_POINT, SCREEN } from "../constant";
+import OperationButtonComponent from "./OperationButtonComponent";
 
 export default class OperationComponent extends Component {
+  operations = ["/", "X", "-", "+"];
+
   calculateResultNumber = () => {
     const firstNumber = Number(this.props.calculateInfo.firstNumber);
     const secondNumber = Number(this.props.calculateInfo.secondNumber);
@@ -70,42 +73,15 @@ export default class OperationComponent extends Component {
   render() {
     return (
       <div className="operations subgrid" onClick={this.handleOperationButton}>
-        <button
-          className={
-            this.props.calculateInfo.operation === "/"
-              ? "operation--focused"
-              : "operation"
-          }
-        >
-          /
-        </button>
-        <button
-          className={
-            this.props.calculateInfo.operation === "X"
-              ? "operation--focused"
-              : "operation"
-          }
-        >
-          X
-        </button>
-        <button
-          className={
-            this.props.calculateInfo.operation === "-"
-              ? "operation--focused"
-              : "operation"
-          }
-        >
-          -
-        </button>
-        <button
-          className={
-            this.props.calculateInfo.operation === "+"
-              ? "operation--focused"
-              : "operation"
-          }
-        >
-          +
-        </button>
+        {this.operations.map((operation) => {
+          return (
+            <OperationButtonComponent
+              key={operation}
+              isFocused={this.props.calculateInfo.operation === operation}
+              operation={operation}
+            />
+          );
+        })}
         <button className="operation">=</button>
       </div>
     );
