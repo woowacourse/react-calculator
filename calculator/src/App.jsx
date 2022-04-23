@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 
 import "./App.css";
 
-import DigitComponent from "./Components/DigitComponent";
-import OperationComponent from "./Components/OperationComponent";
-import AllClearComponent from "./Components/AllClearComponent";
+import CalculateButtons from "./Components/CalculateButtons";
 
 import { convertToLocaleString } from "./utils";
-import { SCREEN, EXPONENTIAL_LIMIT_POINT } from "./constant";
+import { SCREEN, EXPONENTIAL_LIMIT_POINT, BUTTON_TYPES } from "./constant";
 
 export default function App() {
   const prevCalculateInfo = JSON.parse(
@@ -139,6 +137,8 @@ export default function App() {
     }));
   };
 
+  const isFocused = (operation) => calculateInfo.operation === operation;
+
   return (
     <div className="calculator">
       <h1
@@ -155,11 +155,24 @@ export default function App() {
           calculateInfo.secondNumber || calculateInfo.firstNumber
         )}
       </h1>
-      <DigitComponent onClick={handleDigitButton} />
-      <AllClearComponent onClick={handleAllClear} />
-      <OperationComponent
-        calculateInfo={calculateInfo}
+      <CalculateButtons
+        onClick={handleDigitButton}
+        parentClassName="digits flex"
+        childClassName="digit"
+        buttons={BUTTON_TYPES.DIGIT_NUMBERS}
+      />
+      <CalculateButtons
         onClick={handleOperationButton}
+        parentClassName="operations subgrid"
+        childClassName="operation"
+        buttons={BUTTON_TYPES.OPERATIONS}
+        isFocused={isFocused}
+      />
+      <CalculateButtons
+        onClick={handleAllClear}
+        parentClassName="modifiers subgrid"
+        childClassName="modifier"
+        buttons={BUTTON_TYPES.AllClear}
       />
     </div>
   );
