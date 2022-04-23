@@ -38,12 +38,15 @@ function Calculator() {
   });
 
   const handleNumber = (e) => {
-    if (firstOperand === OPERAND_ERROR_VALUE) this.clearResult();
     if (operator === '') {
       if (isOverThreeDigit(firstOperand)) {
         return;
       }
-      setFirstOperand(firstOperand + e.target.dataset.number);
+      setFirstOperand(
+        firstOperand === OPERAND_ERROR_VALUE
+          ? e.target.dataset.number
+          : firstOperand + e.target.dataset.number,
+      );
       return;
     }
 
@@ -54,7 +57,7 @@ function Calculator() {
   };
 
   const handleOperation = (e) => {
-    if (firstOperand === OPERAND_ERROR_VALUE) clearResult();
+    if (firstOperand === OPERAND_ERROR_VALUE) return;
 
     if (e.target.dataset.operator === '=') {
       calculate();
