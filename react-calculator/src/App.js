@@ -19,9 +19,9 @@ class Calculator extends Component {
   }
 
   componentDidMount() {
-    const calculationSituation = localStorage.getItem("calculate-situation");
+    const calculationState = localStorage.getItem("calculate-state");
 
-    calculationSituation && this.setState(JSON.parse(calculationSituation));
+    calculationState && this.setState(JSON.parse(calculationState));
     window.addEventListener("beforeunload", this.onBeforeUnload);
   }
 
@@ -31,7 +31,7 @@ class Calculator extends Component {
 
   onBeforeUnload = (event) => {
     event.preventDefault();
-    localStorage.setItem("calculate-situation", JSON.stringify(this.state));
+    localStorage.setItem("calculate-state", JSON.stringify(this.state));
     event.returnValue = "";
   };
 
@@ -39,19 +39,19 @@ class Calculator extends Component {
     return this.state.operator === "" ? 0 : 1;
   }
 
-  onClickDigit = (e) => {
+  onClickDigit = (number) => {
     try {
       checkMaxNumberLength(this.state.numbers, this.offset());
       if (this.state.calculated) {
         this.setState({
-          numbers: [e.target.innerText, ""],
+          numbers: [number, ""],
           operator: "",
           calculated: false,
         });
         return;
       }
 
-      const digit = Number(e.target.innerText);
+      const digit = Number(number);
       const newNumbers = [...this.state.numbers];
 
       newNumbers[this.offset()] += digit;
@@ -64,17 +64,12 @@ class Calculator extends Component {
     }
   };
 
-  onClickOperation = (e) => {
+  onClickOperation = (operator) => {
     try {
-      if (e.target.innerText === "=") {
-        this.onClickEqualOperation();
-        return;
-      }
-
       if (this.state.calculated) {
         this.setState({
           numbers: [this.resultRender(), ""],
-          operator: e.target.innerText,
+          operator,
           calculated: false,
         });
         return;
@@ -82,9 +77,7 @@ class Calculator extends Component {
 
       checkValidOperation(this.state.numbers, this.offset());
 
-      this.setState({
-        operator: e.target.innerText,
-      });
+      this.setState({ operator });
     } catch (err) {
       alert(err.message);
     }
@@ -125,7 +118,7 @@ class Calculator extends Component {
   }
 
   numberOperationRender() {
-    if (!this.state.numbers[0]) {
+    if (this.state.numbers[0] === "") {
       return "0";
     }
 
@@ -136,7 +129,7 @@ class Calculator extends Component {
     if (this.state.operator === "+") {
       return Number(this.state.numbers[0]) + Number(this.state.numbers[1]);
     }
-    if (this.state.operator === "X") {
+    if (this.state.operator === "x") {
       return Number(this.state.numbers[0]) * Number(this.state.numbers[1]);
     }
     if (this.state.operator === "-") {
@@ -159,6 +152,7 @@ class Calculator extends Component {
           <Operation
             onClickOperation={this.onClickOperation}
             onClickClearButton={this.onClickClearButton}
+            onClickEqualOperation={this.onClickEqualOperation}
           ></Operation>
         </div>
       </div>

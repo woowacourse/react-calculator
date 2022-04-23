@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+const operationArray = ["/", "x", "-", "+"];
+
 class Operation extends Component {
   render() {
     return (
@@ -13,23 +15,24 @@ class Operation extends Component {
             AC
           </button>
         </div>
-        <div
-          className="operations subgrid"
-          onClick={this.props.onClickOperation}
-        >
-          <button className="operation" data-operator="/">
-            /
+        <div className="operations subgrid">
+          {operationArray.map((operation) => (
+            <button
+              className="operation"
+              onClick={() => {
+                this.props.onClickOperation(operation);
+              }}
+              key={operation}
+            >
+              {operation}
+            </button>
+          ))}
+          <button
+            id="calculate-button"
+            onClick={this.props.onClickEqualOperation}
+          >
+            =
           </button>
-          <button className="operation" data-operator="x">
-            X
-          </button>
-          <button className="operation" data-operator="-">
-            -
-          </button>
-          <button className="operation" data-operator="+">
-            +
-          </button>
-          <button id="calculate-button">=</button>
         </div>
       </>
     );
