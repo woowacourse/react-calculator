@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import NumberButtons from './NumberButtons';
-import OperatorButtons from './OperandButtons';
+import NumberButton from './NumberButton';
+import OperatorButton from './OperatorButton';
 import { expressionStorage } from '../store/store';
 import { CONFIRM_MSG, OPERATOR_LIST } from '../constants/constant';
 import AllClearButton from './AllCearButton';
@@ -29,11 +29,10 @@ const Calculator = () => {
     };
   }, []);
 
-  const confirmExist = e => {
-    e.preventDefault();
-    e.returnValue = CONFIRM_MSG;
+  const confirmExist = event => {
+    event.preventDefault();
+    event.returnValue = CONFIRM_MSG;
 
-    const { sum, prevNumbers, operator, nextNumbers } = this.state;
     expressionStorage.setExpression({ sum, prevNumbers, operator, nextNumbers });
   };
 
@@ -43,7 +42,7 @@ const Calculator = () => {
         <Screen state={{ sum, prevNumbers, operator, nextNumbers }} />
         <div className="digits flex">
           {Array.from({ length: 10 }).map((_, index) => (
-            <NumberButtons
+            <NumberButton
               key={index}
               number={-(index - 9)}
               state={{ prevNumbers, operator, nextNumbers }}
@@ -56,7 +55,7 @@ const Calculator = () => {
         </div>
         <div className="operations subgrid">
           {OPERATOR_LIST.map((operand, index) => (
-            <OperatorButtons
+            <OperatorButton
               key={index}
               operand={operand}
               state={{ prevNumbers, operator, nextNumbers }}

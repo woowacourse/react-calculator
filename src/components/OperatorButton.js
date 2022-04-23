@@ -1,7 +1,7 @@
 import React from 'react';
 import { OPERATOR, ERROR_MSG } from '../constants/constant';
 
-const OperatorButtons = ({ operand, state, set }) => {
+const OperatorButton = ({ operand, state, set }) => {
   const { prevNumbers, operator, nextNumbers } = state;
   const { setSum, setOperator } = set;
 
@@ -40,4 +40,4 @@ const OperatorButtons = ({ operand, state, set }) => {
   );
 };
 
-export default OperatorButtons;
+export default OperatorButton;

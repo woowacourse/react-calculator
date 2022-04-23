@@ -1,7 +1,7 @@
 import React from 'react';
 import { NUMBER_LIMIT, ERROR_MSG } from '../constants/constant';
 
-const NumberButtons = ({ number, state, set }) => {
+const NumberButton = ({ number, state, set }) => {
   const { prevNumbers, operator, nextNumbers } = state;
   const { setPrevNumbers, setNextNumbers } = set;
 
@@ -31,4 +31,4 @@ const NumberButtons = ({ number, state, set }) => {
   );
 };
 
-export default NumberButtons;
+export default NumberButton;
