@@ -17,9 +17,7 @@ class App extends Component {
   constructor() {
     super();
 
-    this.state = {
-      ...(JSON.parse(localStorage.getItem('state')) || initialState),
-    };
+    this.state = JSON.parse(localStorage.getItem('state')) || { ...initialState };
   }
 
   componentDidMount() {
