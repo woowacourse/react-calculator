@@ -153,16 +153,11 @@ export default class Calculator extends Component {
       <div className="calculator">
         <DisplayResult result={this.state.result} />
         <div className="digits flex" onClick={this.onClickNumber}>
-          <button className="digit">9</button>
-          <button className="digit">8</button>
-          <button className="digit">7</button>
-          <button className="digit">6</button>
-          <button className="digit">5</button>
-          <button className="digit">4</button>
-          <button className="digit">3</button>
-          <button className="digit">2</button>
-          <button className="digit">1</button>
-          <button className="digit">0</button>
+          {Array.from({ length: 10 }, (_, i) => (
+            <button className="digit" key={i}>
+              {9 - i}
+            </button>
+          ))}
         </div>
         <div className="modifiers subgrid" onClick={this.onClickModifier}>
           <button className="modifier">AC</button>
