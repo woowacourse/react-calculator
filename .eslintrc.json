@@ -8,6 +8,7 @@
   "plugins": ["@typescript-eslint", "prettier"],
   "extends": [
     "airbnb",
+    "airbnb/hooks",
     "plugin:react/recommended",
     "plugin:import/recommended",
     "plugin:prettier/recommended",
@@ -38,8 +39,10 @@
         "js": "never",
         "jsx": "never",
         "ts": "never",
-        "tsx": "never"
+        "tsx": "never",
+        "scss": "never"
       }
-    ]
+    ],
+    "react/prop-types": "off"
   }
 }
