@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+import { OPERATORS } from "../constants";
 import DisplayResult from "./DisplayResult";
+import NumberButton from "./NumberButton";
+import OperatorButton from "./OperatorButton";
 
 const Calculator = () => {
   const [firstNumber, setFirstNumber] = useState(
@@ -101,21 +104,17 @@ const Calculator = () => {
     <div className="calculator">
       <DisplayResult result={result} />
       <div className="digits flex" onClick={onClickNumber}>
-        {Array.from({ length: 10 }, (_, i) => (
-          <button className="digit" key={i}>
-            {9 - i}
-          </button>
+        {Array.from({ length: 10 }, (_, index) => (
+          <NumberButton key={index} number={9 - index} />
         ))}
       </div>
       <div className="modifiers subgrid" onClick={onClickModifier}>
         <button className="modifier">AC</button>
       </div>
       <div className="operations subgrid" onClick={onClickOperator}>
-        <button className="operation">/</button>
-        <button className="operation">X</button>
-        <button className="operation">-</button>
-        <button className="operation">+</button>
-        <button className="operation">=</button>
+        {OPERATORS.map((operator) => (
+          <OperatorButton key={operator} operator={operator} />
+        ))}
       </div>
     </div>
   );
