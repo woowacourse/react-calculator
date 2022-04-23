@@ -13,6 +13,13 @@ type CalculatorState = {
   result: string;
 };
 
+const ERROR_MESSAGE = {
+  NOT_NUMBER: '숫자 아님',
+  INFINITY_NUMBER: '오류',
+  NOT_OPERATOR: '유효한 연산자가 아닙니다',
+  INPUT_ORDER: '숫자를 먼저 입력해 주세요',
+};
+
 const operators: Array<Operator> = [Operator.plus, Operator.minus, Operator.multiply, Operator.divide];
 
 // [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
@@ -33,7 +40,6 @@ const errorState = (errorMessage: string): CalculatorState => ({
 function Calculator() {
   const [state, setState] = useState<CalculatorState>({ ...initialState });
 
-  // useCallback
   const plus = (num1: number, num2: number) => num1 + num2;
   const minus = (num1: number, num2: number) => num1 - num2;
   const multiply = (num1: number, num2: number) => num1 * num2;
@@ -74,19 +80,21 @@ function Calculator() {
   const onClickReset = () => setState({ ...initialState });
 
   const onClickOperator = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
-    // TODO: 개행 리팩토링
     const { prevNumber } = state;
     const { operator } = (target as HTMLElement).dataset as { operator: Operator };
+
     if (!operator) return;
+
     const isValidOperator = Object.values(Operator).includes(operator);
     if (!isValidOperator) {
-      setState({ ...errorState('유효한 연산자가 아닙니다') });
+      setState({ ...errorState(ERROR_MESSAGE.NOT_OPERATOR) });
       return;
     }
     if (!prevNumber) {
-      setState({ ...errorState('숫자를 먼저 입력해 주세요') });
+      setState({ ...errorState(ERROR_MESSAGE.INPUT_ORDER) });
       return;
     }
+
     setState({ ...state, operator });
   };
 
@@ -111,7 +119,6 @@ function Calculator() {
   };
 
   const onClickCalculateBtn = () => {
-    // TODO: 로직 줄이자, 나누자
     const { prevNumber, nextNumber, operator } = state;
 
     if (!prevNumber) return;
@@ -122,18 +129,15 @@ function Calculator() {
     }
 
     const operatorFn = getOperatorFn(operator);
-
     if (operatorFn === null) return;
 
     const result = Math.floor(operatorFn(prevNumber, nextNumber));
-
     if (Number.isNaN(result)) {
-      setState({ ...errorState('숫자 아님') });
+      setState({ ...errorState(ERROR_MESSAGE.NOT_NUMBER) });
       return;
     }
-
     if (!Number.isFinite(result)) {
-      setState({ ...errorState('오류') });
+      setState({ ...errorState(ERROR_MESSAGE.INFINITY_NUMBER) });
       return;
     }
 
