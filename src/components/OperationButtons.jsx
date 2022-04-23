@@ -1,19 +1,13 @@
 import React, { Component } from 'react';
 
+const calculation = {
+  '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+  X: (a, b) => a * b,
+  '/': (a, b) => Math.floor(a / b),
+};
+
 export default class OperationButtons extends Component {
-  #calculation;
-
-  constructor(props) {
-    super(props);
-
-    this.#calculation = {
-      '+': (a, b) => a + b,
-      '-': (a, b) => a - b,
-      X: (a, b) => a * b,
-      '/': (a, b) => Math.floor(a / b),
-    };
-  }
-
   #handleOperatorClick = ({ target }) => {
     if (!target.classList.contains('operation')) return;
 
@@ -50,14 +44,14 @@ export default class OperationButtons extends Component {
   #calculate() {
     const { operator, firstOperand, secondOperand } = this.props.state;
 
-    const calc = this.#calculation[operator];
+    const calc = calculation[operator];
     return calc(Number(firstOperand), Number(secondOperand));
   }
 
   render() {
     return (
       <div className="operations subgrid">
-        {Object.keys(this.#calculation).map((operator) => (
+        {Object.keys(calculation).map((operator) => (
           <button
             key={operator}
             type="button"
