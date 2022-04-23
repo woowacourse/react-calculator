@@ -1,152 +1,124 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 import DisplayResult from "./DisplayResult";
 
-export default class Calculator extends Component {
-  state = {
-    firstNumber: 0,
-    operator: null,
-    secondNumber: 0,
-    isFirstNumber: true,
-    result: 0,
+const Calculator = () => {
+  const [firstNumber, setFirstNumber] = useState(
+    localStorage.getItem("prevValue") || 0
+  );
+  const [secondNumber, setSecondNumber] = useState(0);
+  const [operator, setOperator] = useState(null);
+  const [isFirstNumber, setIsFirstNumber] = useState(true);
+  const [result, setResult] = useState(
+    localStorage.getItem("prevValue") || "0"
+  );
+
+  const handleUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = "";
   };
 
-  componentDidMount() {
-    const prevValue = localStorage.getItem("prevValue") || 0;
-    this.setFirstNumber(Number(prevValue));
-    this.setResult(Number(prevValue));
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleUnload);
 
-    window.addEventListener("beforeunload", function (e) {
-      e.preventDefault();
-      e.returnValue = "";
-    });
-  }
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  });
 
-  initState = () => {
-    this.setState({
-      firstNumber: 0,
-      operator: null,
-      secondNumber: 0,
-      isFirstNumber: true,
-      result: 0,
-    });
+  const initState = () => {
+    setFirstNumber(0);
+    setSecondNumber(0);
+    setOperator(null);
+    setIsFirstNumber(true);
+    setResult("0");
   };
 
-  setFirstNumber = (number) => {
-    localStorage.setItem("prevValue", number);
-    this.setState({ firstNumber: Number(number) });
-  };
+  const onClickNumber = ({ target }) => {
+    const inputNumber = target.textContent;
 
-  setOperator = (operator) => {
-    this.setState({ operator });
-  };
-
-  setSecondNumber = (number) => {
-    localStorage.setItem("prevValue", number);
-    this.setState({ secondNumber: Number(number) });
-  };
-
-  setResult = (result) => {
-    this.setState({ result });
-  };
-
-  setIsFirstNumber = (isFirstNumber) => {
-    this.setState({ isFirstNumber });
-  };
-
-  calculate = () => {
-    const { firstNumber, secondNumber, operator } = this.state;
-
-    const res = (() => {
-      switch (operator) {
-        case "+":
-          return firstNumber + secondNumber;
-        case "-":
-          return firstNumber - secondNumber;
-        case "X":
-          return firstNumber * secondNumber;
-        case "/":
-          return Math.trunc(firstNumber / secondNumber);
-        default:
-          throw new Error("존재하지 않는 연산자입니다.");
-      }
-    })();
-
-    this.setState({ result: res }, () => {
-      this.initState();
-
-      if (res === Infinity || isNaN(res)) {
-        localStorage.setItem("prevValue", "오류");
-        this.setResult("오류");
-        return;
-      }
-
-      localStorage.setItem("prevValue", res);
-      this.setResult(res);
-      this.setFirstNumber(res);
-    });
-  };
-
-  onClickNumber = (e) => {
-    const inputNumber = e.target.textContent;
-
-    if (this.state.result === 0) {
-      this.setResult(inputNumber);
+    if (result === "0") {
+      setResult(inputNumber);
     } else {
-      this.setResult(this.state.result + inputNumber);
+      setResult(result + inputNumber);
     }
 
-    if (this.state.isFirstNumber) {
-      this.setFirstNumber(this.state.firstNumber * 10 + Number(inputNumber));
+    if (isFirstNumber) {
+      setFirstNumber(firstNumber * 10 + Number(inputNumber));
       return;
     }
 
-    this.setSecondNumber(this.state.secondNumber + inputNumber);
+    setSecondNumber(secondNumber * 10 + Number(inputNumber));
   };
 
-  onClickOperator = (e) => {
-    const inputOperator = e.target.textContent;
+  const onClickModifier = () => {
+    localStorage.setItem("prevValue", 0);
+    initState();
+  };
 
-    if (this.state.firstNumber === "") return;
-    if (inputOperator === "=" && this.state.secondNumber === "") return;
-    this.setResult(this.state.result + inputOperator);
+  const onClickOperator = ({ target }) => {
+    const inputOperator = target.textContent;
+
+    // if (firstNumber === "") return;
+    // if (inputOperator === "=" && secondNumber === 0) return; // 9+0 같은거도 막아버려서..
+    setResult(result + inputOperator);
 
     if (inputOperator !== "=") {
-      this.setFirstNumber(this.state.firstNumber);
-      this.setOperator(inputOperator);
-      this.setIsFirstNumber(false);
+      setOperator(inputOperator);
+      setIsFirstNumber(false);
       return;
     }
 
-    this.calculate();
+    const total = calculate();
+    initState();
+
+    if (total === Infinity || isNaN(total)) {
+      localStorage.setItem("prevValue", "오류");
+      setResult("오류");
+      return;
+    }
+
+    setResult(total);
+    setFirstNumber(total);
+    localStorage.setItem("prevValue", total);
   };
 
-  onClickModifier = () => {
-    localStorage.setItem("prevValue", 0);
-    this.initState();
+  const calculate = () => {
+    switch (operator) {
+      case "+":
+        return Number(firstNumber) + Number(secondNumber);
+      case "-":
+        return Number(firstNumber) - Number(secondNumber);
+      case "X":
+        return Number(firstNumber) * Number(secondNumber);
+      case "/":
+        return Math.trunc(Number(firstNumber) / Number(secondNumber));
+      default:
+        throw new Error("존재하지 않는 연산자입니다.");
+    }
   };
 
-  render() {
-    return (
-      <div className="calculator">
-        <DisplayResult result={this.state.result} />
-        <div className="digits flex" onClick={this.onClickNumber}>
-          {Array.from({ length: 10 }, (_, i) => (
-            <button className="digit" key={i}>
-              {9 - i}
-            </button>
-          ))}
-        </div>
-        <div className="modifiers subgrid" onClick={this.onClickModifier}>
-          <button className="modifier">AC</button>
-        </div>
-        <div className="operations subgrid" onClick={this.onClickOperator}>
-          <button className="operation">/</button>
-          <button className="operation">X</button>
-          <button className="operation">-</button>
-          <button className="operation">+</button>
-          <button className="operation">=</button>
-        </div>
+  return (
+    <div className="calculator">
+      <DisplayResult result={result} />
+      <div className="digits flex" onClick={onClickNumber}>
+        {Array.from({ length: 10 }, (_, i) => (
+          <button className="digit" key={i}>
+            {9 - i}
+          </button>
+        ))}
       </div>
-    );
-  }
-}
+      <div className="modifiers subgrid" onClick={onClickModifier}>
+        <button className="modifier">AC</button>
+      </div>
+      <div className="operations subgrid" onClick={onClickOperator}>
+        <button className="operation">/</button>
+        <button className="operation">X</button>
+        <button className="operation">-</button>
+        <button className="operation">+</button>
+        <button className="operation">=</button>
+      </div>
+    </div>
+  );
+};
+
+export default Calculator;

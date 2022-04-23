@@ -1,7 +1,5 @@
-import { Component } from "react";
+const DisplayResult = ({ result }) => {
+  return <h1 id="total">{result}</h1>;
+};
 
-export default class DisplayResult extends Component {
-  render() {
-    return <h1 id="total">{this.props.result.toString()}</h1>;
-  }
-}
+export default DisplayResult;
