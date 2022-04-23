@@ -4,14 +4,22 @@ import Button from './Button';
 
 export default class Keypad extends Component {
   render() {
-    const { className, keyClassName, keypad, onClick } = this.props;
+    const {
+      className,
+      keyClassName,
+      keypad,
+      onClick,
+      highlightIf = () => false,
+    } = this.props;
 
     return (
       <div className={className}>
         {keypad.map((key) => (
           <Button
             key={key}
-            className={keyClassName}
+            className={
+              highlightIf(key) ? `${keyClassName} highlight` : keyClassName
+            }
             onClick={onClick}
             text={key.toString()}
           />
@@ -29,4 +37,5 @@ Keypad.propTypes = {
     PropTypes.arrayOf(PropTypes.number),
   ]),
   onClick: PropTypes.func,
+  highlightIf: PropTypes.func,
 };

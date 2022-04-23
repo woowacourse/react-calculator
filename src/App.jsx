@@ -68,19 +68,21 @@ export default class App extends Component {
       numbers.length >= NUMBERS.MAX_COUNT &&
       numbers[numbers.length - 1] !== null
     ) {
-      this.setState((prevState) => ({
-        numbers: [
-          calculate(
-            prevState.numbers[0],
-            prevState.numbers[1],
-            prevState.operator
-          ),
-          null,
-        ],
-        operator,
-      }));
+      this.setState((prevState) => {
+        console.log(prevState);
 
-      return;
+        return {
+          numbers: [
+            calculate(
+              prevState.numbers[0],
+              prevState.numbers[1],
+              prevState.operator
+            ),
+            null,
+          ],
+          operator,
+        };
+      });
     }
 
     this.setState((prevState) => {
@@ -162,6 +164,7 @@ export default class App extends Component {
             keyClassName="operator keypad"
             keypad={OPERATORS.ORDERED_LIST}
             onClick={tryCatcher(this.handleOperatorClick)}
+            highlightIf={(operator) => operator === this.state.operator}
           />
         </div>
       </div>
