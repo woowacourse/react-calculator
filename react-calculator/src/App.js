@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { Component } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Digit from "./component/Digit";
 import Operation from "./component/Operation";
 import {
@@ -8,156 +8,151 @@ import {
   checkValidOperation,
 } from "./util/validator.js";
 
-class Calculator extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      numbers: ["", ""],
-      operator: "",
-      calculated: false,
-    };
-  }
+const Calculator = () => {
+  const [numbers, setNumbers] = useState(["", ""]);
+  const [operator, setOperator] = useState("");
+  const [calculated, setCalculated] = useState(false);
 
-  componentDidMount() {
+  const onBeforeUnload = useCallback(
+    (event) => {
+      event.preventDefault();
+      localStorage.setItem(
+        "calculate-state",
+        JSON.stringify({ numbers, operator, calculated })
+      );
+      event.returnValue = "";
+    },
+    [numbers, operator, calculated]
+  );
+
+  useEffect(() => {
     const calculationState = localStorage.getItem("calculate-state");
 
-    calculationState && this.setState(JSON.parse(calculationState));
-    window.addEventListener("beforeunload", this.onBeforeUnload);
-  }
+    if (calculationState) {
+      const { numbers, operator, calculated } = JSON.parse(calculationState);
+      setNumbers(numbers);
+      setOperator(operator);
+      setCalculated(calculated);
+    }
+  }, []);
 
-  componentWillUnmount() {
-    window.removeEventListener("beforeunload", this.onBeforeUnload);
-  }
+  useEffect(() => {
+    window.addEventListener("beforeunload", onBeforeUnload);
 
-  onBeforeUnload = (event) => {
-    event.preventDefault();
-    localStorage.setItem("calculate-state", JSON.stringify(this.state));
-    event.returnValue = "";
-  };
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  }, [onBeforeUnload]);
 
-  offset() {
-    return this.state.operator === "" ? 0 : 1;
-  }
+  const offset = useCallback(() => (operator === "" ? 0 : 1), [operator]);
 
-  onClickDigit = (number) => {
+  const resultRender = useCallback(() => {
+    if (operator === "+") {
+      return Number(numbers[0]) + Number(numbers[1]);
+    }
+    if (operator === "x") {
+      return Number(numbers[0]) * Number(numbers[1]);
+    }
+    if (operator === "-") {
+      return Number(numbers[0]) - Number(numbers[1]);
+    }
+    if (operator === "/") {
+      const result = Math.floor(Number(numbers[0]) / Number(numbers[1]));
+      return result === Infinity ? "오류" : result;
+    }
+  }, [numbers, operator]);
+
+  const onClickDigit = useCallback(
+    (number) => {
+      try {
+        checkMaxNumberLength(numbers, offset());
+        if (calculated) {
+          setNumbers([number, ""]);
+          setOperator("");
+          setCalculated(false);
+          return;
+        }
+
+        const digit = Number(number);
+        const newNumbers = [...numbers];
+
+        newNumbers[offset()] += digit;
+        setNumbers(newNumbers);
+        setCalculated(false);
+      } catch (err) {
+        alert(err.message);
+      }
+    },
+    [calculated, numbers, offset]
+  );
+
+  const onClickOperation = useCallback(
+    (operator) => {
+      try {
+        if (calculated) {
+          setNumbers([resultRender(), ""]);
+          setOperator(operator);
+          setCalculated(false);
+          return;
+        }
+
+        checkValidOperation(numbers, offset());
+
+        setOperator(operator);
+      } catch (err) {
+        alert(err.message);
+      }
+    },
+    [calculated, numbers, offset, resultRender]
+  );
+
+  const onClickEqualOperation = useCallback(() => {
     try {
-      checkMaxNumberLength(this.state.numbers, this.offset());
-      if (this.state.calculated) {
-        this.setState({
-          numbers: [number, ""],
-          operator: "",
-          calculated: false,
-        });
+      checkValidEqualOperation(numbers);
+
+      if (calculated) {
+        setNumbers([resultRender(), numbers[1]]);
+        setCalculated(true);
         return;
       }
 
-      const digit = Number(number);
-      const newNumbers = [...this.state.numbers];
-
-      newNumbers[this.offset()] += digit;
-      this.setState({
-        numbers: newNumbers,
-        calculated: false,
-      });
+      setCalculated(true);
     } catch (err) {
       alert(err.message);
     }
+  }, [calculated, numbers, resultRender]);
+
+  const onClickClearButton = useCallback(() => {
+    setNumbers(["", ""]);
+    setOperator("");
+    setCalculated(false);
+  }, []);
+
+  const decideTotalValue = () => {
+    return calculated ? resultRender() : numberOperationRender();
   };
 
-  onClickOperation = (operator) => {
-    try {
-      if (this.state.calculated) {
-        this.setState({
-          numbers: [this.resultRender(), ""],
-          operator,
-          calculated: false,
-        });
-        return;
-      }
-
-      checkValidOperation(this.state.numbers, this.offset());
-
-      this.setState({ operator });
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  onClickEqualOperation = () => {
-    try {
-      checkValidEqualOperation(this.state.numbers);
-
-      if (this.state.calculated) {
-        this.setState({
-          numbers: [this.resultRender(), this.state.numbers[1]],
-          calculated: true,
-        });
-        return;
-      }
-
-      this.setState({
-        calculated: true,
-      });
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
-  onClickClearButton = () => {
-    this.setState({
-      numbers: ["", ""],
-      operator: "",
-      calculated: false,
-    });
-  };
-
-  totalRender() {
-    return this.state.calculated
-      ? this.resultRender()
-      : this.numberOperationRender();
-  }
-
-  numberOperationRender() {
-    if (this.state.numbers[0] === "") {
+  const numberOperationRender = () => {
+    if (numbers[0] === "") {
       return "0";
     }
 
-    return `${this.state.numbers[0]}${this.state.operator}${this.state.numbers[1]}`;
-  }
+    return `${numbers[0]}${operator}${numbers[1]}`;
+  };
 
-  resultRender() {
-    if (this.state.operator === "+") {
-      return Number(this.state.numbers[0]) + Number(this.state.numbers[1]);
-    }
-    if (this.state.operator === "x") {
-      return Number(this.state.numbers[0]) * Number(this.state.numbers[1]);
-    }
-    if (this.state.operator === "-") {
-      return Number(this.state.numbers[0]) - Number(this.state.numbers[1]);
-    }
-    if (this.state.operator === "/") {
-      const result = Math.floor(
-        Number(this.state.numbers[0]) / Number(this.state.numbers[1])
-      );
-      return result === Infinity ? "오류" : result;
-    }
-  }
-
-  render() {
-    return (
-      <div id="app">
-        <div className="calculator">
-          <h1 id="total">{this.totalRender()}</h1>
-          <Digit onClickDigit={this.onClickDigit}></Digit>
-          <Operation
-            onClickOperation={this.onClickOperation}
-            onClickClearButton={this.onClickClearButton}
-            onClickEqualOperation={this.onClickEqualOperation}
-          ></Operation>
-        </div>
+  return (
+    <div id="app">
+      <div className="calculator">
+        <h1 id="total">{decideTotalValue()}</h1>
+        <Digit onClickDigit={onClickDigit}></Digit>
+        <Operation
+          onClickOperation={onClickOperation}
+          onClickClearButton={onClickClearButton}
+          onClickEqualOperation={onClickEqualOperation}
+        ></Operation>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Calculator;

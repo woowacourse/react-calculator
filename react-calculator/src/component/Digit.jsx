@@ -1,19 +1,19 @@
-import React, { Component } from "react";
+import React, { memo } from "react";
 
 const digitArray = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 
-class Digit extends Component {
-  render() {
-    return (
-      <div className="digits flex">
-        {digitArray.map((digit) => (
-          <button onClick={() => this.props.onClickDigit(digit)} key={digit}>
-            {digit}
-          </button>
-        ))}
-      </div>
-    );
-  }
-}
+const Digit = memo((props) => {
+  const { onClickDigit } = props;
+
+  return (
+    <div className="digits flex">
+      {digitArray.map((digit) => (
+        <button onClick={() => onClickDigit(digit)} key={digit}>
+          {digit}
+        </button>
+      ))}
+    </div>
+  );
+});
 
 export default Digit;
