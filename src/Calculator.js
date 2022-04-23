@@ -129,36 +129,11 @@ class Calculator extends React.Component {
             {this.state.firstNumber + this.state.operand + this.state.secondNumber}
           </h1>
           <div className="digits flex" onClick={this.handleNumber.bind(this)}>
-            <button className="digit" data-number="9">
-              9
-            </button>
-            <button className="digit" data-number="8">
-              8
-            </button>
-            <button className="digit" data-number="7">
-              7
-            </button>
-            <button className="digit" data-number="6">
-              6
-            </button>
-            <button className="digit" data-number="5">
-              5
-            </button>
-            <button className="digit" data-number="4">
-              4
-            </button>
-            <button className="digit" data-number="3">
-              3
-            </button>
-            <button className="digit" data-number="2">
-              2
-            </button>
-            <button className="digit" data-number="1">
-              1
-            </button>
-            <button className="digit" data-number="0">
-              0
-            </button>
+            {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map((number) => (
+              <button className="digit" data-number={number}>
+                {number}
+              </button>
+            ))}
           </div>
           <div className="modifiers subgrid" onClick={this.clearResult.bind(this)}>
             <button className="modifier" id="clear-button">
