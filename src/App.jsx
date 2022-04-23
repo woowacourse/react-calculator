@@ -48,6 +48,8 @@ export default function App() {
   };
 
   const calculate = () => {
+    if (!num2) return;
+
     switch (operator) {
       case '+':
         setTotal(Number(num1) + Number(num2));
