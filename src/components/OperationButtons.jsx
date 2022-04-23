@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 
 export default class OperationButtons extends Component {
-  #operatorButtons;
-
   #calculation;
 
   constructor(props) {
