@@ -161,7 +161,12 @@ function Calculator() {
       </div>
       <div className="operations subgrid">
         {operators.map(operator => (
-          <OperatorButton key={operator} operator={operator} onClickOperator={onClickOperator} />
+          <OperatorButton
+            key={operator}
+            isFocused={state.operator === operator}
+            operator={operator}
+            onClickOperator={onClickOperator}
+          />
         ))}
 
         <button id="calculate-equal" className="operation" type="button" onClick={onClickCalculateBtn}>
