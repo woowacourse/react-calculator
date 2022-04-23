@@ -2,25 +2,23 @@ import React, { Component } from 'react';
 
 import './App.css';
 
+import AllClearButton from './components/AllClearButton';
 import DigitButtons from './components/DigitButtons';
-
 import OperationButtons from './components/OperationButtons';
 
-import AllClearButton from './components/AllClearButton';
+const initialState = {
+  firstOperand: '0',
+  secondOperand: '',
+  operator: null,
+  isError: false,
+};
 
 class App extends Component {
   constructor() {
     super();
 
-    this.initialState = {
-      firstOperand: '0',
-      secondOperand: '',
-      operator: null,
-      isError: false,
-    };
-
     this.state = {
-      ...(JSON.parse(localStorage.getItem('state')) || this.initialState),
+      ...(JSON.parse(localStorage.getItem('state')) || initialState),
     };
   }
 
@@ -52,7 +50,7 @@ class App extends Component {
   };
 
   #triggerError = () => {
-    this.setState({ ...this.initialState, isError: true });
+    this.setState({ ...initialState, isError: true });
   };
 
   render() {
@@ -74,7 +72,7 @@ class App extends Component {
           <AllClearButton handleParentState={this.#handleParentState} />
           <OperationButtons
             state={this.state}
-            initialState={this.initialState}
+            initialState={initialState}
             handleParentState={this.#handleParentState}
             triggerError={this.#triggerError}
           />
