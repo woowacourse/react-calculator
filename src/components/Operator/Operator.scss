@@ -1,0 +1,25 @@
+.modifiers {
+  grid-area: modif;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+
+  & button {
+    background-color: #ccc;
+
+    &:hover {
+      background-color: #bbb;
+    }
+  }
+}
+
+.operations {
+  grid-area: oper;
+
+  & button {
+    background-color: orange;
+
+    &:hover {
+      background-color: #ff9500;
+    }
+  }
+}

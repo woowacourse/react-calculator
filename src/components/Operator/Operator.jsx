@@ -1,3 +1,5 @@
+import './Operator.scss';
+
 export default function Operator({ setOperatorState, calculate, allClear }) {
   const handleOperatorButtonClick = ({ target }) => {
     const operator = target.textContent;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import Digit from './components/Digit';
-import Operator from './components/Operator';
+import Digit from './components/Digit/Digit';
+import Operator from './components/Operator/Operator';
 import './App.scss';
 
 import { ERROR_MESSAGE, RULE } from './constants';

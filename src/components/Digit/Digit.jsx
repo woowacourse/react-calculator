@@ -1,3 +1,5 @@
+import './Digit.scss';
+
 export default function Digit({ setNumberState }) {
   const handleDigitButtonClick = ({ target }) => {
     setNumberState(target.textContent);
