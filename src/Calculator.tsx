@@ -18,6 +18,7 @@ const ERROR_MESSAGE = {
   INFINITY_NUMBER: '오류',
   NOT_OPERATOR: '유효한 연산자가 아닙니다',
   INPUT_ORDER: '숫자를 먼저 입력해 주세요',
+  MAX_DIGIT: '최대 세자리 숫자까지만 입력이 됩니다.',
 };
 
 const operators: Array<Operator> = [Operator.plus, Operator.minus, Operator.multiply, Operator.divide];
@@ -45,36 +46,32 @@ function Calculator() {
   const multiply = (num1: number, num2: number) => num1 * num2;
   const divide = (num1: number, num2: number) => num1 / num2;
 
+  const updateNumber = ({ isPrevNumberTurn, newNumber }: { isPrevNumberTurn: boolean; newNumber: number }) => {
+    if (isPrevNumberTurn) {
+      setState(prevState => ({ ...prevState, prevNumber: newNumber, result: `${newNumber}` }));
+      return;
+    }
+    setState(prevState => ({ ...prevState, nextNumber: newNumber, result: `${newNumber}` }));
+  };
+
   const onClickDigitBtn = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
     const { prevNumber, nextNumber, operator } = state;
     const { digit } = (target as HTMLElement).dataset;
     if (!digit) return;
 
     const isPrevNumberTurn = operator === Operator.empty;
+    const targetNumber = isPrevNumberTurn ? prevNumber : nextNumber;
 
-    // TODO: 리팩토링 할 것
-    if (isPrevNumberTurn) {
-      if (prevNumber === null) {
-        const _prevNumber = Number(digit);
-        setState({ ...state, prevNumber: _prevNumber, result: `${_prevNumber}` });
-        return;
-      }
-
-      if (`${prevNumber}`.length >= 3) return;
-      const _prevNumber = Number(prevNumber + digit);
-      setState({ ...state, prevNumber: _prevNumber, result: `${_prevNumber}` });
+    if (targetNumber === null) {
+      updateNumber({ isPrevNumberTurn, newNumber: Number(digit) });
       return;
     }
 
-    if (nextNumber === null) {
-      const _nextNumber = Number(digit);
-      setState({ ...state, nextNumber: _nextNumber, result: `${_nextNumber}` });
+    if (`${targetNumber}`.length >= 3) {
+      window.alert(ERROR_MESSAGE.MAX_DIGIT);
       return;
     }
-
-    if (`${nextNumber}`.length >= 3) return;
-    const _nextNumber = Number(nextNumber + digit);
-    setState({ ...state, nextNumber: _nextNumber, result: `${_nextNumber}` });
+    updateNumber({ isPrevNumberTurn, newNumber: Number(targetNumber + digit) });
   };
 
   const onClickReset = () => setState({ ...initialState });
@@ -168,7 +165,6 @@ function Calculator() {
             onClickOperator={onClickOperator}
           />
         ))}
-
         <button id="calculate-equal" className="operation" type="button" onClick={onClickCalculateBtn}>
           =
         </button>
