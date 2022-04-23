@@ -15,52 +15,52 @@ class Calculator extends React.Component {
     const result = localStorage.getItem(STORAGE_KEY)
       ? JSON.parse(localStorage.getItem(STORAGE_KEY))
       : {
-          firstNumber: '',
-          secondNumber: '',
-          operand: '',
+          firstOperand: '',
+          secondOperand: '',
+          operator: '',
         };
 
     this.state = result;
   }
 
   handleNumber(e) {
-    if (this.state.firstNumber === ERROR_MESSAGE) this.clearResult();
-    if (this.state.operand === '') {
-      this.setFirstNumber(e.target.dataset.number);
+    if (this.state.firstOperand === ERROR_MESSAGE) this.clearResult();
+    if (this.state.operator === '') {
+      this.setFirstOperand(e.target.dataset.number);
       return;
     }
-    this.setSecondNumber(e.target.dataset.number);
+    this.setSecondOperand(e.target.dataset.number);
   }
 
   handleOperation(e) {
-    if (this.state.firstNumber === ERROR_MESSAGE) this.clearResult();
+    if (this.state.firstOperand === ERROR_MESSAGE) this.clearResult();
 
     if (e.target.dataset.operator === '=') {
       this.calculate();
       return;
     }
 
-    if (this.state.operand !== '') return;
+    if (this.state.operator !== '') return;
     this.setState({
-      operand: e.target.dataset.operator,
+      operator: e.target.dataset.operator,
     });
   }
 
-  setFirstNumber(value) {
-    if (this.isOverThreeDigit(this.state.firstNumber)) {
+  setFirstOperand(value) {
+    if (this.isOverThreeDigit(this.state.firstOperand)) {
       return;
     }
     this.setState((prevState) => ({
-      firstNumber: prevState.firstNumber + value,
+      firstOperand: prevState.firstOperand + value,
     }));
   }
 
-  setSecondNumber(value) {
-    if (this.isOverThreeDigit(this.state.secondNumber)) {
+  setSecondOperand(value) {
+    if (this.isOverThreeDigit(this.state.secondOperand)) {
       return;
     }
     this.setState((prevState) => ({
-      secondNumber: prevState.secondNumber + value,
+      secondOperand: prevState.secondOperand + value,
     }));
   }
 
@@ -69,26 +69,25 @@ class Calculator extends React.Component {
   }
 
   calculate() {
-    if (!operation[this.state.operand]) return;
+    if (!operation[this.state.operator]) return;
 
-    const result = operation[this.state.operand](
-      +this.state.firstNumber,
-      +this.state.secondNumber,
+    const result = operation[this.state.operator](
+      +this.state.firstOperand,
+      +this.state.secondOperand,
     );
 
     this.setState({
-      firstNumber: Number.isFinite(result) ? String(result) : ERROR_MESSAGE,
-      secondNumber: '',
-      operand: '',
+      firstOperand: Number.isFinite(result) ? String(result) : ERROR_MESSAGE,
+      secondOperand: '',
+      operator: '',
     });
   }
 
-
   clearResult() {
     this.setState({
-      firstNumber: '',
-      secondNumber: '',
-      operand: '',
+      firstOperand: '',
+      secondOperand: '',
+      operator: '',
     });
   }
 
@@ -111,7 +110,7 @@ class Calculator extends React.Component {
       <div className="App">
         <div className="calculator">
           <h1 id="total">
-            {this.state.firstNumber + this.state.operand + this.state.secondNumber}
+            {this.state.firstOperand + this.state.operator + this.state.secondOperand}
           </h1>
           <div className="digits flex" onClick={this.handleNumber.bind(this)}>
             {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map((number) => (
