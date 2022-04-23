@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 
 import './App.css';
 
-import DigitButtons from './components/DigitButtons';
-
-import OperationButtons from './components/OperationButtons';
-
-import AllClearButton from './components/AllClearButton';
+import { DigitButtons, OperationButtons, AllClearButton } from './components';
 
 class App extends Component {
   constructor() {
