@@ -88,6 +88,26 @@ function Calculator() {
     setState({ ...state, operator });
   };
 
+  const getOperatorFn = (operator: Operator) => {
+    switch (operator) {
+      case Operator.plus: {
+        return plus;
+      }
+      case Operator.minus: {
+        return minus;
+      }
+      case Operator.multiply: {
+        return multiply;
+      }
+      case Operator.divide: {
+        return divide;
+      }
+      default: {
+        return null;
+      }
+    }
+  };
+
   const onClickCalculateBtn = () => {
     // TODO: 로직 줄이자, 나누자
     const { prevNumber, nextNumber, operator } = state;
@@ -99,28 +119,7 @@ function Calculator() {
       return;
     }
 
-    let operatorFn = null;
-    switch (operator) {
-      case Operator.plus: {
-        operatorFn = plus;
-        break;
-      }
-      case Operator.minus: {
-        operatorFn = minus;
-        break;
-      }
-      case Operator.multiply: {
-        operatorFn = multiply;
-        break;
-      }
-      case Operator.divide: {
-        operatorFn = divide;
-        break;
-      }
-      default: {
-        operatorFn = null;
-      }
-    }
+    const operatorFn = getOperatorFn(operator);
 
     if (operatorFn === null) return;
 
