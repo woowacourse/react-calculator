@@ -32,12 +32,8 @@ export default class Calculator extends Component {
   };
 
   setFirstNumber = (number) => {
-    this.setState(
-      {
-        firstNumber: Number(number),
-      },
-      localStorage.setItem("prevValue", number)
-    );
+    localStorage.setItem("prevValue", number);
+    this.setState({ firstNumber: Number(number) });
   };
 
   setOperator = (operator) => {
@@ -45,12 +41,8 @@ export default class Calculator extends Component {
   };
 
   setSecondNumber = (number) => {
-    this.setState(
-      {
-        secondNumber: Number(number),
-      },
-      localStorage.setItem("prevValue", number)
-    );
+    localStorage.setItem("prevValue", number);
+    this.setState({ secondNumber: Number(number) });
   };
 
   setResult = (result) => {
@@ -62,16 +54,18 @@ export default class Calculator extends Component {
   };
 
   calculate = () => {
+    const { firstNumber, secondNumber, operator } = this.state;
+
     const res = (() => {
-      switch (this.state.operator) {
+      switch (operator) {
         case "+":
-          return this.add();
+          return firstNumber + secondNumber;
         case "-":
-          return this.sub();
+          return firstNumber - secondNumber;
         case "X":
-          return this.multiple();
+          return firstNumber * secondNumber;
         case "/":
-          return this.divide();
+          return Math.trunc(firstNumber / secondNumber);
         default:
           throw new Error("존재하지 않는 연산자입니다.");
       }
@@ -81,33 +75,16 @@ export default class Calculator extends Component {
       this.initState();
 
       if (res === Infinity || isNaN(res)) {
-        this.setFirstNumber(0);
-        this.setResult("오류");
         localStorage.setItem("prevValue", "오류");
+        this.setResult("오류");
         return;
       }
 
-      this.setFirstNumber(res);
-      this.setResult(res);
       localStorage.setItem("prevValue", res);
+      this.setResult(res);
+      this.setFirstNumber(res);
     });
   };
-
-  add() {
-    return this.state.firstNumber + this.state.secondNumber;
-  }
-
-  sub() {
-    return this.state.firstNumber - this.state.secondNumber;
-  }
-
-  divide() {
-    return Math.floor(this.state.firstNumber / this.state.secondNumber);
-  }
-
-  multiple() {
-    return this.state.firstNumber * this.state.secondNumber;
-  }
 
   onClickNumber = (e) => {
     const inputNumber = e.target.textContent;
@@ -144,8 +121,8 @@ export default class Calculator extends Component {
   };
 
   onClickModifier = () => {
-    this.initState();
     localStorage.setItem("prevValue", 0);
+    this.initState();
   };
 
   render() {
