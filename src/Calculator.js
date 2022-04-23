@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { OPERAND_ERROR_VALUE, STORAGE_KEY } from './constants';
+import { OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constants';
 
 const operation = {
   '+': (firstNumber, secondNumber) => firstNumber + secondNumber,
@@ -39,7 +39,7 @@ function Calculator() {
 
   const handleNumber = (e) => {
     if (operator === '') {
-      if (isOverThreeDigit(firstOperand)) {
+      if (isOverOperandMaxLength(firstOperand)) {
         return;
       }
       setFirstOperand(
@@ -50,7 +50,7 @@ function Calculator() {
       return;
     }
 
-    if (isOverThreeDigit(secondOperand)) {
+    if (isOverOperandMaxLength(secondOperand)) {
       return;
     }
     setSecondOperand(secondOperand + e.target.dataset.number);
@@ -68,8 +68,8 @@ function Calculator() {
     setOperator(e.target.dataset.operator);
   };
 
-  function isOverThreeDigit(number) {
-    return number.length >= 3;
+  function isOverOperandMaxLength(number) {
+    return number.length >= OPERAND_MAX_LENGTH;
   }
 
   function calculate() {
