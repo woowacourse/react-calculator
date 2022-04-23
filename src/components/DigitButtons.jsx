@@ -15,15 +15,13 @@ export default function DigitButtons({
     return currentOperand + number;
   };
 
-  const handleDigitClick = ({ target }) => {
-    const number = target.textContent;
-
+  const handleDigitClick = (buttonNumber) => {
     if (hasOperator) {
-      setOperand('second', concatOperand(secondOperand, number));
+      setOperand('second', concatOperand(secondOperand, buttonNumber));
       return;
     }
 
-    setOperand('first', concatOperand(firstOperand, number));
+    setOperand('first', concatOperand(firstOperand, buttonNumber));
   };
 
   return (
@@ -35,7 +33,7 @@ export default function DigitButtons({
             key={buttonNumber}
             type="button"
             className="digit"
-            onClick={handleDigitClick}
+            onClick={() => handleDigitClick(String(buttonNumber))}
           >
             {buttonNumber}
           </button>

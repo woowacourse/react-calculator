@@ -15,10 +15,10 @@ export default function OperationButtons({
   setResult,
   setIsError,
 }) {
-  const handleOperatorClick = ({ target }) => {
+  const handleOperatorClick = (operatorType) => {
     if (secondOperand) return;
 
-    setOperator(target.textContent);
+    setOperator(operatorType);
   };
 
   const calculate = () => {
@@ -51,7 +51,7 @@ export default function OperationButtons({
           key={operatorType}
           type="button"
           className="operation"
-          onClick={handleOperatorClick}
+          onClick={() => handleOperatorClick(operatorType)}
         >
           {operatorType}
         </button>
