@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './App.css';
 
-import { DigitButtons, OperationButtons, AllClearButton } from './components';
+import { DigitButtons, OperationButtons } from './components';
 
 const initialState = {
   firstOperand: '0',
@@ -51,6 +51,10 @@ class App extends Component {
     this.setState({ ...initialState, isError: true });
   };
 
+  #handleAllClear = () => {
+    this.setState({ ...initialState });
+  };
+
   render() {
     const { isError, firstOperand, operator, secondOperand } = this.state;
 
@@ -67,7 +71,11 @@ class App extends Component {
             </h1>
           )}
           <DigitButtons state={this.state} handleParentState={this.#handleParentState} />
-          <AllClearButton handleParentState={this.#handleParentState} />
+          <div className="modifiers subgrid">
+            <button type="button" className="modifier" onClick={this.#handleAllClear}>
+              AC
+            </button>
+          </div>
           <OperationButtons
             state={this.state}
             initialState={initialState}
