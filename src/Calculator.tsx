@@ -92,7 +92,7 @@ function Calculator() {
       return;
     }
 
-    setState({ ...state, operator });
+    setState(prevState => ({ ...prevState, operator }));
   };
 
   const getOperatorFn = (operator: Operator) => {
@@ -121,7 +121,7 @@ function Calculator() {
     if (!prevNumber) return;
     if (!operator) return;
     if (nextNumber === null) {
-      setState({ ...state, operator: Operator.empty });
+      setState(prevState => ({ ...prevState, operator: Operator.empty }));
       return;
     }
 
