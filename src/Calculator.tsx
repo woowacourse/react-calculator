@@ -71,6 +71,8 @@ function Calculator() {
     setState({ ...state, nextNumber: _nextNumber, result: `${_nextNumber}` });
   };
 
+  const onClickReset = () => setState({ ...initialState });
+
   const onClickOperator = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
     // TODO: 개행 리팩토링
     const { prevNumber } = state;
@@ -149,7 +151,7 @@ function Calculator() {
         ))}
       </div>
       <div className="modifiers subgrid">
-        <button className="modifier" type="button" onClick={() => setState({ ...initialState })}>
+        <button className="modifier" type="button" onClick={onClickReset}>
           AC
         </button>
       </div>
