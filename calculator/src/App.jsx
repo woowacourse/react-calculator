@@ -66,6 +66,21 @@ export default function App() {
     }));
   };
 
+  const generateResultNumber = (number) => {
+    if (
+      String(number).length > SCREEN.MAX_TEXT_LENGTH &&
+      Number.isFinite(number)
+    ) {
+      return number.toExponential(EXPONENTIAL_LIMIT_POINT);
+    }
+
+    if (Number.isFinite(number)) {
+      return number;
+    }
+
+    return SCREEN.ERROR_MESSAGE;
+  };
+
   const calculateResultNumber = () => {
     const firstNumber = Number(calculateInfo.firstNumber);
     const secondNumber = Number(calculateInfo.secondNumber);
@@ -91,24 +106,7 @@ export default function App() {
     return resultNumber ?? firstNumber;
   };
 
-  const generateResultNumber = (number) => {
-    if (
-      String(number).length > SCREEN.MAX_TEXT_LENGTH &&
-      Number.isFinite(number)
-    ) {
-      return number.toExponential(EXPONENTIAL_LIMIT_POINT);
-    }
-
-    if (Number.isFinite(number)) {
-      return number;
-    }
-
-    return SCREEN.ERROR_MESSAGE;
-  };
-
-  const canCalculate = (target) => {
-    return target.textContent === "=" && calculateInfo.secondNumber !== "";
-  };
+  const canCalculate = () => calculateInfo.secondNumber !== "";
 
   const handleOperationButton = ({ target }) => {
     if (canCalculate(target)) {
@@ -116,7 +114,7 @@ export default function App() {
 
       setCalculateInfo(() => ({
         firstNumber: generateResultNumber(resultNumber),
-        operation: "",
+        operation: target.textContent,
         secondNumber: "",
       }));
 
@@ -137,7 +135,11 @@ export default function App() {
     }));
   };
 
-  const isFocused = (operation) => calculateInfo.operation === operation;
+  const isFocused = (operation) => {
+    if (operation === "=") return;
+
+    return calculateInfo.operation === operation;
+  };
 
   return (
     <div className="calculator">
