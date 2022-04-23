@@ -1,0 +1,61 @@
+{
+  "name": "react-calculator",
+  "version": "1.0.0",
+  "description": "계산기 어플리케이션",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --progress",
+    "clean": "npm cache clean --force && rd /s /q node_modules && del /f package-lock.json",
+    "start": "webpack serve --open --progress --port 9000",
+    "lint": "node_modules/.bin/eslint --ext=.jsx,.js,.tsx,.ts  .",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/airman5573/react-calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/intae92/react-calculator/issues"
+  },
+  "homepage": "https://github.com/intae92/react-calculator",
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@types/react": "^18.0.5",
+    "@types/react-dom": "^18.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "commitizen": "^4.2.4",
+    "css-loader": "^6.7.1",
+    "cz-customizable": "^6.3.0",
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.4",
+    "gh-pages": "^3.2.3",
+    "html-webpack-plugin": "^5.5.0",
+    "husky": "^7.0.0",
+    "mini-css-extract-plugin": "^2.6.0",
+    "node-sass": "^7.0.1",
+    "prettier": "^2.6.2",
+    "sass-loader": "^12.6.0",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}
