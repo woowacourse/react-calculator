@@ -4,19 +4,19 @@ import './App.css';
 
 import { DigitButtons, OperationButtons, AllClearButton } from './components';
 
+const initialState = {
+  firstOperand: '0',
+  secondOperand: '',
+  operator: null,
+  isError: false,
+};
+
 class App extends Component {
   constructor() {
     super();
 
-    this.initialState = {
-      firstOperand: '0',
-      secondOperand: '',
-      operator: null,
-      isError: false,
-    };
-
     this.state = {
-      ...(JSON.parse(localStorage.getItem('state')) || this.initialState),
+      ...(JSON.parse(localStorage.getItem('state')) || initialState),
     };
   }
 
@@ -48,7 +48,7 @@ class App extends Component {
   };
 
   #triggerError = () => {
-    this.setState({ ...this.initialState, isError: true });
+    this.setState({ ...initialState, isError: true });
   };
 
   render() {
@@ -70,7 +70,7 @@ class App extends Component {
           <AllClearButton handleParentState={this.#handleParentState} />
           <OperationButtons
             state={this.state}
-            initialState={this.initialState}
+            initialState={initialState}
             handleParentState={this.#handleParentState}
             triggerError={this.#triggerError}
           />

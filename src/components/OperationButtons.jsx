@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 
 export default class OperationButtons extends Component {
-  #operatorButtons;
-
   #calculation;
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.#calculation = {
       '+': (a, b) => a + b,
