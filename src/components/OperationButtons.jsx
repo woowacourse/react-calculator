@@ -9,8 +9,6 @@ const calculation = {
 
 export default class OperationButtons extends Component {
   #handleOperatorClick = ({ target }) => {
-    if (!target.classList.contains('operation')) return;
-
     const { secondOperand } = this.props.state;
     if (secondOperand) return;
 
