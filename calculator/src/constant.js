@@ -5,3 +5,8 @@ export const SCREEN = {
 };
 
 export const EXPONENTIAL_LIMIT_POINT = 3;
+
+export const BUTTON_TYPES = {
+  OPERATIONS: ["/", "X", "-", "+", "="],
+  DIGIT_NUMBERS: [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+};

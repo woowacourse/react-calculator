@@ -1,17 +1,9 @@
 import React from "react";
 
-export default function AllClearComponent({ setCalculateInfo }) {
-  const handleAllClear = () => {
-    setCalculateInfo(() => ({
-      firstNumber: 0,
-      operation: "",
-      secondNumber: "",
-    }));
-  };
-
+export default function AllClearComponent({ onClick }) {
   return (
     <div className="modifiers subgrid">
-      <button className="modifier" onClick={handleAllClear}>
+      <button className="modifier" onClick={onClick}>
         AC
       </button>
     </div>
