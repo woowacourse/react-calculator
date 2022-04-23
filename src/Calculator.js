@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ERROR_MESSAGE, STORAGE_KEY } from './constants';
 
 const operation = {
@@ -8,143 +8,117 @@ const operation = {
   '/': (firstNumber, secondNumber) => Math.floor(firstNumber / secondNumber),
 };
 
-class Calculator extends React.Component {
-  constructor(props) {
-    super(props);
+function Calculator() {
+  const initialValue = localStorage.getItem(STORAGE_KEY)
+    ? JSON.parse(localStorage.getItem(STORAGE_KEY))
+    : {
+        firstOperand: '',
+        secondOperand: '',
+        operator: '',
+      };
 
-    const result = localStorage.getItem(STORAGE_KEY)
-      ? JSON.parse(localStorage.getItem(STORAGE_KEY))
-      : {
-          firstOperand: '',
-          secondOperand: '',
-          operator: '',
-        };
+  const [firstOperand, setFirstOperand] = useState(initialValue.firstOperand);
+  const [secondOperand, setSecondOperand] = useState(initialValue.secondOperand);
+  const [operator, setOperator] = useState(initialValue.operator);
 
-    this.state = result;
-  }
+  const saveResult = (e) => {
+    e.preventDefault();
+    e.returnValue = '';
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ firstOperand, secondOperand, operator }));
+  };
 
-  handleNumber(e) {
-    if (this.state.firstOperand === ERROR_MESSAGE) this.clearResult();
-    if (this.state.operator === '') {
-      this.setFirstOperand(e.target.dataset.number);
+  window.addEventListener('beforeunload', saveResult);
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener('beforeunload', saveResult);
+    };
+  });
+
+  const handleNumber = (e) => {
+    if (firstOperand === ERROR_MESSAGE) this.clearResult();
+    if (operator === '') {
+      if (isOverThreeDigit(firstOperand)) {
+        return;
+      }
+      setFirstOperand(firstOperand + e.target.dataset.number);
       return;
     }
-    this.setSecondOperand(e.target.dataset.number);
-  }
 
-  handleOperation(e) {
-    if (this.state.firstOperand === ERROR_MESSAGE) this.clearResult();
+    if (isOverThreeDigit(secondOperand)) {
+      return;
+    }
+    setSecondOperand(secondOperand + e.target.dataset.number);
+  };
+
+  const handleOperation = (e) => {
+    if (firstOperand === ERROR_MESSAGE) clearResult();
 
     if (e.target.dataset.operator === '=') {
-      this.calculate();
+      calculate();
       return;
     }
 
-    if (this.state.operator !== '') return;
-    this.setState({
-      operator: e.target.dataset.operator,
-    });
-  }
+    if (operator !== '') return;
+    setOperator(e.target.dataset.operator);
+  };
 
-  setFirstOperand(value) {
-    if (this.isOverThreeDigit(this.state.firstOperand)) {
-      return;
-    }
-    this.setState((prevState) => ({
-      firstOperand: prevState.firstOperand + value,
-    }));
-  }
-
-  setSecondOperand(value) {
-    if (this.isOverThreeDigit(this.state.secondOperand)) {
-      return;
-    }
-    this.setState((prevState) => ({
-      secondOperand: prevState.secondOperand + value,
-    }));
-  }
-
-  isOverThreeDigit(number) {
+  function isOverThreeDigit(number) {
     return number.length >= 3;
   }
 
-  calculate() {
-    if (!operation[this.state.operator]) return;
+  function calculate() {
+    if (!operation[operator]) return;
 
-    const result = operation[this.state.operator](
-      +this.state.firstOperand,
-      +this.state.secondOperand,
-    );
+    const result = operation[operator](+firstOperand, +secondOperand);
 
-    this.setState({
-      firstOperand: Number.isFinite(result) ? String(result) : ERROR_MESSAGE,
-      secondOperand: '',
-      operator: '',
-    });
+    setFirstOperand(Number.isFinite(result) ? String(result) : ERROR_MESSAGE);
+    setSecondOperand('');
+    setOperator('');
   }
 
-  clearResult() {
-    this.setState({
-      firstOperand: '',
-      secondOperand: '',
-      operator: '',
-    });
+  function clearResult() {
+    setFirstOperand('');
+    setSecondOperand('');
+    setOperator('');
   }
 
-  saveResult(e) {
-    e.preventDefault();
-    e.returnValue = '';
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...this.state }));
-  }
-
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.saveResult.bind(this));
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.saveResult.bind(this));
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <div className="calculator">
-          <h1 id="total">
-            {this.state.firstOperand + this.state.operator + this.state.secondOperand}
-          </h1>
-          <div className="digits flex" onClick={this.handleNumber.bind(this)}>
-            {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map((number) => (
-              <button className="digit" data-number={number}>
-                {number}
-              </button>
-            ))}
-          </div>
-          <div className="modifiers subgrid" onClick={this.clearResult.bind(this)}>
-            <button className="modifier" id="clear-button">
-              AC
+  return (
+    <div className="App">
+      <div className="calculator">
+        <h1 id="total">{firstOperand + operator + secondOperand}</h1>
+        <div className="digits flex" onClick={handleNumber}>
+          {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map((number) => (
+            <button className="digit" data-number={number}>
+              {number}
             </button>
-          </div>
-          <div className="operations subgrid" onClick={this.handleOperation.bind(this)}>
-            <button className="operation" data-operator="/">
-              /
-            </button>
-            <button className="operation" data-operator="x">
-              X
-            </button>
-            <button className="operation" data-operator="-">
-              -
-            </button>
-            <button className="operation" data-operator="+">
-              +
-            </button>
-            <button id="calculate-button" data-operator="=">
-              =
-            </button>
-          </div>
+          ))}
+        </div>
+        <div className="modifiers subgrid" onClick={clearResult}>
+          <button className="modifier" id="clear-button">
+            AC
+          </button>
+        </div>
+        <div className="operations subgrid" onClick={handleOperation}>
+          <button className="operation" data-operator="/">
+            /
+          </button>
+          <button className="operation" data-operator="x">
+            X
+          </button>
+          <button className="operation" data-operator="-">
+            -
+          </button>
+          <button className="operation" data-operator="+">
+            +
+          </button>
+          <button id="calculate-button" data-operator="=">
+            =
+          </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Calculator;
