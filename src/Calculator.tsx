@@ -1,127 +1,120 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
+// eslint-disable-next-line import/extensions
+import { nanoid } from 'nanoid';
+import React, { useState } from 'react';
+import DigitButton from './components/DigitButton';
+import OperatorButton from './components/OperatorButton';
+import Operator from './types';
 
-enum Operator {
-  empty = '',
-  plus = 'plus',
-  minus = 'minus',
-  multiply = 'multiply',
-  divide = 'divide',
-}
-
-type State = {
+type CalculatorState = {
   prevNumber: null | number;
   nextNumber: null | number;
   operator: Operator;
   result: string;
 };
 
-class Calculator extends React.Component<any, State> {
-  static localStorageKey = 'calculator-key';
+const operators: Array<Operator> = [Operator.plus, Operator.minus, Operator.multiply, Operator.divide];
 
-  static initialState = {
-    prevNumber: null,
-    nextNumber: null,
-    operator: Operator.empty,
-    result: '0',
-  };
+// [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+const DIGITS = Array.from({ length: 10 }, (_, i) => ({ id: nanoid(), digit: 9 - i }));
 
-  static errorState = (errorMessage: string) => ({
-    ...Calculator.initialState,
-    result: errorMessage,
-  });
+const initialState: CalculatorState = {
+  prevNumber: null,
+  nextNumber: null,
+  operator: Operator.empty,
+  result: '0',
+};
 
-  constructor(props: any) {
-    super(props);
-    const originalState = JSON.parse(localStorage.getItem(Calculator.localStorageKey) ?? '{}');
-    this.state = { ...Calculator.initialState, ...originalState };
-    window.addEventListener('beforeunload', this.saveCurrentStateBeforeLeave);
-    window.onbeforeunload = () => {
-      return 'Are you sure you want to leave?';
-    };
-  }
+const errorState = (errorMessage: string): CalculatorState => ({
+  ...initialState,
+  result: errorMessage,
+});
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.saveCurrentStateBeforeLeave);
-  }
+function Calculator() {
+  const [state, setState] = useState<CalculatorState>({ ...initialState });
 
-  saveCurrentStateBeforeLeave = (event: BeforeUnloadEvent) => {
-    event.preventDefault();
-    localStorage.setItem(Calculator.localStorageKey, JSON.stringify(this.state));
-  };
+  // useCallback
+  const plus = (num1: number, num2: number) => num1 + num2;
+  const minus = (num1: number, num2: number) => num1 - num2;
+  const multiply = (num1: number, num2: number) => num1 * num2;
+  const divide = (num1: number, num2: number) => num1 / num2;
 
-  onClickDigitBtn = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
-    const { prevNumber, nextNumber, operator } = this.state;
+  const onClickDigitBtn = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
+    const { prevNumber, nextNumber, operator } = state;
     const { digit } = (target as HTMLElement).dataset;
     if (!digit) return;
 
     const isPrevNumberTurn = operator === Operator.empty;
+
+    // TODO: 리팩토링 할 것
     if (isPrevNumberTurn) {
       if (prevNumber === null) {
         const _prevNumber = Number(digit);
-        this.setState({ prevNumber: _prevNumber, result: `${_prevNumber}` });
+        setState({ ...state, prevNumber: _prevNumber, result: `${_prevNumber}` });
         return;
       }
 
       if (`${prevNumber}`.length >= 3) return;
       const _prevNumber = Number(prevNumber + digit);
-      this.setState({ prevNumber: _prevNumber, result: `${_prevNumber}` });
+      setState({ ...state, prevNumber: _prevNumber, result: `${_prevNumber}` });
       return;
     }
 
     if (nextNumber === null) {
       const _nextNumber = Number(digit);
-      this.setState({ nextNumber: _nextNumber, result: `${_nextNumber}` });
+      setState({ ...state, nextNumber: _nextNumber, result: `${_nextNumber}` });
       return;
     }
 
     if (`${nextNumber}`.length >= 3) return;
     const _nextNumber = Number(nextNumber + digit);
-    this.setState({ nextNumber: _nextNumber, result: `${_nextNumber}` });
+    setState({ ...state, nextNumber: _nextNumber, result: `${_nextNumber}` });
   };
 
-  onClickOperator = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
-    const { prevNumber } = this.state;
-    const { operator } = (target as HTMLElement).dataset;
+  const onClickOperator = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
+    // TODO: 개행 리팩토링
+    const { prevNumber } = state;
+    const { operator } = (target as HTMLElement).dataset as { operator: Operator };
     if (!operator) return;
-    const isValidOperator = Object.values(Operator).includes(operator as Operator);
+    const isValidOperator = Object.values(Operator).includes(operator);
     if (!isValidOperator) {
-      this.setState({ ...Calculator.errorState('유효한 연산자가 아닙니다') });
+      setState({ ...errorState('유효한 연산자가 아닙니다') });
       return;
     }
     if (!prevNumber) {
-      this.setState({ ...Calculator.errorState('숫자를 먼저 입력해 주세요') });
+      setState({ ...errorState('숫자를 먼저 입력해 주세요') });
       return;
     }
-    this.setState({ operator: operator as Operator });
+    setState({ ...state, operator });
   };
 
-  onClickCalculateBtn = () => {
-    const { prevNumber, nextNumber, operator } = this.state;
+  const onClickCalculateBtn = () => {
+    // TODO: 로직 줄이자, 나누자
+    const { prevNumber, nextNumber, operator } = state;
 
     if (!prevNumber) return;
     if (!operator) return;
     if (nextNumber === null) {
-      this.setState({ operator: Operator.empty });
+      setState({ ...state, operator: Operator.empty });
       return;
     }
 
     let operatorFn = null;
     switch (operator) {
       case Operator.plus: {
-        operatorFn = this.plus;
+        operatorFn = plus;
         break;
       }
       case Operator.minus: {
-        operatorFn = this.minus;
+        operatorFn = minus;
         break;
       }
       case Operator.multiply: {
-        operatorFn = this.multiply;
+        operatorFn = multiply;
         break;
       }
       case Operator.divide: {
-        operatorFn = this.divide;
+        operatorFn = divide;
         break;
       }
       default: {
@@ -134,88 +127,44 @@ class Calculator extends React.Component<any, State> {
     const result = Math.floor(operatorFn(prevNumber, nextNumber));
 
     if (Number.isNaN(result)) {
-      this.setState({ ...Calculator.errorState('숫자 아님') });
+      setState({ ...errorState('숫자 아님') });
       return;
     }
 
     if (!Number.isFinite(result)) {
-      this.setState({ ...Calculator.errorState('오류') });
+      setState({ ...errorState('오류') });
       return;
     }
 
-    this.setState({ prevNumber: result, nextNumber: null, operator: Operator.empty, result: `${result}` });
+    setState({ prevNumber: result, nextNumber: null, operator: Operator.empty, result: `${result}` });
   };
 
-  plus = (num1: number, num2: number) => num1 + num2;
+  const { result } = state;
 
-  minus = (num1: number, num2: number) => num1 - num2;
-
-  multiply = (num1: number, num2: number) => num1 * num2;
-
-  divide = (num1: number, num2: number) => num1 / num2;
-
-  render() {
-    const { result } = this.state;
-    return (
-      <div className="calculator">
-        <h1 id="total">{result}</h1>
-        <div className="digits flex">
-          <button className="digit" type="button" data-digit="9" onClick={this.onClickDigitBtn}>
-            9
-          </button>
-          <button className="digit" type="button" data-digit="8" onClick={this.onClickDigitBtn}>
-            8
-          </button>
-          <button className="digit" type="button" data-digit="7" onClick={this.onClickDigitBtn}>
-            7
-          </button>
-          <button className="digit" type="button" data-digit="6" onClick={this.onClickDigitBtn}>
-            6
-          </button>
-          <button className="digit" type="button" data-digit="5" onClick={this.onClickDigitBtn}>
-            5
-          </button>
-          <button className="digit" type="button" data-digit="4" onClick={this.onClickDigitBtn}>
-            4
-          </button>
-          <button className="digit" type="button" data-digit="3" onClick={this.onClickDigitBtn}>
-            3
-          </button>
-          <button className="digit" type="button" data-digit="2" onClick={this.onClickDigitBtn}>
-            2
-          </button>
-          <button className="digit" type="button" data-digit="1" onClick={this.onClickDigitBtn}>
-            1
-          </button>
-          <button className="digit" type="button" data-digit="0" onClick={this.onClickDigitBtn}>
-            0
-          </button>
-        </div>
-        <div className="modifiers subgrid">
-          <button className="modifier" type="button" onClick={() => this.setState({ ...Calculator.initialState })}>
-            AC
-          </button>
-        </div>
-        <div className="operations subgrid">
-          <button className="operation" type="button" data-operator="divide" onClick={this.onClickOperator}>
-            /
-          </button>
-          <button className="operation" type="button" data-operator="multiply" onClick={this.onClickOperator}>
-            X
-          </button>
-          <button className="operation" type="button" data-operator="minus" onClick={this.onClickOperator}>
-            -
-          </button>
-          <button className="operation" type="button" data-operator="plus" onClick={this.onClickOperator}>
-            +
-          </button>
-          <button id="calculate-equal" className="operation" type="button" onClick={this.onClickCalculateBtn}>
-            =
-          </button>
-        </div>
+  return (
+    <div className="calculator">
+      <h1 id="total">{result}</h1>
+      <div className="digits flex">
+        {DIGITS.map(({ id, digit }) => (
+          <DigitButton key={id} onClickDigitBtn={onClickDigitBtn} digit={digit} />
+        ))}
       </div>
-    );
-  }
+      <div className="modifiers subgrid">
+        <button className="modifier" type="button" onClick={() => setState({ ...initialState })}>
+          AC
+        </button>
+      </div>
+      <div className="operations subgrid">
+        {operators.map(operator => (
+          <OperatorButton key={operator} operator={operator} onClickOperator={onClickOperator} />
+        ))}
+
+        <button id="calculate-equal" className="operation" type="button" onClick={onClickCalculateBtn}>
+          =
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default Calculator;
