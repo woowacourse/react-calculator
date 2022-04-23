@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-import { DigitButtons, OperationButtons } from './components';
+import { AllClearButton, DigitButtons, Display, OperationButtons } from './components';
 
 const initialState = {
   firstOperand: '0',
@@ -62,18 +62,22 @@ export default function App() {
     setFirstOperand(result);
   };
 
+  const getDisplayContent = () => {
+    if (isError) return <>오류</>;
+
+    return (
+      <>
+        {firstOperand}
+        {operator}
+        {secondOperand}
+      </>
+    );
+  };
+
   return (
     <div className="App">
       <div className="calculator">
-        {isError ? (
-          <h1 id="total">오류</h1>
-        ) : (
-          <h1 id="total">
-            {firstOperand}
-            {operator}
-            {secondOperand}
-          </h1>
-        )}
+        <Display displayContent={getDisplayContent()} />
 
         <DigitButtons
           firstOperand={firstOperand}
@@ -82,11 +86,7 @@ export default function App() {
           setOperand={setOperand}
         />
 
-        <div className="modifiers subgrid">
-          <button type="button" className="modifier" onClick={handleAllClear}>
-            AC
-          </button>
-        </div>
+        <AllClearButton handleAllClear={handleAllClear} />
 
         <OperationButtons
           firstOperand={firstOperand}
