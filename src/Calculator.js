@@ -8,6 +8,8 @@ const operation = {
   '/': (firstNumber, secondNumber) => Math.floor(firstNumber / secondNumber),
 };
 
+const digits = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+
 function Calculator() {
   const initialValue = localStorage.getItem(STORAGE_KEY)
     ? JSON.parse(localStorage.getItem(STORAGE_KEY))
@@ -88,9 +90,9 @@ function Calculator() {
       <div className="calculator">
         <h1 id="total">{firstOperand + operator + secondOperand}</h1>
         <div className="digits flex" onClick={handleNumber}>
-          {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map((number) => (
-            <button className="digit" data-number={number}>
-              {number}
+          {digits.map((digit) => (
+            <button className="digit" data-number={digit}>
+              {digit}
             </button>
           ))}
         </div>
