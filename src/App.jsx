@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './App.css';
 import Keypad from './components/Keypad';
-// import Button from './components/Button';
 import {
   DIGITS,
   NUMBERS,
@@ -12,33 +11,12 @@ import {
   ERROR_RESULT,
   ERROR_MESSAGES,
 } from './constants/constants';
-import { tryCatcher } from './utils/commonUtils';
-
-const calculate = (firstNumber, secondNumber, operator) => {
-  switch (operator) {
-    case OPERATORS.ADD:
-      return firstNumber + secondNumber;
-    case OPERATORS.SUBTRACT:
-      return firstNumber - secondNumber;
-    case OPERATORS.MULTIPLY:
-      return firstNumber * secondNumber;
-    case OPERATORS.DIVIDE:
-      return secondNumber === 0
-        ? Infinity
-        : parseInt(firstNumber / secondNumber, 10);
-    default:
-      throw new Error(ERROR_MESSAGES.INVALID_OPERATOR);
-  }
-};
-
-const appendCharToLastElem = (list, char) => {
-  const listClone = [...list];
-  const lastIndex = listClone.length - 1;
-
-  listClone[lastIndex] += char;
-
-  return listClone;
-};
+import {
+  tryCatcher,
+  isNumberInvalid,
+  calculate,
+  appendDigitToLastElem,
+} from './utils/commonUtils';
 
 export default class App extends Component {
   constructor(props) {
@@ -65,21 +43,16 @@ export default class App extends Component {
   }
 
   handleDigitClick(digit) {
-    const { numberStrings } = this.state;
+    const { numbers } = this.state;
+    const currentNumber = numbers[numbers.length - 1];
 
-    if (numberStrings[numberStrings.length - 1].length >= DIGITS.MAX_LENGTH) {
+    if (currentNumber && currentNumber.toString().length >= DIGITS.MAX_LENGTH) {
       throw new Error(ERROR_MESSAGES.DIGIT_MAX_LENGTH_EXCEEDED);
     }
 
-    const updatedNumberStrings = appendCharToLastElem(
-      numberStrings,
-      digit.toString()
-    );
+    const updatedNumbers = appendDigitToLastElem(numbers, digit);
 
-    this.setState({
-      numberStrings: updatedNumberStrings,
-      displayedText: updatedNumberStrings[updatedNumberStrings.length - 1],
-    });
+    this.setState({ numbers: updatedNumbers });
   }
 
   handleOperatorClick(operator) {
@@ -88,24 +61,37 @@ export default class App extends Component {
 
       return;
     }
-    const { numberStrings } = this.state;
+
+    const { numbers } = this.state;
 
     if (
-      numberStrings.length >= NUMBERS.MAX_COUNT &&
-      numberStrings[numberStrings.length - 1] !== ''
+      numbers.length >= NUMBERS.MAX_COUNT &&
+      numbers[numbers.length - 1] !== null
     ) {
-      throw new Error(ERROR_MESSAGES.NO_SECOND_NUMBER_SUBMITTED);
+      this.setState((prevState) => ({
+        numbers: [
+          calculate(
+            prevState.numbers[0],
+            prevState.numbers[1],
+            prevState.operator
+          ),
+          null,
+        ],
+        operator,
+      }));
+
+      return;
     }
 
     this.setState((prevState) => {
-      const prevNumberStrings = prevState.numberStrings;
+      const prevNumbers = prevState.numbers;
 
-      if (prevNumberStrings[prevNumberStrings.length - 1] !== '') {
-        prevNumberStrings.push('');
+      if (prevNumbers[prevNumbers.length - 1] !== null) {
+        prevNumbers.push(null);
       }
 
       return {
-        numberStrings: prevNumberStrings,
+        numbers: prevNumbers,
         operator,
       };
     });
@@ -113,19 +99,14 @@ export default class App extends Component {
 
   handleEqualClick() {
     const {
-      numberStrings: [firstNumber, secondNumber],
+      numbers: [firstNumber, secondNumber],
       operator,
     } = this.state;
-    const result = calculate(
-      Number(firstNumber),
-      Number(secondNumber),
-      operator
-    );
+    const result = calculate(firstNumber, secondNumber, operator);
 
     this.setState({
-      numberStrings: DEFAULT_STATE.numberStrings,
+      numbers: [result],
       operator: DEFAULT_STATE.operator,
-      displayedText: result === Infinity ? ERROR_RESULT : result.toString(),
     });
   }
 
@@ -155,10 +136,15 @@ export default class App extends Component {
   }
 
   render() {
+    const result = this.state.numbers.filter((number) => number !== null).pop();
+    const displayedText = isNumberInvalid(result)
+      ? ERROR_RESULT
+      : result.toString();
+
     return (
       <div className="App">
         <div className="calculator">
-          <h1 id="total">{this.state.displayedText}</h1>
+          <h1 id="total">{displayedText}</h1>
           <Keypad
             className="digits flex"
             keyClassName="digit keypad"
@@ -169,7 +155,7 @@ export default class App extends Component {
             className="modifiers subgrid"
             keyClassName="modifier keypad"
             keypad={MODIFIERS.ORDERED_LIST}
-            onClick={tryCatcher(this.handleACClick)}
+            onClick={this.handleACClick}
           />
           <Keypad
             className="operators subgrid"
