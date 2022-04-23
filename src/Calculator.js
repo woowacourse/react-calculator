@@ -1,6 +1,13 @@
 import React from 'react';
 import { ERROR_MESSAGE, STORAGE_KEY } from './constants';
 
+const operation = {
+  '+': (firstNumber, secondNumber) => firstNumber + secondNumber,
+  '-': (firstNumber, secondNumber) => firstNumber - secondNumber,
+  'x': (firstNumber, secondNumber) => firstNumber * secondNumber,
+  '/': (firstNumber, secondNumber) => Math.floor(firstNumber / secondNumber),
+};
+
 class Calculator extends React.Component {
   constructor(props) {
     super(props);
@@ -62,9 +69,9 @@ class Calculator extends React.Component {
   }
 
   calculate() {
-    if (!this.operation[this.state.operand]) return;
+    if (!operation[this.state.operand]) return;
 
-    const result = this.operation[this.state.operand](
+    const result = operation[this.state.operand](
       +this.state.firstNumber,
       +this.state.secondNumber,
     );
@@ -76,28 +83,6 @@ class Calculator extends React.Component {
     });
   }
 
-  operation = {
-    '+': this.add,
-    '-': this.subtract,
-    'x': this.multiply,
-    '/': this.divide,
-  };
-
-  add(firstNumber, secondNumber) {
-    return firstNumber + secondNumber;
-  }
-
-  subtract(firstNumber, secondNumber) {
-    return firstNumber - secondNumber;
-  }
-
-  multiply(firstNumber, secondNumber) {
-    return firstNumber * secondNumber;
-  }
-
-  divide(firstNumber, secondNumber) {
-    return Math.floor(firstNumber / secondNumber);
-  }
 
   clearResult() {
     this.setState({
