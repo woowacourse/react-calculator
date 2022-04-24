@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { OPERATORS } from "../constants";
+import ClearButton from "./ClearButton";
 import DisplayResult from "./DisplayResult";
 import NumberButton from "./NumberButton";
 import OperatorButton from "./OperatorButton";
 
 const Calculator = () => {
-  const [firstNumber, setFirstNumber] = useState(
-    localStorage.getItem("prevValue") || 0
-  );
-  const [secondNumber, setSecondNumber] = useState(0);
-  const [operator, setOperator] = useState(null);
-  const [isFirstNumber, setIsFirstNumber] = useState(true);
-  const [result, setResult] = useState(
-    localStorage.getItem("prevValue") || "0"
-  );
+  const [data, setData] = useState({
+    firstNumber: localStorage.getItem("prevValue") || 0,
+    isFirstNumber: true,
+    secondNumber: 0,
+    operator: null,
+    result: localStorage.getItem("prevValue") || "0",
+  });
 
   const handleUnload = (event) => {
     event.preventDefault();
@@ -28,64 +27,44 @@ const Calculator = () => {
     };
   });
 
-  const initState = () => {
-    setFirstNumber(0);
-    setSecondNumber(0);
-    setOperator(null);
-    setIsFirstNumber(true);
-    setResult("0");
-  };
-
   const onClickNumber = ({ target }) => {
     const inputNumber = target.textContent;
 
-    if (result === "0") {
-      setResult(inputNumber);
-    } else {
-      setResult(result + inputNumber);
-    }
+    if (data.isFirstNumber) {
+      const firstNumber = data.firstNumber * 10 + Number(inputNumber);
+      localStorage.setItem("prevValue", firstNumber);
 
-    if (isFirstNumber) {
-      setFirstNumber(firstNumber * 10 + Number(inputNumber));
+      setData({
+        ...data,
+        firstNumber,
+        result: data.result === "0" ? inputNumber : firstNumber,
+      });
       return;
     }
 
-    setSecondNumber(secondNumber * 10 + Number(inputNumber));
+    const secondNumber = data.secondNumber * 10 + Number(inputNumber);
+    localStorage.setItem("prevValue", secondNumber);
+
+    setData({
+      ...data,
+      secondNumber,
+      result: secondNumber,
+    });
   };
 
   const onClickModifier = () => {
-    localStorage.setItem("prevValue", 0);
-    initState();
-  };
-
-  const onClickOperator = ({ target }) => {
-    const inputOperator = target.textContent;
-
-    // if (firstNumber === "") return;
-    // if (inputOperator === "=" && secondNumber === 0) return; // 9+0 같은거도 막아버려서..
-    setResult(result + inputOperator);
-
-    if (inputOperator !== "=") {
-      setOperator(inputOperator);
-      setIsFirstNumber(false);
-      return;
-    }
-
-    const total = calculate();
-    initState();
-
-    if (total === Infinity || isNaN(total)) {
-      localStorage.setItem("prevValue", "오류");
-      setResult("오류");
-      return;
-    }
-
-    setResult(total);
-    setFirstNumber(total);
-    localStorage.setItem("prevValue", total);
+    setData({
+      firstNumber: 0,
+      secondNumber: 0,
+      operator: null,
+      isFirstNumber: true,
+      result: "0",
+    });
   };
 
   const calculate = () => {
+    const { operator, firstNumber, secondNumber } = data;
+
     switch (operator) {
       case "+":
         return Number(firstNumber) + Number(secondNumber);
@@ -100,20 +79,57 @@ const Calculator = () => {
     }
   };
 
+  const onClickOperator = ({ target }) => {
+    const inputOperator = target.textContent;
+
+    if (inputOperator === "=") {
+      const total = calculate();
+      localStorage.setItem("prevValue", total);
+
+      setData({
+        ...data,
+        firstNumber: total,
+        result: total === Infinity || isNaN(total) ? "오류" : total,
+        secondNumber: 0,
+        operator: null,
+      });
+      return;
+    }
+
+    if (data.operator) {
+      alert("앞의 계산을 먼저 해주세요.");
+      return;
+    }
+
+    setData({
+      ...data,
+      operator: inputOperator,
+      isFirstNumber: false,
+    });
+  };
+
   return (
     <div className="calculator">
-      <DisplayResult result={result} />
-      <div className="digits flex" onClick={onClickNumber}>
+      <DisplayResult result={data.result} />
+      <div className="digits flex">
         {Array.from({ length: 10 }, (_, index) => (
-          <NumberButton key={index} number={9 - index} />
+          <NumberButton
+            key={index}
+            number={9 - index}
+            onClickNumber={onClickNumber}
+          />
         ))}
       </div>
-      <div className="modifiers subgrid" onClick={onClickModifier}>
-        <button className="modifier">AC</button>
+      <div className="modifiers subgrid">
+        <ClearButton onClickModifier={onClickModifier} />
       </div>
-      <div className="operations subgrid" onClick={onClickOperator}>
+      <div className="operations subgrid">
         {OPERATORS.map((operator) => (
-          <OperatorButton key={operator} operator={operator} />
+          <OperatorButton
+            key={operator}
+            operator={operator}
+            onClickOperator={onClickOperator}
+          />
         ))}
       </div>
     </div>
