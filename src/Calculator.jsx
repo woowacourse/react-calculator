@@ -2,6 +2,20 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 
+function calculateResult(operand, operator) {
+  switch (operator) {
+    case '+':
+      return +operand[0] + +operand[1];
+    case '-':
+      return +operand[0] - +operand[1];
+    case 'X':
+      return +operand[0] * +operand[1];
+    case '/':
+      return Math.floor(+operand[0] / +operand[1]);
+    default:
+      return '오류';
+  }
+}
 export default class Calculator extends Component {
   constructor() {
     super();
@@ -22,8 +36,6 @@ export default class Calculator extends Component {
         operator: localState.operator,
         index: localState.index,
       });
-      // this.setState({ operator: localState.operator });
-      // this.setState({ index: localState.index });
     }
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
@@ -106,23 +118,8 @@ export default class Calculator extends Component {
     if (!this.state.operator) {
       return;
     }
-    let result = null;
-    switch (operator) {
-      case '+':
-        result = +operand[0] + +operand[1];
-        break;
-      case '-':
-        result = +operand[0] - +operand[1];
-        break;
-      case 'X':
-        result = +operand[0] * +operand[1];
-        break;
-      case '/':
-        result = Math.floor(+operand[0] / +operand[1]);
-        break;
-      default:
-        break;
-    }
+
+    const result = calculateResult(operand, operator);
 
     if (result === Infinity) {
       this.setState({
