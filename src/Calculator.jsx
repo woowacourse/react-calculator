@@ -10,17 +10,17 @@ function Calculator() {
         operand: '',
       };
 
-  const [firstNumber, setFirstNumber] = useState(state.firstNumber);
-  const [secondNumber, setSecondNumber] = useState(state.secondNumber);
+  const [firstNumber, _setFirstNumber] = useState(state.firstNumber);
+  const [secondNumber, _setSecondNumber] = useState(state.secondNumber);
   const [operand, setOperand] = useState(state.operand);
 
   const handleNumber = (e) => {
     if (firstNumber === ERROR_MESSAGE) clearResult();
     if (operand === '') {
-      _setFirstNumber(e.target.dataset.number);
+      setFirstNumber(e.target.dataset.number);
       return;
     }
-    _setSecondNumber(e.target.dataset.number);
+    setSecondNumber(e.target.dataset.number);
   };
 
   const handleOperation = (e) => {
@@ -35,18 +35,18 @@ function Calculator() {
     setOperand(e.target.dataset.operator);
   };
 
-  const _setFirstNumber = (value) => {
+  const setFirstNumber = (value) => {
     if (isOverMaxDigit(firstNumber)) {
       return;
     }
-    setFirstNumber((prevState) => prevState + value);
+    _setFirstNumber((prevState) => prevState + value);
   };
 
-  const _setSecondNumber = (value) => {
+  const setSecondNumber = (value) => {
     if (isOverMaxDigit(secondNumber)) {
       return;
     }
-    setSecondNumber((prevState) => prevState + value);
+    _setSecondNumber((prevState) => prevState + value);
   };
 
   const isOverMaxDigit = (number) => {
@@ -81,14 +81,14 @@ function Calculator() {
 
     const result = operation[operand](+firstNumber, +secondNumber);
 
-    setFirstNumber(Number.isFinite(result) ? String(result) : ERROR_MESSAGE);
-    setSecondNumber('');
+    _setFirstNumber(Number.isFinite(result) ? String(result) : ERROR_MESSAGE);
+    _setSecondNumber('');
     setOperand('');
   };
 
   const clearResult = () => {
-    setFirstNumber('');
-    setSecondNumber('');
+    _setFirstNumber('');
+    _setSecondNumber('');
     setOperand('');
   };
 
