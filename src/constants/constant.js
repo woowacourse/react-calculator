@@ -23,3 +23,10 @@ export const OPERATOR_LIST = [
   OPERATOR.PLUS,
   OPERATOR.EQUAL,
 ];
+
+export const INITIAL_STATE = {
+  sum: '',
+  prevNumbers: [],
+  operator: '',
+  nextNumbers: [],
+};
