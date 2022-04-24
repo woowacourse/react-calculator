@@ -1,10 +1,9 @@
-import { useCallback } from 'react';
 import './Digit.scss';
 
 export default function Digit({ setNumberState }) {
-  const handleDigitButtonClick = useCallback(({ target }) => {
+  const handleDigitButtonClick = ({ target }) => {
     setNumberState(target.textContent);
-  });
+  };
 
   return (
     <div className="digits flex" onClick={handleDigitButtonClick}>

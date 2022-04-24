@@ -3,7 +3,7 @@ import Digit from './components/Digit/Digit';
 import Operator from './components/Operator/Operator';
 import './App.scss';
 
-import { ERROR_MESSAGE, RULE } from './constants';
+import { MAX_DIGIT_LENGTH, ERROR_MESSAGE } from './constants';
 
 const savedTotal = localStorage.getItem('total');
 
@@ -29,14 +29,14 @@ export default function App() {
 
   const setNumberState = number => {
     if (!operator) {
-      if (num1.length >= RULE.MAX_DIGIT_LENGTH)
+      if (num1.length >= MAX_DIGIT_LENGTH)
         return alert(ERROR_MESSAGE.IS_OVER_MAX_DIGIT_LENGTH);
 
       setNum1(prevState => (prevState === '0' ? number : prevState + number));
       return;
     }
 
-    if (num2.length >= RULE.MAX_DIGIT_LENGTH)
+    if (num2.length >= MAX_DIGIT_LENGTH)
       return alert(ERROR_MESSAGE.IS_OVER_MAX_DIGIT_LENGTH);
 
     setNum2(prevState => (prevState === '0' ? number : prevState + number));
