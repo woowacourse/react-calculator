@@ -9,6 +9,14 @@ const OperatorButton = ({ selfOperand, state, setState }) => {
   const { prevNumbers, operator, nextNumbers } = state;
 
   const onClickOperator = () => {
+    if (prevNumbers.length === 0) {
+      setState({
+        ...CALCULATOR_INITIAL_STATE,
+        prevNumbers: [0],
+        operator: selfOperand,
+      });
+    }
+
     if (selfOperand !== OPERATOR.EQUAL) {
       setState(prevState => ({ ...prevState, operator: selfOperand }));
       return;
@@ -17,7 +25,6 @@ const OperatorButton = ({ selfOperand, state, setState }) => {
     setState({
       ...CALCULATOR_INITIAL_STATE,
       sum: calculateSum(),
-      operator: selfOperand,
     });
   };
 

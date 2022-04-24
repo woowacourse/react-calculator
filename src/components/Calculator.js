@@ -15,6 +15,7 @@ const Calculator = () => {
   const stateRef = useRef(state);
 
   useEffect(() => {
+    console.log(state);
     stateRef.current = state;
   });
 

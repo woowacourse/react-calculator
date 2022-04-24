@@ -1,19 +1,15 @@
 import React from 'react';
-import {
-  NUMBER_LIMIT,
-  ERROR_MSG,
-  OPERATOR,
-  CALCULATOR_INITIAL_STATE,
-} from '../constants/constant';
+import { NUMBER_LIMIT, ERROR_MSG } from '../constants/constant';
+import { CALCULATOR_INITIAL_STATE } from '../constants/constant';
 
 const NumberButton = ({ number, state, setState }) => {
-  const { prevNumbers, operator, nextNumbers } = state;
+  const { sum, prevNumbers, operator, nextNumbers } = state;
 
   const onClickNumber = () => {
-    const isPrev = operator === '' || operator === OPERATOR.EQUAL;
+    const isPrev = operator === '';
 
-    if (operator === OPERATOR.EQUAL) {
-      setState(CALCULATOR_INITIAL_STATE);
+    if (sum) {
+      setState({ ...CALCULATOR_INITIAL_STATE });
     }
 
     if (
