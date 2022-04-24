@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constants';
-
-const operation = {
-  '+': (firstNumber, secondNumber) => firstNumber + secondNumber,
-  '-': (firstNumber, secondNumber) => firstNumber - secondNumber,
-  'x': (firstNumber, secondNumber) => firstNumber * secondNumber,
-  '/': (firstNumber, secondNumber) => Math.floor(firstNumber / secondNumber),
-};
-
-const digits = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+import { DIGITS, OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constants';
+import { operation } from './util';
 
 function Calculator() {
   const initialValue = localStorage.getItem(STORAGE_KEY)
@@ -93,7 +85,7 @@ function Calculator() {
       <div className="calculator">
         <h1 id="total">{firstOperand + operator + secondOperand}</h1>
         <div className="digits flex" onClick={handleNumber}>
-          {digits.map((digit) => (
+          {DIGITS.map((digit) => (
             <button className="digit" data-number={digit}>
               {digit}
             </button>
