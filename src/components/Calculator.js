@@ -1,6 +1,9 @@
 import { useLayoutEffect, useEffect, useState, useRef } from 'react';
 import '../styles/Calculator.css';
 
+const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+const OPERATIONS = ['/', 'X', '-', '+', '='];
+
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   if (operation === '/') {
     return Math.floor(firstOperand / secondOperand);
@@ -57,8 +60,7 @@ const Calculator = () => {
     return (e.returnValue = '');
   };
 
-  const handleClickDigit = ({ target }) => {
-    const { textContent: digit } = target;
+  const handleClickDigit = (digit) => () => {
     state.operation
       ? setState((prevState) => ({
           ...prevState,
@@ -70,8 +72,7 @@ const Calculator = () => {
         }));
   };
 
-  const handleClickOperation = ({ target }) => {
-    const { textContent: operation } = target;
+  const handleClickOperation = (operation) => () => {
     if (operation !== '=') {
       setState((prevState) => ({
         ...prevState,
@@ -120,36 +121,15 @@ const Calculator = () => {
             ${state.secondOperand}`}
         </h1>
         <div className="digits flex">
-          <button className="digit" onClick={handleClickDigit}>
-            9
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            8
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            7
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            6
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            5
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            4
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            3
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            2
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            1
-          </button>
-          <button className="digit" onClick={handleClickDigit}>
-            0
-          </button>
+          {DIGITS.map((digit) => (
+            <button
+              className="digit"
+              onClick={handleClickDigit(digit)}
+              key={digit}
+            >
+              {digit}
+            </button>
+          ))}
         </div>
         <div className="modifiers subgrid">
           <button className="modifier" onClick={handleInitState}>
@@ -157,21 +137,15 @@ const Calculator = () => {
           </button>
         </div>
         <div className="operations subgrid">
-          <button className="operation" onClick={handleClickOperation}>
-            /
-          </button>
-          <button className="operation" onClick={handleClickOperation}>
-            X
-          </button>
-          <button className="operation" onClick={handleClickOperation}>
-            -
-          </button>
-          <button className="operation" onClick={handleClickOperation}>
-            +
-          </button>
-          <button className="operation" onClick={handleClickOperation}>
-            =
-          </button>
+          {OPERATIONS.map((operation) => (
+            <button
+              className="operation"
+              onClick={handleClickOperation(operation)}
+              key={operation}
+            >
+              {operation}
+            </button>
+          ))}
         </div>
       </div>
     </>
