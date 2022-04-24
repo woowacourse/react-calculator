@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Digit from './components/Digit/Digit';
 import Operator from './components/Operator/Operator';
 import './App.scss';
@@ -18,14 +18,14 @@ export default function App() {
     window.addEventListener('unload', handleUnload);
   }, [total]);
 
-  const handleBeforeUnload = e => {
+  const handleBeforeUnload = useCallback(e => {
     e.preventDefault();
     e.returnValue = '';
-  };
+  }, []);
 
-  const handleUnload = () => {
+  const handleUnload = useCallback(() => {
     localStorage.setItem('total', total);
-  };
+  }, [total]);
 
   const setNumberState = number => {
     if (!operator) {

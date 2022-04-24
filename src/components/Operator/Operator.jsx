@@ -1,7 +1,8 @@
+import { useCallback } from 'react';
 import './Operator.scss';
 
 export default function Operator({ setOperatorState, calculate, allClear }) {
-  const handleOperatorButtonClick = ({ target }) => {
+  const handleOperatorButtonClick = useCallback(({ target }) => {
     const operator = target.textContent;
 
     if (operator === '=') {
@@ -9,7 +10,7 @@ export default function Operator({ setOperatorState, calculate, allClear }) {
       return;
     }
     setOperatorState(operator);
-  };
+  });
 
   return (
     <>
