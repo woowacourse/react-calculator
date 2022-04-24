@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import OperationButton from './components/OperationButton';
 import './Calculator.css';
+import operatorCollection from './utils/operator';
 
 const MAX_LENGTH = 3;
 const DIGIT_LIST = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
@@ -68,14 +69,8 @@ const Calculator = () => {
       return;
     }
 
-    const operatorCollection = {
-      '+': () => numbers[0] + numbers[1],
-      '-': () => numbers[0] - numbers[1],
-      X: () => numbers[0] * numbers[1],
-      '/': () => Number.parseInt(numbers[0] / numbers[1], 10),
-    };
+    const resultNumber = operatorCollection[operator](numbers[0], numbers[1]);
 
-    const resultNumber = operatorCollection[operator]();
     setNumbers([resultNumber, 0]);
     setOperator('');
   };
