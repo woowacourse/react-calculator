@@ -1,14 +1,14 @@
 import React from "react";
 
-function Digit(props) {
+function Digit({ digit, onClickDigit }) {
   return (
     <button
       className="digit"
       onClick={() => {
-        props.onClickDigit(props.digit);
+        onClickDigit(digit);
       }}
     >
-      {props.digit}
+      {digit}
     </button>
   );
 }

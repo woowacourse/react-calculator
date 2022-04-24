@@ -1,13 +1,14 @@
 import React from "react";
 
-function Operator(props) {
+function Operator({ onClickOperator, operator, clicked }) {
   return (
     <button
+      className={`operation ${clicked ? "clicked" : ""}`}
       onClick={() => {
-        props.onClickOperator(props.operator);
+        onClickOperator(operator);
       }}
     >
-      {props.operator}
+      {operator}
     </button>
   );
 }

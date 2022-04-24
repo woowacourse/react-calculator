@@ -10,6 +10,8 @@ function Operators({
   isNumberStep,
   recordNumber,
   setRecordNumber,
+  clicked,
+  setOperatorClicked,
 }) {
   const [operator, setOperator] = useState("");
 
@@ -23,10 +25,13 @@ function Operators({
       }
       setRecordNumber(screenNumber);
       setOperator(curOperator);
+      setOperatorClicked(curOperator);
       return;
     }
 
     setRecordNumber(0);
+    setOperator("");
+    setOperatorClicked("");
 
     let result = 0;
 
@@ -50,7 +55,6 @@ function Operators({
 
     if (!isFinite(result)) result = ERROR_MESSAGE.INFINITE_NUMBER;
     setScreenNumber(result);
-    setOperator("");
   };
 
   return (
@@ -59,6 +63,7 @@ function Operators({
         <Operator
           onClickOperator={onClickOperator}
           operator={operator}
+          clicked={clicked === operator}
           key={index}
         />
       ))}

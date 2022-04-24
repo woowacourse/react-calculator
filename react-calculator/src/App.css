@@ -45,9 +45,6 @@ button {
   background-color: orange;
 }
 
-.operations button:active {
-  background-color: rgba(255, 166, 0, 0.5);
-}
 .digits button {
   background-color: #efefef;
 }
@@ -96,4 +93,9 @@ button {
 
 .subgrid {
   display: grid;
+}
+
+.operations .clicked {
+  background-color: white;
+  color: orange;
 }

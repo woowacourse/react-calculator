@@ -11,12 +11,15 @@ function Calculator() {
   );
   const [recordNumber, setRecordNumber] = useState(0);
   const [isNumberStep, setIsNumberState] = useState(true);
+  const [operatorClicked, setOperatorClicked] = useState("");
 
   useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
   });
 
   const onClickDigit = (enteredDigit) => {
+    setOperatorClicked("");
+
     if (!isNumberStep) {
       setScreenNumber(enteredDigit);
       setIsNumberState(true);
@@ -47,10 +50,13 @@ function Calculator() {
         isNumberStep={isNumberStep}
         recordNumber={recordNumber}
         setRecordNumber={setRecordNumber}
+        clicked={operatorClicked}
+        setOperatorClicked={setOperatorClicked}
       />
       <ClearButton
         setScreenNumber={setScreenNumber}
         setRecordNumber={setRecordNumber}
+        setOperatorClicked={setOperatorClicked}
       />
     </div>
   );
