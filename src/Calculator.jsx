@@ -17,9 +17,13 @@ export default class Calculator extends Component {
     const localState = JSON.parse(localStorage.getItem('state'));
 
     if (localState) {
-      this.setState({ operand: localState.operand });
-      this.setState({ operator: localState.operator });
-      this.setState({ index: localState.index });
+      this.setState({
+        operand: localState.operand,
+        operator: localState.operator,
+        index: localState.index,
+      });
+      // this.setState({ operator: localState.operator });
+      // this.setState({ index: localState.index });
     }
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
@@ -84,14 +88,18 @@ export default class Calculator extends Component {
       return;
     }
 
-    this.setState({ operator });
-    this.setState({ index: 1 });
+    this.setState({
+      operator,
+      index: 1,
+    });
   }
 
   handleClickModifier() {
-    this.setState({ operand: ['0', ''] });
-    this.setState({ operator: '' });
-    this.setState({ index: 0 });
+    this.setState({
+      operand: ['0', ''],
+      operator: '',
+      index: 0,
+    });
   }
 
   calculate(operand, operator) {
@@ -117,14 +125,19 @@ export default class Calculator extends Component {
     }
 
     if (result === Infinity) {
-      this.setState({ operand: ['오류', ''] });
-      this.setState({ operator: '' });
+      this.setState({
+        operand: ['오류', ''],
+        operator: '',
+      });
+
       return;
     }
 
-    this.setState({ operand: [String(result), ''] });
-    this.setState({ operator: '' });
-    this.setState({ index: 0 });
+    this.setState({
+      operand: [String(result), ''],
+      operator: '',
+      index: 0,
+    });
   }
 
   renderDigit(i) {
@@ -166,6 +179,8 @@ export default class Calculator extends Component {
   }
 
   render() {
+    console.log(this.state);
+
     return (
       <div className="calculator">
         {this.renderResult()}
