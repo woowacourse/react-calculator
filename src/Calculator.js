@@ -10,7 +10,7 @@ class Calculator extends Component {
   constructor(props) {
     super(props);
 
-    this.state = this.initState();
+    this.state = this.defaultState;
   }
 
   get defaultState() {
@@ -20,20 +20,17 @@ class Calculator extends Component {
     };
   }
 
-  initState() {
-    const savedState = localStorage.getItem('CALCULATOR_STATE');
-    if (savedState) {
-      return JSON.parse(savedState);
-    }
-
-    return this.defaultState;
-  }
-
   #isExceedMaxNumber(number) {
     return number >= this.MAX_NUMBER && number !== Infinity;
   }
 
   componentDidMount() {
+    const savedState = localStorage.getItem('CALCULATOR_STATE');
+
+    if (savedState) {
+      this.setState(JSON.parse(savedState));
+    }
+
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
