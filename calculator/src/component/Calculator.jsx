@@ -94,13 +94,9 @@ export default class Calculator extends Component {
           {Number.isFinite(this.state.prevNumber) ? result : ERROR_MESSAGE.INFINITY_ERROR}
         </h1>
         <div className="digits flex">
-          {new Array(CALCULATOR.MAX_NUMBER + 1).fill().map((_, idx) => (
-            <button
-              className="digit"
-              key={CALCULATOR.MAX_NUMBER - idx}
-              onClick={this.changeNumber}
-            >
-              {CALCULATOR.MAX_NUMBER - idx}
+          {CALCULATOR.NUMBERS.map((digit) => (
+            <button className="digit" key={digit} onClick={this.changeNumber}>
+              {digit}
             </button>
           ))}
         </div>
