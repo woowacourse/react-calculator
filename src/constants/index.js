@@ -1,4 +1,20 @@
 const OPERATORS = ["/", "X", "-", "+", "="];
 const PREV_VALUE = "prevValue";
+const ERROR_TEXT = "오류";
 
-export { OPERATORS, PREV_VALUE };
+const INIT = "INIT";
+const SET_FIRST_NUMBER = "SET_FIRST_NUMBER";
+const SET_SECOND_NUMBER = "SET_SECOND_NUMBER";
+const SET_OPERATOR = "SET_OPERATOR";
+const CALCULATE = "CALCULATE";
+
+export {
+  OPERATORS,
+  PREV_VALUE,
+  ERROR_TEXT,
+  INIT,
+  SET_FIRST_NUMBER,
+  SET_SECOND_NUMBER,
+  SET_OPERATOR,
+  CALCULATE,
+};

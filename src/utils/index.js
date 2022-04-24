@@ -19,7 +19,7 @@ const saveLocalStorage = (key, data) => {
 
 const getLocalStorage = (key) => {
   try {
-    return JSON.parse(localStorage.getItem(key)) ?? [];
+    return JSON.parse(localStorage.getItem(key)) ?? "0";
   } catch {
     throw new Error("저장된 데이터가 유효하지 않은 JSON 형식입니다.");
   }

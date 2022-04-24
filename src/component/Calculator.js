@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useReducer } from "react";
-import { OPERATORS, PREV_VALUE } from "../constants";
+import {
+  CALCULATE,
+  ERROR_TEXT,
+  INIT,
+  OPERATORS,
+  PREV_VALUE,
+  SET_FIRST_NUMBER,
+  SET_OPERATOR,
+  SET_SECOND_NUMBER,
+} from "../constants";
 import { calculate, getLocalStorage, saveLocalStorage } from "../utils";
 
 import ClearButton from "./ClearButton";
@@ -9,11 +18,17 @@ import OperatorButton from "./OperatorButton";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "INIT": {
+    case INIT: {
       saveLocalStorage(PREV_VALUE, 0);
-      return action.data;
+      return {
+        firstNumber: 0,
+        secondNumber: 0,
+        isFirstNumber: true,
+        operator: null,
+        result: "0",
+      };
     }
-    case "SET_FIRST_NUMBER": {
+    case SET_FIRST_NUMBER: {
       const firstTotalNumber = state.firstNumber * 10 + Number(action.data);
       saveLocalStorage(PREV_VALUE, firstTotalNumber);
 
@@ -23,7 +38,7 @@ const reducer = (state, action) => {
         result: state.result === "0" ? action.data : firstTotalNumber,
       };
     }
-    case "SET_SECOND_NUMBER": {
+    case SET_SECOND_NUMBER: {
       const secondTotalNumber = state.secondNumber * 10 + Number(action.data);
       saveLocalStorage(PREV_VALUE, secondTotalNumber);
 
@@ -33,14 +48,14 @@ const reducer = (state, action) => {
         result: secondTotalNumber,
       };
     }
-    case "SET_OPERATOR": {
+    case SET_OPERATOR: {
       return {
         ...state,
         isFirstNumber: false,
         operator: action.data,
       };
     }
-    case "CALCULATE": {
+    case CALCULATE: {
       const total = calculate(
         state.firstNumber,
         state.operator,
@@ -54,7 +69,7 @@ const reducer = (state, action) => {
         secondNumber: 0,
         isFirstNumber: true,
         operator: null,
-        result: total === Infinity || isNaN(total) ? "오류" : total,
+        result: total === Infinity || isNaN(total) ? ERROR_TEXT : total,
       };
     }
     default:
@@ -62,14 +77,16 @@ const reducer = (state, action) => {
   }
 };
 
+const initialState = {
+  firstNumber: getLocalStorage(PREV_VALUE) || 0,
+  secondNumber: 0,
+  isFirstNumber: true,
+  operator: null,
+  result: getLocalStorage(PREV_VALUE) || "0",
+};
+
 const Calculator = () => {
-  const [data, dispatch] = useReducer(reducer, {
-    firstNumber: getLocalStorage(PREV_VALUE) || 0,
-    secondNumber: 0,
-    isFirstNumber: true,
-    operator: null,
-    result: getLocalStorage(PREV_VALUE) || "0",
-  });
+  const [data, dispatch] = useReducer(reducer, initialState);
 
   const handleUnload = (event) => {
     event.preventDefault();
@@ -89,24 +106,17 @@ const Calculator = () => {
       const inputNumber = target.textContent;
 
       if (data.isFirstNumber) {
-        dispatch({ type: "SET_FIRST_NUMBER", data: inputNumber });
+        dispatch({ type: SET_FIRST_NUMBER, data: inputNumber });
         return;
       }
 
-      dispatch({ type: "SET_SECOND_NUMBER", data: inputNumber });
+      dispatch({ type: SET_SECOND_NUMBER, data: inputNumber });
     },
     [data.isFirstNumber]
   );
 
   const onClickModifier = useCallback(() => {
-    const initData = {
-      firstNumber: 0,
-      secondNumber: 0,
-      isFirstNumber: true,
-      operator: null,
-      result: "0",
-    };
-    dispatch({ type: "INIT", data: initData });
+    dispatch({ type: INIT });
   }, []);
 
   const onClickOperator = useCallback(
@@ -118,7 +128,7 @@ const Calculator = () => {
         return;
       }
       if (inputOperator === "=") {
-        dispatch({ type: "CALCULATE" });
+        dispatch({ type: CALCULATE });
         return;
       }
       if (data.operator) {
@@ -126,7 +136,7 @@ const Calculator = () => {
         return;
       }
 
-      dispatch({ type: "SET_OPERATOR", data: inputOperator });
+      dispatch({ type: SET_OPERATOR, data: inputOperator });
     },
     [data.operator]
   );
