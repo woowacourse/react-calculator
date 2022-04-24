@@ -28,27 +28,6 @@ body {
   height: 500px;
 }
 
-button {
-  font-size: 2rem;
-  border: 1px solid #98999b;
-}
-
-.modifiers button {
-  background-color: #ccc;
-}
-
-.operations button {
-  background-color: orange;
-}
-
-.operations button.pressed {
-  border: 2px solid #333;
-}
-
-.digits button {
-  background-color: #efefef;
-}
-
 #total {
   grid-area: total;
   background-color: #333;

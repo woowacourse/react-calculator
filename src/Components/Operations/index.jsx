@@ -1,30 +1,37 @@
 import PropTypes from 'prop-types';
+import { OPERATION_LIST } from '../../Constants';
 
-const OPERATION_LIST = ['/', 'X', '-', '+'];
+import Container from './styles';
 
-function OperationButton({ onClickOperation, onClickResult }) {
+function OperationButton({ currentOperator, onClickOperation, onClickResult }) {
   return (
     <div className="operations subgrid">
       {OPERATION_LIST.map((operation, index) => (
-        <button
+        <Container
           type="button"
           // 연산자 목록이 이후 변경될 일이 없음으로 key를 index로 사용
           // eslint-disable-next-line react/no-array-index-key
           key={index}
           className="operation"
+          pressed={currentOperator === operation}
           onClick={() => onClickOperation(operation)}
         >
           {operation}
-        </button>
+        </Container>
       ))}
-      <button type="submit" className="operation" onClick={onClickResult}>
+      <Container type="submit" className="operation" onClick={onClickResult}>
         =
-      </button>
+      </Container>
     </div>
   );
 }
 
+OperationButton.defaultProps = {
+  currentOperator: '',
+};
+
 OperationButton.propTypes = {
+  currentOperator: PropTypes.string,
   onClickOperation: PropTypes.func.isRequired,
   onClickResult: PropTypes.func.isRequired,
 };

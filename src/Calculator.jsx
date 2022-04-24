@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
-import DigitButton from './Components/DigitButton';
-import OperationButton from './Components/OperationButton';
-import useCalculation from './Hooks/useCalculation';
 import { STORAGE_NAME } from './Constants';
+
+import Button from './Components/Button';
+import DigitButton from './Components/Digits';
+import OperationButton from './Components/Operations';
+import useCalculation from './Hooks/useCalculation';
 
 import './Calculator.css';
 
@@ -35,12 +37,13 @@ function Calculator() {
       <h1 id="total">{totalNumber === Infinity ? '오류' : totalNumber}</h1>
       <DigitButton onClickDigit={handleAddDigit} />
       <div className="modifiers subgrid">
-        <button type="button" className="modifier" onClick={handleAllClear}>
+        <Button type="button" className="modifier" onClick={handleAllClear}>
           AC
-        </button>
+        </Button>
       </div>
 
       <OperationButton
+        currentOperator={inputOperator}
         onClickOperation={handleSetOperator}
         onClickResult={handleCalculationResult}
       />
