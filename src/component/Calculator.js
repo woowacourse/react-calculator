@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer } from "react";
-import { OPERATORS } from "../constants";
-import { calculate } from "../utils";
+import { OPERATORS, PREV_VALUE } from "../constants";
+import { calculate, getLocalStorage, saveLocalStorage } from "../utils";
 
 import ClearButton from "./ClearButton";
 import DisplayResult from "./DisplayResult";
@@ -10,12 +10,12 @@ import OperatorButton from "./OperatorButton";
 const reducer = (state, action) => {
   switch (action.type) {
     case "INIT": {
-      localStorage.setItem("prevValue", 0);
+      saveLocalStorage(PREV_VALUE, 0);
       return action.data;
     }
     case "SET_FIRST_NUMBER": {
       const firstTotalNumber = state.firstNumber * 10 + Number(action.data);
-      localStorage.setItem("prevValue", firstTotalNumber);
+      saveLocalStorage(PREV_VALUE, firstTotalNumber);
 
       return {
         ...state,
@@ -25,7 +25,7 @@ const reducer = (state, action) => {
     }
     case "SET_SECOND_NUMBER": {
       const secondTotalNumber = state.secondNumber * 10 + Number(action.data);
-      localStorage.setItem("prevValue", secondTotalNumber);
+      saveLocalStorage(PREV_VALUE, secondTotalNumber);
 
       return {
         ...state,
@@ -46,7 +46,7 @@ const reducer = (state, action) => {
         state.operator,
         state.secondNumber
       );
-      localStorage.setItem("prevValue", total);
+      saveLocalStorage(PREV_VALUE, total);
 
       return {
         ...state,
@@ -64,11 +64,11 @@ const reducer = (state, action) => {
 
 const Calculator = () => {
   const [data, dispatch] = useReducer(reducer, {
-    firstNumber: localStorage.getItem("prevValue") || 0,
+    firstNumber: getLocalStorage(PREV_VALUE) || 0,
     secondNumber: 0,
     isFirstNumber: true,
     operator: null,
-    result: localStorage.getItem("prevValue") || "0",
+    result: getLocalStorage(PREV_VALUE) || "0",
   });
 
   const handleUnload = (event) => {
@@ -117,12 +117,10 @@ const Calculator = () => {
         alert("올바른 계산이 아닙니다.");
         return;
       }
-
       if (inputOperator === "=") {
         dispatch({ type: "CALCULATE" });
         return;
       }
-
       if (data.operator) {
         alert("앞의 계산을 먼저 해주세요.");
         return;
