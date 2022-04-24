@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 const NumberButton = ({ number, onClickNumber }) => {
   return (
@@ -8,4 +8,4 @@ const NumberButton = ({ number, onClickNumber }) => {
   );
 };
 
-export default React.memo(NumberButton);
+export default memo(NumberButton);

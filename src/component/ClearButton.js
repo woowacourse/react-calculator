@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 const ClearButton = ({ onClickModifier }) => {
   return (
@@ -8,4 +8,4 @@ const ClearButton = ({ onClickModifier }) => {
   );
 };
 
-export default React.memo(ClearButton);
+export default memo(ClearButton);

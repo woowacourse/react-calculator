@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 const OperatorButton = ({ operator, onClickOperator }) => {
   return (
@@ -8,4 +8,4 @@ const OperatorButton = ({ operator, onClickOperator }) => {
   );
 };
 
-export default React.memo(OperatorButton);
+export default memo(OperatorButton);
