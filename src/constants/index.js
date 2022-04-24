@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'state';
+const STORAGE_KEY = 'expression';
 
 const OPERAND_ERROR_VALUE = '오류';
 const OPERAND_MAX_LENGTH = 3;
