@@ -4,10 +4,10 @@ import Button from '../Button';
 
 function Operators({ handleClickOperator }) {
   return (
-    <div className="operations subgrid">
-      {OPERATORS.map((operator) => (
+    <div className="operators subgrid">
+      {Object.values(OPERATORS).map((operator) => (
         <Button
-          className="operation"
+          className="operator"
           handleClick={handleClickOperator}
           key={operator}
         >

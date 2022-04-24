@@ -3,12 +3,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import CalculationResult from './components/CalculationResult';
 import CalculatorInputField from './components/CalculatorInputField';
+
 import {
   ERROR_MESSAGE,
   INFINITY_CASE_TEXT,
   LOCAL_STORAGE_EXPRESSION_KEY,
   MAX_NUMBER_LENGTH,
+  OPERATORS,
 } from './constants';
+import { calculateExpression } from './util';
 
 const handleBeforeunload = (e) => {
   e.preventDefault();
@@ -53,14 +56,6 @@ function App() {
     };
   }, [handleUnload]);
 
-  const handleClickAC = () => {
-    setExpression({
-      prevNumber: '',
-      operator: '',
-      nextNumber: '',
-    });
-  };
-
   const updateNumber = (numberKey, selectedDigit) => {
     if (expression[numberKey].length >= MAX_NUMBER_LENGTH) {
       alert(ERROR_MESSAGE.EXCEED_MAX_NUMBER_LENGTH);
@@ -70,6 +65,14 @@ function App() {
       ...states,
       [numberKey]: `${expression[numberKey]}${selectedDigit}`,
     }));
+  };
+
+  const handleClickAC = () => {
+    setExpression({
+      prevNumber: '',
+      operator: '',
+      nextNumber: '',
+    });
   };
 
   const handleClickDigit = ({ target: { textContent: selectedDigit } }) => {
@@ -86,34 +89,23 @@ function App() {
     updateNumber(operator ? 'nextNumber' : 'prevNumber', selectedDigit);
   };
 
-  const calculateExpression = (num1, operator, num2) => {
-    switch (operator) {
-      case '+':
-        return num1 + num2;
-      case '-':
-        return num1 - num2;
-      case 'X':
-        return num1 * num2;
-      case '/':
-        return num2 === 0 ? INFINITY_CASE_TEXT : Number.parseInt(num1 / num2);
-      default:
-        alert(ERROR_MESSAGE.STRANGE_OPERATOR(operator));
-    }
-  };
-
   const handleClickOperator = ({
     target: { textContent: selectedOperator },
   }) => {
     const { prevNumber, operator, nextNumber } = expression;
 
-    if (prevNumber === INFINITY_CASE_TEXT) return;
+    if (
+      prevNumber === INFINITY_CASE_TEXT ||
+      (selectedOperator === OPERATORS.EQUAL && !operator)
+    )
+      return;
 
-    if (selectedOperator !== '=' && operator) {
+    if (selectedOperator !== OPERATORS.EQUAL && operator) {
       alert(ERROR_MESSAGE.ALLOW_ONE_OPERATOR);
       return;
     }
 
-    if (selectedOperator !== '=' && !operator) {
+    if (selectedOperator !== OPERATORS.EQUAL && !operator) {
       setExpression((prevStates) => ({
         ...prevStates,
         operator: selectedOperator,
@@ -121,20 +113,26 @@ function App() {
       return;
     }
 
-    if (operator) {
-      const num1 = Number(prevNumber);
-      const num2 = Number(nextNumber);
+    const num1 = Number(prevNumber);
+    const num2 = Number(nextNumber);
+    let expressionResult;
 
-      setExpression({
-        prevNumber: `${calculateExpression(
-          num1,
-          operator,
-          nextNumber ? num2 : num1
-        )}`,
-        operator: '',
-        nextNumber: '',
-      });
+    try {
+      expressionResult = `${calculateExpression(
+        num1,
+        operator,
+        nextNumber ? num2 : num1
+      )}`;
+    } catch (error) {
+      alert(error.message);
+      return;
     }
+
+    setExpression({
+      prevNumber: expressionResult,
+      operator: '',
+      nextNumber: '',
+    });
   };
 
   return (

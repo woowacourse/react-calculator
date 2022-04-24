@@ -13,9 +13,21 @@ const INFINITY_CASE_TEXT = '오류';
 
 const LOCAL_STORAGE_EXPRESSION_KEY = 'expression';
 
+const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+
+const OPERATORS = {
+  DIVIDE: '/',
+  MULTIPLY: 'X',
+  MINUS: '-',
+  PLUS: '+',
+  EQUAL: '=',
+};
+
 export {
   MAX_NUMBER_LENGTH,
   ERROR_MESSAGE,
   INFINITY_CASE_TEXT,
   LOCAL_STORAGE_EXPRESSION_KEY,
+  DIGITS,
+  OPERATORS,
 };
