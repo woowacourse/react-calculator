@@ -1,5 +1,12 @@
-import { Component } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import '../styles/Calculator.css';
+const digitList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+const operationList = ['/', 'X', '-', '+', '='];
+
+const DEFAULT_FIRST_OPERAND_VALUE = '0';
+const DEFAULT_SECOND_OPERAND_VALUE = '';
+const DEFAULT_OPERATION_VALUE = null;
+const DEFAULT_IS_ERROR_VALUE = false;
 
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   if (operation === '/') {
@@ -26,79 +33,46 @@ const computeNextOperand = (currentOperand, digit) => {
     : `${Number(currentOperand + digit)}`;
 };
 
-class Calculator extends Component {
-  constructor() {
-    super();
-    const memoizedState = JSON.parse(localStorage.getItem('prevState'));
-    this.state = memoizedState
-      ? memoizedState
-      : {
-          firstOperand: '0',
-          secondOperand: '',
-          operation: null,
-          isError: false,
-        };
-  }
+const Calculator = () => {
+  const {
+    firstOperand: prevFirstOperand,
+    secondOperand: prevSecondOperand,
+    operation: prevOperation,
+    isError: prevIsError,
+  } = useMemo(() => JSON.parse(localStorage.getItem('prevState')), []);
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.onBeforeUnload);
-  }
+  const [firstOperand, setFirstOperand] = useState(
+    prevFirstOperand ?? DEFAULT_FIRST_OPERAND_VALUE,
+  );
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.onBeforeUnload);
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-  }
+  const [secondOperand, setSecondOperand] = useState(
+    prevSecondOperand ?? DEFAULT_SECOND_OPERAND_VALUE,
+  );
 
-  initState = () => {
-    this.setState({
-      firstOperand: '0',
-      secondOperand: '',
-      operation: null,
-      isError: false,
-    });
-  };
+  const [operation, setOperation] = useState(
+    prevOperation ?? DEFAULT_OPERATION_VALUE,
+  );
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.onBeforeUnload);
-  }
+  const [isError, setIsError] = useState(prevIsError ?? DEFAULT_IS_ERROR_VALUE);
 
-  // setItem 하는 로직은 상태가 업데이트 될때 하는게 맞나 ?
-  componentDidUpdate() {
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-  }
+  const onClickDigit = (digit) => {
+    setIsError(false);
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.onBeforeUnload);
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-  }
-
-  onClickDigits = ({ target }) => {
-    const { textContent: digit, className } = target;
-
-    if (className !== 'digit') {
+    if (operation) {
+      setSecondOperand((prevSecondOperand) =>
+        computeNextOperand(prevSecondOperand, digit),
+      );
       return;
     }
 
-    this.setState(({ firstOperand, secondOperand, operation }) => {
-      return operation
-        ? {
-            secondOperand: computeNextOperand(secondOperand, digit),
-            isError: false,
-          }
-        : {
-            firstOperand: computeNextOperand(firstOperand, digit),
-            isError: false,
-          };
-    });
+    setFirstOperand((prevFirstOperand) =>
+      computeNextOperand(prevFirstOperand, digit),
+    );
   };
 
-  onClickOperations = ({ target }) => {
-    const { textContent: operation } = target;
-
-    if (operation !== '=') {
-      this.setState({
-        operation,
-      });
+  const onClickOperation = (clickedOperation) => {
+    if (clickedOperation !== '=') {
+      setOperation(clickedOperation);
       return;
     }
 
@@ -110,79 +84,93 @@ class Calculator extends Component {
     }
 
     const result = computeExpression({
-      firstOperand: Number(this.state.firstOperand),
-      secondOperand: Number(this.state.secondOperand),
-      operation: this.state.operation,
+      firstOperand: Number(firstOperand),
+      secondOperand: Number(secondOperand),
+      operation,
     });
 
     if (isFinite(result)) {
-      this.setState({
-        firstOperand: `${result}`,
-        secondOperand: '',
-        operation: null,
-      });
+      setFirstOperand(`${result}`);
+      setSecondOperand(DEFAULT_SECOND_OPERAND_VALUE);
+      setOperation(DEFAULT_OPERATION_VALUE);
+
       return;
     }
 
-    this.setState(() => ({
-      isError: true,
-    }));
+    setIsError(true);
   };
 
-  onBeforeUnload = (e) => {
+  const initializeState = () => {
+    setFirstOperand(DEFAULT_FIRST_OPERAND_VALUE);
+    setSecondOperand(DEFAULT_SECOND_OPERAND_VALUE);
+    setOperation(DEFAULT_OPERATION_VALUE);
+    setIsError(DEFAULT_IS_ERROR_VALUE);
+  };
+
+  const onBeforeUnload = (e) => {
     e.preventDefault();
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-    if (hasInput({ ...this.state })) {
-      e.returnValue = '';
-    }
-  };
 
-  onBeforeUnload = (e) => {
-    e.preventDefault();
-    const { firstOperand, secondOperand, operation } = this.state;
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-    if (hasInput({ ...this.state })) {
-      e.returnValue = '';
-    }
-  };
-
-  render() {
-    return (
-      <>
-        <div>숫자는 3자리 까지만 입력이 가능합니다.</div>
-        <div className="calculator">
-          <h1 id="total">
-            {this.state.isError
-              ? '오류'
-              : `${this.state.firstOperand}
-            ${this.state.operation ?? ''}
-            ${this.state.secondOperand}`}
-          </h1>
-          <div className="digits flex" onClick={this.onClickDigits}>
-            <button className="digit">9</button>
-            <button className="digit">8</button>
-            <button className="digit">7</button>
-            <button className="digit">6</button>
-            <button className="digit">5</button>
-            <button className="digit">4</button>
-            <button className="digit">3</button>
-            <button className="digit">2</button>
-            <button className="digit">1</button>
-            <button className="digit">0</button>
-          </div>
-          <div className="modifiers subgrid" onClick={this.initState}>
-            <button className="modifier">AC</button>
-          </div>
-          <div className="operations subgrid" onClick={this.onClickOperations}>
-            <button className="operation">/</button>
-            <button className="operation">X</button>
-            <button className="operation">-</button>
-            <button className="operation">+</button>
-            <button className="operation">=</button>
-          </div>
-        </div>
-      </>
+    localStorage.setItem(
+      'prevState',
+      JSON.stringify({ firstOperand, secondOperand, operation, isError }),
     );
-  }
-}
+
+    if (hasInput({ firstOperand, secondOperand, operation, isError })) {
+      e.returnValue = '';
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    };
+  }, [onBeforeUnload]);
+
+  return (
+    <>
+      <div>숫자는 3자리 까지만 입력이 가능합니다.</div>
+      <div className="calculator">
+        <h1 id="total">
+          {isError
+            ? '오류'
+            : `${firstOperand}
+                ${operation ?? ''}
+                ${secondOperand}`}
+        </h1>
+
+        <div className="digits flex">
+          {digitList.map((digit) => (
+            <button
+              className="digit"
+              onClick={() => onClickDigit(digit)}
+              key={digit}
+            >
+              {digit}
+            </button>
+          ))}
+        </div>
+
+        <div className="modifiers subgrid">
+          <button className="modifier" onClick={initializeState}>
+            AC
+          </button>
+        </div>
+
+        <div className="operations subgrid">
+          {operationList.map((operation) => (
+            <button
+              className="operation"
+              onClick={() => onClickOperation(operation)}
+              key={operation}
+            >
+              {operation}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
 export default Calculator;
