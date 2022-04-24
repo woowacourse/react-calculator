@@ -1,4 +1,4 @@
-import { useLayoutEffect, useEffect, useState } from 'react';
+import { useLayoutEffect, useEffect, useState, useRef } from 'react';
 import '../styles/Calculator.css';
 
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
@@ -33,6 +33,8 @@ const Calculator = () => {
     isError: false,
   });
 
+  const ref = useRef(null);
+
   useLayoutEffect(() => {
     const memoizedState = JSON.parse(localStorage.getItem('prevState'));
     if (!memoizedState) return;
@@ -40,15 +42,18 @@ const Calculator = () => {
   }, []);
 
   useEffect(() => {
+    ref.current = state;
+  }, [state]);
+
+  useEffect(() => {
     window.addEventListener('beforeunload', handleWindowClose);
     return () => window.removeEventListener('beforeunload', handleWindowClose);
-  }, [state]);
+  }, []);
 
   const handleWindowClose = (e) => {
     e.preventDefault();
-    if (!hasInput(state)) return;
-
-    localStorage.setItem('prevState', JSON.stringify(state));
+    if (!hasInput(ref.current)) return;
+    localStorage.setItem('prevState', JSON.stringify(ref.current));
     return (e.returnValue = '');
   };
 
