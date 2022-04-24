@@ -16,7 +16,9 @@ export default function OperationButtons({
   clearAndSetResult,
 }) {
   const handleOperatorClick = ({ target }) => {
-    if (secondOperand) return;
+    if (secondOperand) {
+      showResult();
+    }
 
     setOperator(target.textContent);
   };

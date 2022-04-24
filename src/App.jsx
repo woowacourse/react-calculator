@@ -9,7 +9,7 @@ import OperationButtons from './components/OperationButtons';
 const initialState = {
   firstOperand: '0',
   secondOperand: '',
-  operator: null,
+  operator: '',
   isError: false,
 };
 
