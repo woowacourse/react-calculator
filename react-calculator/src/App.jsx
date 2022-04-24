@@ -53,12 +53,12 @@ function App() {
   };
 
   const resetState = () => {
-    setOperation('');
+    setOperation(null);
     setFirstNumber('');
     setSecondNumber('');
   };
 
-  const allClear = () => {
+  const allClearCalculator = () => {
     renderCalculatorResult(RESULT.RESET);
     resetState();
   };
@@ -68,14 +68,12 @@ function App() {
       <div className="calculator">
         <Result result={result} resultRef={resultRef} />
         <Digits setClickedNumber={setClickedNumber} />
-        <AllClear allClear={allClear} />
+        <AllClear allClearCalculator={allClearCalculator} />
         <Operations
           firstNumber={firstNumber}
           secondNumber={secondNumber}
-          setOperation={setOperation}
-          setResult={setResult}
           operation={operation}
-          result={result}
+          setOperation={setOperation}
           resetState={resetState}
           renderCalculatorResult={renderCalculatorResult}
         />

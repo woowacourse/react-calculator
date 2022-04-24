@@ -1,7 +1,7 @@
-function AllClear({ allClear }) {
+function AllClear({ allClearCalculator }) {
   return (
     <div className="allClear subgrid">
-      <button className="allClearButton" onClick={allClear}>
+      <button className="allClearButton" onClick={allClearCalculator}>
         AC
       </button>
     </div>
