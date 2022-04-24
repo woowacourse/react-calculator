@@ -37,7 +37,9 @@ function App() {
     resultRef.current.textContent = result;
   };
 
-  const setClickedNumber = (number) => {
+  const setClickedNumber = (event) => {
+    const number = event.target.textContent;
+
     if (operation) {
       const secondNumberResult =
         secondNumber.length === MAX_NUMBER_LENGTH ? secondNumber : secondNumber + number;
@@ -53,6 +55,7 @@ function App() {
   };
 
   const add = () => {
+    console.log(firstNumber, secondNumber);
     renderCalculatorResult(Number(firstNumber) + Number(secondNumber));
   };
 
