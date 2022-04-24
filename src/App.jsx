@@ -1,65 +1,38 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Button from './components/Button';
+
 import storage from './storage/storage';
 import {
-  INFINITY_ERROR_TEXT,
   CALCULATOR_DATA_KEY,
-  OPERATOR,
   CALCULATOR_NUMBER_LIST,
   CALCULATOR_OPERATOR_LIST,
+  EQUAL,
 } from './constants';
 import {
   validateOperatorIsDuplicated,
   isArithmeticOperator,
-  toFixedValue,
+  operations,
 } from './utils';
 
+const initialCalcData = {
+  firstOperand: 0,
+  secondOperand: 0,
+  operator: '',
+  calculationResult: 0,
+  lastExpression: '',
+};
+
+const defaultCalcData = storage.get(CALCULATOR_DATA_KEY)
+  ? storage.get(CALCULATOR_DATA_KEY)
+  : initialCalcData;
+
 function App() {
-  const expressionRef = React.createRef();
-  const [calcData, setCalcData] = useState({
-    firstOperand: 0,
-    secondOperand: 0,
-    operator: '',
-    calculationResult: 0,
-  });
-
-  function calculate(operator, { firstOperand, secondOperand }) {
-    const operation = {
-      [OPERATOR.PLUS]: () => firstOperand + secondOperand,
-      [OPERATOR.MINUS]: () => firstOperand - secondOperand,
-      [OPERATOR.MULTIPLY]: () => firstOperand * secondOperand,
-      [OPERATOR.DIVIDE]: () =>
-        secondOperand === 0
-          ? INFINITY_ERROR_TEXT
-          : toFixedValue(firstOperand / secondOperand),
-    };
-
-    return operation[operator]();
-  }
-
-  function initialize() {
-    expressionRef.current.textContent = 0;
-    setCalcData({
-      firstOperand: 0,
-      secondOperand: 0,
-      operator: '',
-      calculationResult: 0,
-    });
-  }
-
-  function handleBeforeUnload(e) {
-    e.preventDefault();
-    e.returnValue = '';
-  }
-
-  function handleUnload() {
-    const lastExpression = Number(expressionRef.current.textContent);
-    storage.set(CALCULATOR_DATA_KEY, { ...calcData, lastExpression });
-  }
+  const [calcData, setCalcData] = useState(defaultCalcData);
+  const expressionRef = useRef();
 
   function handleDigitClick(e) {
     const expression = expressionRef.current.textContent;
@@ -73,8 +46,25 @@ function App() {
     expressionRef.current.textContent += digit;
   }
 
+  function initialize() {
+    expressionRef.current.textContent = 0;
+    setCalcData(initialCalcData);
+  }
+
   function handleModifierClick(e) {
     initialize();
+  }
+
+  function calculate(secondOperand) {
+    const { operator, firstOperand } = calcData;
+    const calculationResult = operations[operator](firstOperand, secondOperand);
+
+    expressionRef.current.textContent = calculationResult;
+    setCalcData({
+      ...calcData,
+      secondOperand,
+      calculationResult,
+    });
   }
 
   function handleOperationClick(e) {
@@ -89,20 +79,8 @@ function App() {
       return;
     }
 
-    if (operation === OPERATOR.EQUAL) {
-      const { operator, firstOperand } = calcData;
-      const calculationResult = calculate(operator, {
-        firstOperand,
-        secondOperand: Number(expression),
-      });
-
-      expressionRef.current.textContent = calculationResult;
-      setCalcData({
-        ...calcData,
-        secondOperand: Number(expression),
-        calculationResult,
-      });
-
+    if (operation === EQUAL) {
+      calculate(Number(expression));
       return;
     }
 
@@ -114,26 +92,15 @@ function App() {
     });
   }
 
-  useEffect(() => {
-    if (storage.get(CALCULATOR_DATA_KEY)) {
-      const {
-        firstOperand,
-        secondOperand,
-        operator,
-        calculationResult,
-        lastExpression,
-      } = storage.get(CALCULATOR_DATA_KEY);
+  function handleBeforeUnload(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
 
-      setCalcData({
-        firstOperand,
-        secondOperand,
-        operator,
-        calculationResult,
-      });
-
-      expressionRef.current.textContent = lastExpression ?? 0;
-    }
-  }, []);
+  function handleUnload() {
+    const lastExpression = Number(expressionRef.current.textContent);
+    storage.set(CALCULATOR_DATA_KEY, { ...calcData, lastExpression });
+  }
 
   useEffect(() => {
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -150,7 +117,7 @@ function App() {
       <h1>⚛️ React 계산기 🧮</h1>
       <div className="calculator">
         <h2 id="expression" ref={expressionRef}>
-          0
+          {calcData.lastExpression ?? 0}
         </h2>
         <div className="digits flex" onClick={handleDigitClick}>
           {CALCULATOR_NUMBER_LIST.map((number, index) => (
