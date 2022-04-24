@@ -8,7 +8,7 @@ const NumberButton = ({ number, state, setState }) => {
   const onClickNumber = () => {
     const isPrev = operator === '';
 
-    if (sum) {
+    if (sum !== '') {
       setState({ ...CALCULATOR_INITIAL_STATE });
     }
 
