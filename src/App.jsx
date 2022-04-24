@@ -79,7 +79,9 @@ export default function App() {
 
   return (
     <div className="calculator">
-      <h1 id="total">{num1 ? num1 + operator + num2 : total}</h1>
+      <h1 id="total">
+        <div>{num1 ? num1 + operator + num2 : total}</div>
+      </h1>
       <Digit setNumberState={setNumberState} />
       <Operator
         setOperatorState={setOperatorState}

@@ -39,10 +39,16 @@ button {
   color: white;
   margin: 0;
   padding: 1rem;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  font-size: 4rem;
+
+  & div {
+    overflow-x: scroll;
+    direction: rtl;
+    font-size: 4rem;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 
 .subgrid {
