@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 
-export default function CalculatorButton(props) {
+export default function CalculatorButton({ className, handleClick, content }) {
   return (
-    <button className={props.class} onClick={props.onClick}>
-      {props.content}
+    <button className={className} onClick={handleClick}>
+      {content}
     </button>
   );
 }
 
 CalculatorButton.propTypes = {
-  class: PropTypes.string,
-  onClick: PropTypes.func,
+  className: PropTypes.string,
+  handleClick: PropTypes.func,
   content: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };

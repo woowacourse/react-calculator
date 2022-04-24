@@ -103,23 +103,23 @@ export default function Calculator() {
         {CALCULATOR.NUMBERS.map((number) => (
           <CalculatorButton
             key={number}
-            class="digit"
-            onClick={changeNumber}
+            className="digit"
+            handleClick={changeNumber}
             content={number}
           />
         ))}
       </div>
 
       <div className="modifiers subgrid">
-        <CalculatorButton class="modifier" onClick={initialize} content="AC" />
+        <CalculatorButton className="modifier" handleClick={initialize} content="AC" />
       </div>
 
       <div className="operations subgrid">
         {CALCULATOR.OPERATOR.map((operator, idx) => (
           <CalculatorButton
             key={idx}
-            class="operation"
-            onClick={calculate}
+            className="operation"
+            handleClick={calculate}
             content={operator}
           />
         ))}
