@@ -115,7 +115,7 @@ export default function Calculator() {
       </div>
 
       <div className="operations subgrid">
-        {[...CALCULATOR.OPERATOR].map((operator, idx) => (
+        {CALCULATOR.OPERATOR.map((operator, idx) => (
           <CalculatorButton
             key={idx}
             class="operation"
