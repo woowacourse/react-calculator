@@ -1,8 +1,14 @@
 import React from 'react';
 
 function Operations(props) {
+  const operations = ['/', 'X', '-', '+', '='];
   const { operation, setOperation, add, minus, divide, multiply, resetState } = props;
+
   const handleOperationButtonClick = (e) => {
+    if (e.target.textContent === '=') {
+      handleEqualityButtonClick();
+      return;
+    }
     setOperation(e.target.textContent);
   };
 
@@ -27,21 +33,11 @@ function Operations(props) {
   };
   return (
     <div className="operations subgrid">
-      <button className="operation" onClick={handleOperationButtonClick}>
-        /
-      </button>
-      <button className="operation" onClick={handleOperationButtonClick}>
-        X
-      </button>
-      <button className="operation" onClick={handleOperationButtonClick}>
-        -
-      </button>
-      <button className="operation" onClick={handleOperationButtonClick}>
-        +
-      </button>
-      <button className="operation" onClick={handleEqualityButtonClick}>
-        =
-      </button>
+      {operations.map((operator) => (
+        <button className="operation" onClick={handleOperationButtonClick} key={operator}>
+          {operator}
+        </button>
+      ))}
     </div>
   );
 }
