@@ -5,9 +5,8 @@ import {
   INIT,
   OPERATORS,
   PREV_VALUE,
-  SET_FIRST_NUMBER,
+  SET_NUMBER,
   SET_OPERATOR,
-  SET_SECOND_NUMBER,
 } from "../constants";
 import { calculate, getLocalStorage, saveLocalStorage } from "../utils";
 
@@ -28,18 +27,21 @@ const reducer = (state, action) => {
         result: "0",
       };
     }
-    case SET_FIRST_NUMBER: {
-      const firstTotalNumber = state.firstNumber * 10 + Number(action.data);
-      saveLocalStorage(PREV_VALUE, firstTotalNumber);
+    case SET_NUMBER: {
+      if (state.isFirstNumber) {
+        const firstTotalNumber =
+          state.firstNumber * 10 + Number(action.inputNumber);
+        saveLocalStorage(PREV_VALUE, firstTotalNumber);
 
-      return {
-        ...state,
-        firstNumber: firstTotalNumber,
-        result: state.result === "0" ? action.data : firstTotalNumber,
-      };
-    }
-    case SET_SECOND_NUMBER: {
-      const secondTotalNumber = state.secondNumber * 10 + Number(action.data);
+        return {
+          ...state,
+          firstNumber: firstTotalNumber,
+          result: state.result === "0" ? action.inputNumber : firstTotalNumber,
+        };
+      }
+
+      const secondTotalNumber =
+        state.secondNumber * 10 + Number(action.inputNumber);
       saveLocalStorage(PREV_VALUE, secondTotalNumber);
 
       return {
@@ -52,7 +54,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         isFirstNumber: false,
-        operator: action.data,
+        operator: action.inputOperator,
       };
     }
     case CALCULATE: {
@@ -88,10 +90,10 @@ const initialState = {
 const Calculator = () => {
   const [data, dispatch] = useReducer(reducer, initialState);
 
-  const handleUnload = (event) => {
+  const handleUnload = useCallback((event) => {
     event.preventDefault();
     event.returnValue = "";
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload);
@@ -101,19 +103,11 @@ const Calculator = () => {
     };
   });
 
-  const onClickNumber = useCallback(
-    ({ target }) => {
-      const inputNumber = target.textContent;
+  const onClickNumber = useCallback(({ target }) => {
+    const inputNumber = target.textContent;
 
-      if (data.isFirstNumber) {
-        dispatch({ type: SET_FIRST_NUMBER, data: inputNumber });
-        return;
-      }
-
-      dispatch({ type: SET_SECOND_NUMBER, data: inputNumber });
-    },
-    [data.isFirstNumber]
-  );
+    dispatch({ type: SET_NUMBER, inputNumber });
+  }, []);
 
   const onClickModifier = useCallback(() => {
     dispatch({ type: INIT });
@@ -136,7 +130,7 @@ const Calculator = () => {
         return;
       }
 
-      dispatch({ type: SET_OPERATOR, data: inputOperator });
+      dispatch({ type: SET_OPERATOR, inputOperator });
     },
     [data.operator]
   );
