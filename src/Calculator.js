@@ -5,6 +5,7 @@ import operatorCollection from './utils/operator';
 import { isExceedMaxLength, isEmptyOperator } from './validation';
 import { DIGIT_LIST, OPERATION_LIST } from './constant/calculator.js';
 import { CALCULATOR_STATE } from './constant/localStorage';
+import { ERROR_MESSAGE } from './constant/message';
 
 const Calculator = () => {
   const [numbers, setNumbers] = useState([0, 0]);
@@ -48,14 +49,14 @@ const Calculator = () => {
     newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(digit) * sign;
 
     if (Number.isNaN(newStateNumbers[numberIndex])) {
-      alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
+      alert(ERROR_MESSAGE.NOT_ENTER_INFINITY_NUMBER);
       setNumbers([0, 0]);
       setOperator('');
       return;
     }
 
     if (isExceedMaxLength(newStateNumbers[numberIndex])) {
-      alert('숫자는 세 자리까지 입력 가능합니다.');
+      alert(ERROR_MESSAGE.EXCEED_MAX_LENGTH);
       return;
     }
 
@@ -64,7 +65,7 @@ const Calculator = () => {
 
   const handleResultClick = () => {
     if (isEmptyOperator(operator)) {
-      alert('연산자를 입력해주세요.');
+      alert(ERROR_MESSAGE.EMPTY_OPERATOR);
       return;
     }
 
