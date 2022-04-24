@@ -1,7 +1,9 @@
 import { Component } from 'react';
-import './Calculator.css';
 import { calculator } from '../domain/calculator';
 import { CALCULATOR, ERROR_MESSAGE, LOCAL_STORAGE_KEY } from '../constant';
+import { storage } from '../domain/storage';
+import './Calculator.css';
+
 export default class Calculator extends Component {
   constructor() {
     super();
@@ -10,7 +12,7 @@ export default class Calculator extends Component {
       prevNumber = 0,
       nextNumber = null,
       operator = '',
-    } = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) ?? {};
+    } = storage.getStoredOperations(LOCAL_STORAGE_KEY);
 
     this.state = {
       prevNumber: Number(prevNumber),
@@ -35,7 +37,7 @@ export default class Calculator extends Component {
   };
 
   saveResult = () => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.state));
+    storage.storeOperations(this.state);
   };
 
   changeNumber = (e) => {
