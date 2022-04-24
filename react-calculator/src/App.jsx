@@ -30,48 +30,44 @@ function App() {
     store.setLocalStorage('prevResult', result);
   };
 
-  const renderCalculatorNumber = (calculatedResult) => {
+  const renderCalculatorResult = (calculatedResult) => {
     setResult(calculatedResult);
     resultRef.current.textContent = result;
   };
 
-  const handleDigit = (number) => {
+  const setClickedNumber = (number) => {
     if (operation) {
       const secondNumberResult =
         secondNumber.length === MAX_NUMBER_LENGTH ? secondNumber : secondNumber + number;
       setSecondNumber(secondNumberResult);
-      renderCalculatorNumber(secondNumberResult);
+      renderCalculatorResult(secondNumberResult);
       return;
     }
 
     const firstNumberResult =
       firstNumber.length === MAX_NUMBER_LENGTH ? firstNumber : firstNumber + number;
     setFirstNumber(firstNumberResult);
-    renderCalculatorNumber(firstNumberResult);
-  };
-
-  const setOperations = (selectedOperation) => {
-    setOperation(selectedOperation);
+    renderCalculatorResult(firstNumberResult);
   };
 
   const add = () => {
-    renderCalculatorNumber(Number(firstNumber) + Number(secondNumber));
+    renderCalculatorResult(Number(firstNumber) + Number(secondNumber));
   };
 
   const minus = () => {
-    renderCalculatorNumber(Number(firstNumber) - Number(secondNumber));
+    renderCalculatorResult(Number(firstNumber) - Number(secondNumber));
   };
 
   const divide = () => {
     if (secondNumber === INDIVISIBLE_NUMBER) {
-      renderCalculatorNumber(RESULT.ERROR_MESSAGE);
+      renderCalculatorResult(RESULT.ERROR_MESSAGE);
       return;
     }
-    renderCalculatorNumber(Math.floor(Number(firstNumber) / Number(secondNumber)));
+    renderCalculatorResult(Math.floor(Number(firstNumber) / Number(secondNumber)));
   };
 
   const multiply = () => {
-    renderCalculatorNumber(Number(firstNumber) * Number(secondNumber));
+    renderCalculatorResult(Number(firstNumber) * Number(secondNumber));
   };
 
   const resetState = () => {
@@ -81,7 +77,7 @@ function App() {
   };
 
   const handleModifierButtonClick = () => {
-    renderCalculatorNumber(RESULT.RESET);
+    renderCalculatorResult(RESULT.RESET);
     resetState();
   };
 
@@ -92,7 +88,7 @@ function App() {
           {result}
         </h1>
 
-        <Digits handleDigit={handleDigit} />
+        <Digits setClickedNumber={setClickedNumber} />
 
         <div className="modifiers subgrid">
           <button className="modifier" onClick={handleModifierButtonClick}>
@@ -102,7 +98,7 @@ function App() {
 
         <Operations
           operation={operation}
-          setOperation={setOperations}
+          setOperation={setOperation}
           add={add}
           minus={minus}
           divide={divide}
