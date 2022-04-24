@@ -1,52 +1,49 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Operations extends Component {
-  handleOperationButtonClick = (e) => {
-    this.props.setOperation(e.target.textContent);
+function Operations(props) {
+  const { operation, setOperation, add, minus, divide, multiply, resetState } = props;
+  const handleOperationButtonClick = (e) => {
+    setOperation(e.target.textContent);
   };
 
-  handleEqualityButtonClick = () => {
-    const { operation, resetState } = this.props;
+  const handleEqualityButtonClick = () => {
     switch (operation) {
       case '+':
-        this.props.add();
+        add();
         break;
       case '-':
-        this.props.minus();
+        minus();
         break;
       case '/':
-        this.props.divide();
+        divide();
         break;
-      case '*':
-        this.props.multiply();
+      case 'X':
+        multiply();
         break;
       default:
         break;
     }
     resetState();
   };
-
-  render() {
-    return (
-      <div className="operations subgrid">
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          /
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          X
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          -
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          +
-        </button>
-        <button className="operation" onClick={this.handleEqualityButtonClick}>
-          =
-        </button>
-      </div>
-    );
-  }
+  return (
+    <div className="operations subgrid">
+      <button className="operation" onClick={handleOperationButtonClick}>
+        /
+      </button>
+      <button className="operation" onClick={handleOperationButtonClick}>
+        X
+      </button>
+      <button className="operation" onClick={handleOperationButtonClick}>
+        -
+      </button>
+      <button className="operation" onClick={handleOperationButtonClick}>
+        +
+      </button>
+      <button className="operation" onClick={handleEqualityButtonClick}>
+        =
+      </button>
+    </div>
+  );
 }
 
 export default Operations;

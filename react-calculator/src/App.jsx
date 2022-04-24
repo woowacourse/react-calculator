@@ -1,127 +1,110 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import Digits from './components/digits.jsx';
 import Operations from './components/operations.jsx';
 import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
 import store from './utils/store.js';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.resultRef = React.createRef();
-    this.state = {
-      operation: '',
-      firstNumber: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
-      secondNumber: '',
-      result: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
-    };
-  }
+function App() {
+  const resultRef = useRef(null);
+  const [operation, setOperation] = useState('');
+  const [firstNumber, setFirstNumber] = useState(
+    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : ''
+  );
+  const [secondNumber, setSecondNumber] = useState('');
+  const [result, setResult] = useState(
+    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : ''
+  );
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.onBeforeUnload);
-  }
+  useEffect(() => {
+    window.addEventListener('beforeunload', onBeforeUnload);
+  });
 
-  onBeforeUnload = (e) => {
+  const renderCalculatorNumber = (calculatedResult) => {
+    setResult(calculatedResult);
+    resultRef.current.textContent = result;
+  };
+
+  const onBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = '';
-    if (this.state.result === '' || this.state.result === RESULT.RESET) return;
-    store.setLocalStorage('prevResult', this.state.result);
+    if (result === '' || result === RESULT.RESET) return;
+    store.setLocalStorage('prevResult', result);
   };
 
-  handleDigit = (number) => {
-    if (this.state.operation) {
-      const secondNumberResult = this.state.secondNumber + number;
-      this.setState({
-        secondNumber:
-          this.state.secondNumber.length === MAX_NUMBER_LENGTH
-            ? this.state.secondNumber
-            : secondNumberResult,
-      });
-      this.renderCalculatorNumber(secondNumberResult);
+  const handleDigit = (number) => {
+    if (operation) {
+      const secondNumberResult =
+        secondNumber.length === MAX_NUMBER_LENGTH ? secondNumber : secondNumber + number;
+      setSecondNumber(secondNumberResult);
+      renderCalculatorNumber(secondNumberResult);
       return;
     }
 
-    const firstNumberResult = this.state.firstNumber + number;
-    this.setState({
-      firstNumber:
-        this.state.firstNumber.length === MAX_NUMBER_LENGTH
-          ? this.state.firstNumber
-          : firstNumberResult,
-    });
-    this.renderCalculatorNumber(firstNumberResult);
+    const firstNumberResult =
+      firstNumber.length === MAX_NUMBER_LENGTH ? firstNumber : firstNumber + number;
+    setFirstNumber(firstNumberResult);
+    renderCalculatorNumber(firstNumberResult);
   };
 
-  setOperations = (selectedOperation) => {
-    this.setState({ operation: selectedOperation });
+  const setOperations = (selectedOperation) => {
+    setOperation(selectedOperation);
   };
 
-  add = () => {
-    const result = Number(this.state.firstNumber) + Number(this.state.secondNumber);
-    this.renderCalculatorNumber(result);
+  const add = () => {
+    renderCalculatorNumber(Number(firstNumber) + Number(secondNumber));
   };
 
-  minus = () => {
-    const result = Number(this.state.firstNumber) - Number(this.state.secondNumber);
-    this.renderCalculatorNumber(result);
+  const minus = () => {
+    renderCalculatorNumber(Number(firstNumber) - Number(secondNumber));
   };
 
-  divide = () => {
-    if (this.state.secondNumber === INDIVISIBLE_NUMBER) {
-      this.renderCalculatorNumber(RESULT.ERROR_MESSAGE);
+  const divide = () => {
+    if (secondNumber === INDIVISIBLE_NUMBER) {
+      renderCalculatorNumber(RESULT.ERROR_MESSAGE);
       return;
     }
-    const result = Math.floor(Number(this.state.firstNumber) / Number(this.state.secondNumber));
-    this.renderCalculatorNumber(result);
+    renderCalculatorNumber(Math.floor(Number(firstNumber) / Number(secondNumber)));
   };
 
-  multiply = () => {
-    const result = Number(this.state.firstNumber) * Number(this.state.secondNumber);
-    this.renderCalculatorNumber(result);
+  const multiply = () => {
+    renderCalculatorNumber(Number(firstNumber) * Number(secondNumber));
   };
 
-  renderCalculatorNumber = (result) => {
-    this.setState({ result });
-    this.resultRef.current.textContent = result;
+  const resetState = () => {
+    setOperation('');
+    setFirstNumber('');
+    setSecondNumber('');
   };
 
-  handleModifierButtonClick = () => {
-    this.renderCalculatorNumber(RESULT.RESET);
-    this.resetState();
+  const handleModifierButtonClick = () => {
+    renderCalculatorNumber(RESULT.RESET);
+    resetState();
   };
 
-  resetState = () => {
-    this.setState({
-      operation: '',
-      firstNumber: '',
-      secondNumber: '',
-    });
-  };
-
-  render() {
-    return (
-      <div id="app">
-        <div className="calculator">
-          <h1 id="calculator-number" ref={this.resultRef}>
-            {this.state.result ? this.state.result : 0}
-          </h1>
-          <Digits handleDigit={this.handleDigit} />
-          <div className="modifiers subgrid">
-            <button className="modifier" onClick={this.handleModifierButtonClick}>
-              AC
-            </button>
-          </div>
-          <Operations
-            operation={this.state.operation}
-            setOperation={this.setOperations}
-            add={this.add}
-            minus={this.minus}
-            divide={this.divide}
-            multiply={this.multiply}
-            resetState={this.resetState}
-          />
+  return (
+    <div id="app">
+      <div className="calculator">
+        <h1 id="calculator-number" ref={resultRef}>
+          {result || 0}
+        </h1>
+        <Digits handleDigit={handleDigit} />
+        <div className="modifiers subgrid">
+          <button className="modifier" onClick={handleModifierButtonClick}>
+            AC
+          </button>
         </div>
+        <Operations
+          operation={operation}
+          setOperation={setOperations}
+          add={add}
+          minus={minus}
+          divide={divide}
+          multiply={multiply}
+          resetState={resetState}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 export default App;
