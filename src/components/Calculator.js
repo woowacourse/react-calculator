@@ -1,65 +1,77 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import AllClearButton from './AllCearButton';
 import NumberButton from './NumberButton';
 import OperatorButton from './OperatorButton';
-import { expressionStorage } from '../store/store';
-import { CONFIRM_MSG, OPERATOR_LIST } from '../constants/constant';
-import AllClearButton from './AllCearButton';
 import Screen from './Screen';
+import {
+  CONFIRM_MSG,
+  OPERATOR_LIST,
+  INITIAL_STATE,
+} from '../constants/constant';
+import { expressionStorage } from '../store/store';
 
 const Calculator = () => {
-  const [sum, setSum] = useState('');
-  const [prevNumbers, setPrevNumbers] = useState([]);
-  const [operator, setOperator] = useState('');
-  const [nextNumbers, setNextNumbers] = useState([]);
+  const [state, setState] = useState(INITIAL_STATE);
+  const stateRef = useRef(state);
 
   useEffect(() => {
+    stateRef.current = state;
+  });
+
+  useEffect(() => {
+    setInitialState();
     window.addEventListener('beforeunload', confirmExist);
-
-    const expression = expressionStorage.getExpression();
-    if (!expression) return;
-
-    const { sum, prevNumbers, operator, nextNumbers } = expression;
-    setSum(sum);
-    setPrevNumbers(prevNumbers);
-    setOperator(operator);
-    setNextNumbers(nextNumbers);
 
     return () => {
       window.removeEventListener('beforeunload', confirmExist);
     };
   }, []);
 
-  const confirmExist = event => {
+  const setInitialState = () => {
+    const expression = expressionStorage.getExpression();
+    if (!expression) return;
+
+    const { sum, prevNumbers, operator, nextNumbers } = expression;
+    setState(prevState => ({
+      ...prevState,
+      sum,
+      prevNumbers,
+      operator,
+      nextNumbers,
+    }));
+  };
+
+  const confirmExist = useCallback(event => {
     event.preventDefault();
     event.returnValue = CONFIRM_MSG;
 
-    expressionStorage.setExpression({ sum, prevNumbers, operator, nextNumbers });
-  };
+    expressionStorage.setExpression(stateRef.current);
+  }, []);
 
   return (
     <div id="app">
       <div className="calculator">
-        <Screen state={{ sum, prevNumbers, operator, nextNumbers }} />
+        <Screen state={state} />
         <div className="digits flex">
           {Array.from({ length: 10 }).map((_, index) => (
             <NumberButton
               key={index}
               number={-(index - 9)}
-              state={{ prevNumbers, operator, nextNumbers }}
-              set={{ setPrevNumbers, setNextNumbers }}
+              state={state}
+              setState={setState}
             />
           ))}
         </div>
         <div className="modifiers subgrid">
-          <AllClearButton set={{ setSum, setNextNumbers, setOperator, setPrevNumbers }} />
+          <AllClearButton setState={setState} />
         </div>
         <div className="operations subgrid">
           {OPERATOR_LIST.map((operand, index) => (
             <OperatorButton
               key={index}
               operand={operand}
-              state={{ prevNumbers, operator, nextNumbers }}
-              set={{ setSum, setOperator }}
+              state={state}
+              setState={setState}
             />
           ))}
         </div>
