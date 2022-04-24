@@ -49,10 +49,10 @@ class Calculator extends Component {
     this.setState(this.defaultState);
   };
 
-  handleDigitClick = ({ target }) => {
+  handleDigitClick = (digit) => {
     const numberIndex = this.state.operator === '' ? 0 : 1;
     const newStateNumbers = [...this.state.numbers];
-    newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(target.innerText);
+    newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(digit);
 
     if (newStateNumbers[numberIndex] === Infinity) {
       alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
@@ -107,7 +107,13 @@ class Calculator extends Component {
           <h1 id="total">{totalNumber}</h1>
           <div className="digits flex">
             {this.DIGIT_LIST.map((digit) => (
-              <button key={digit} className="digit" onClick={this.handleDigitClick}>
+              <button
+                key={digit}
+                className="digit"
+                onClick={() => {
+                  this.handleDigitClick(digit);
+                }}
+              >
                 {digit}
               </button>
             ))}
