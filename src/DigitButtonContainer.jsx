@@ -8,8 +8,8 @@ function DigitButtonContainer({ updateOperandWithNewDigit }) {
 
   return (
     <div className="digits flex" onClick={onClickDigitButton}>
-      {DIGITS.map((digit) => (
-        <button className="digit" value={digit}>
+      {DIGITS.map((digit, index) => (
+        <button className="digit" value={digit} key={index}>
           {digit}
         </button>
       ))}
