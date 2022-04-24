@@ -9,11 +9,13 @@ class Calculator extends React.Component {
   constructor() {
     super();
 
+    const prevTotal = localStorage.getItem('total');
+
     this.state = {
-      num1: '',
+      num1: prevTotal ?? '',
       num2: '',
       operation: '',
-      total: localStorage.getItem('total') ?? 0,
+      total: prevTotal ?? 0,
     };
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
@@ -27,6 +29,12 @@ class Calculator extends React.Component {
 
   handleUnload = () => {
     if (!Number.isInteger(this.state.total)) return;
+
+    if (!this.state.total) {
+      localStorage.removeItem('total');
+
+      return;
+    }
 
     localStorage.setItem('total', this.state.total);
   };
