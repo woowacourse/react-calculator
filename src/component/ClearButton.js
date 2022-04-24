@@ -1,3 +1,5 @@
+import React from "react";
+
 const ClearButton = ({ onClickModifier }) => {
   return (
     <button className="modifier" onClick={onClickModifier}>
@@ -6,4 +8,4 @@ const ClearButton = ({ onClickModifier }) => {
   );
 };
 
-export default ClearButton;
+export default React.memo(ClearButton);

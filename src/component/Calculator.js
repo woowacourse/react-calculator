@@ -1,15 +1,72 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { OPERATORS } from "../constants";
+import { calculate } from "../utils";
+
 import ClearButton from "./ClearButton";
 import DisplayResult from "./DisplayResult";
 import NumberButton from "./NumberButton";
 import OperatorButton from "./OperatorButton";
 
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "INIT": {
+      localStorage.setItem("prevValue", 0);
+      return action.data;
+    }
+    case "SET_FIRST_NUMBER": {
+      const firstTotalNumber = state.firstNumber * 10 + Number(action.data);
+      localStorage.setItem("prevValue", firstTotalNumber);
+
+      return {
+        ...state,
+        firstNumber: firstTotalNumber,
+        result: state.result === "0" ? action.data : firstTotalNumber,
+      };
+    }
+    case "SET_SECOND_NUMBER": {
+      const secondTotalNumber = state.secondNumber * 10 + Number(action.data);
+      localStorage.setItem("prevValue", secondTotalNumber);
+
+      return {
+        ...state,
+        secondNumber: secondTotalNumber,
+        result: secondTotalNumber,
+      };
+    }
+    case "SET_OPERATOR": {
+      return {
+        ...state,
+        isFirstNumber: false,
+        operator: action.data,
+      };
+    }
+    case "CALCULATE": {
+      const total = calculate(
+        state.firstNumber,
+        state.operator,
+        state.secondNumber
+      );
+      localStorage.setItem("prevValue", total);
+
+      return {
+        ...state,
+        firstNumber: total,
+        secondNumber: 0,
+        isFirstNumber: true,
+        operator: null,
+        result: total === Infinity || isNaN(total) ? "오류" : total,
+      };
+    }
+    default:
+      return state;
+  }
+};
+
 const Calculator = () => {
-  const [data, setData] = useState({
+  const [data, dispatch] = useReducer(reducer, {
     firstNumber: localStorage.getItem("prevValue") || 0,
-    isFirstNumber: true,
     secondNumber: 0,
+    isFirstNumber: true,
     operator: null,
     result: localStorage.getItem("prevValue") || "0",
   });
@@ -27,86 +84,54 @@ const Calculator = () => {
     };
   });
 
-  const onClickNumber = ({ target }) => {
-    const inputNumber = target.textContent;
+  const onClickNumber = useCallback(
+    ({ target }) => {
+      const inputNumber = target.textContent;
 
-    if (data.isFirstNumber) {
-      const firstNumber = data.firstNumber * 10 + Number(inputNumber);
-      localStorage.setItem("prevValue", firstNumber);
+      if (data.isFirstNumber) {
+        dispatch({ type: "SET_FIRST_NUMBER", data: inputNumber });
+        return;
+      }
 
-      setData({
-        ...data,
-        firstNumber,
-        result: data.result === "0" ? inputNumber : firstNumber,
-      });
-      return;
-    }
+      dispatch({ type: "SET_SECOND_NUMBER", data: inputNumber });
+    },
+    [data.isFirstNumber]
+  );
 
-    const secondNumber = data.secondNumber * 10 + Number(inputNumber);
-    localStorage.setItem("prevValue", secondNumber);
-
-    setData({
-      ...data,
-      secondNumber,
-      result: secondNumber,
-    });
-  };
-
-  const onClickModifier = () => {
-    setData({
+  const onClickModifier = useCallback(() => {
+    const initData = {
       firstNumber: 0,
       secondNumber: 0,
-      operator: null,
       isFirstNumber: true,
+      operator: null,
       result: "0",
-    });
-  };
+    };
+    dispatch({ type: "INIT", data: initData });
+  }, []);
 
-  const calculate = () => {
-    const { operator, firstNumber, secondNumber } = data;
+  const onClickOperator = useCallback(
+    ({ target }) => {
+      const inputOperator = target.textContent;
 
-    switch (operator) {
-      case "+":
-        return Number(firstNumber) + Number(secondNumber);
-      case "-":
-        return Number(firstNumber) - Number(secondNumber);
-      case "X":
-        return Number(firstNumber) * Number(secondNumber);
-      case "/":
-        return Math.trunc(Number(firstNumber) / Number(secondNumber));
-      default:
-        throw new Error("존재하지 않는 연산자입니다.");
-    }
-  };
+      if (inputOperator === "=" && !data.operator) {
+        alert("올바른 계산이 아닙니다.");
+        return;
+      }
 
-  const onClickOperator = ({ target }) => {
-    const inputOperator = target.textContent;
+      if (inputOperator === "=") {
+        dispatch({ type: "CALCULATE" });
+        return;
+      }
 
-    if (inputOperator === "=") {
-      const total = calculate();
-      localStorage.setItem("prevValue", total);
+      if (data.operator) {
+        alert("앞의 계산을 먼저 해주세요.");
+        return;
+      }
 
-      setData({
-        ...data,
-        firstNumber: total,
-        result: total === Infinity || isNaN(total) ? "오류" : total,
-        secondNumber: 0,
-        operator: null,
-      });
-      return;
-    }
-
-    if (data.operator) {
-      alert("앞의 계산을 먼저 해주세요.");
-      return;
-    }
-
-    setData({
-      ...data,
-      operator: inputOperator,
-      isFirstNumber: false,
-    });
-  };
+      dispatch({ type: "SET_OPERATOR", data: inputOperator });
+    },
+    [data.operator]
+  );
 
   return (
     <div className="calculator">
