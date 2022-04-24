@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import AllClearButton from './AllCearButton';
+import AllClearButton from './AllClearButton';
 import NumberButton from './NumberButton';
 import OperatorButton from './OperatorButton';
 import Screen from './Screen';
