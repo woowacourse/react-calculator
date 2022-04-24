@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import InputField from './InputField';
-import ResultField from './ResultField';
+import InputField from './components/InputField';
+import ResultField from './components/ResultField';
 import { OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constants';
 import { operation } from './util';
 

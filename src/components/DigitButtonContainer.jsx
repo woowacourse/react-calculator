@@ -1,4 +1,4 @@
-import { DIGITS } from './constants';
+import { DIGITS } from '../constants';
 
 function DigitButtonContainer({ updateOperandWithNewDigit }) {
   const onClickDigitButton = (e) => {
