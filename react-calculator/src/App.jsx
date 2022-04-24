@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
-import Digits from './components/digits.jsx';
-import Operations from './components/operations.jsx';
+import Operations from './components/Operations.jsx';
+import Digits from './components/Digits.jsx';
 import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
 import store from './utils/store.js';
 import AllClear from './components/AllClear.jsx';
