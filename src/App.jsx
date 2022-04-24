@@ -6,7 +6,7 @@ import { AllClearButton, DigitButtons, Display, OperationButtons } from './compo
 const initialState = {
   firstOperand: '0',
   secondOperand: '',
-  operator: null,
+  operator: '',
   isError: false,
 };
 
@@ -25,15 +25,13 @@ export default function App() {
   const handleConfirmBeforeUnload = (e) => {
     e.preventDefault();
 
-    // chorme에서 confirm 추가를 위해서 필요
+    // chrome에서 confirm 추가를 위해서 필요
     e.returnValue = '';
   };
 
   const handleSaveOnUnload = () => {
-    if (firstOperand !== '0' || operator) {
-      const currentState = { firstOperand, secondOperand, operator, isError };
-      window.localStorage.setItem('state', JSON.stringify(currentState));
-    }
+    const currentState = { firstOperand, secondOperand, operator, isError };
+    window.localStorage.setItem('state', JSON.stringify(currentState));
 
     window.removeEventListener('beforeunload', handleConfirmBeforeUnload);
   };
@@ -62,15 +60,7 @@ export default function App() {
     setFirstOperand(result);
   };
 
-  const displayContent = isError ? (
-    '오류'
-  ) : (
-    <>
-      {firstOperand}
-      {operator}
-      {secondOperand}
-    </>
-  );
+  const displayContent = isError ? '오류' : `${firstOperand}${operator}${secondOperand}`;
 
   return (
     <div className="App">
