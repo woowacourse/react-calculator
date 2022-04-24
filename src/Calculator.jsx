@@ -6,6 +6,7 @@ import Modifier from './components/Modifier';
 import Operation from './components/Operation';
 import Result from './components/Result';
 import calculateResult from './utils/calculateResult';
+import { load, save } from './utils/storage';
 
 const DEFAULT_VALUE = { operand: ['0', ''], operator: '', index: 0 };
 
@@ -22,11 +23,12 @@ function Calculator() {
   };
 
   const handleUnload = () => {
-    localStorage.setItem('state', JSON.stringify(input));
+    save('calculator', input);
   };
 
   useEffect(() => {
-    const localState = JSON.parse(localStorage.getItem('state'));
+    const localState = load('calculator');
+
     if (localState) {
       setInput({
         operator: localState.operator,
