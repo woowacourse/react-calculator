@@ -1,8 +1,7 @@
 import React from 'react';
+import { OPERATIONS } from '../constants.js';
 
 function Operations({ setOperation, handleEqualityButtonClick }) {
-  const operations = ['/', 'X', '-', '+', '='];
-
   const handleOperationButtonClick = (e) => {
     if (e.target.textContent === '=') {
       handleEqualityButtonClick();
@@ -13,7 +12,7 @@ function Operations({ setOperation, handleEqualityButtonClick }) {
 
   return (
     <div className="operations subgrid">
-      {operations.map((operator) => (
+      {OPERATIONS.map((operator) => (
         <button className="operation" onClick={handleOperationButtonClick} key={operator}>
           {operator}
         </button>
