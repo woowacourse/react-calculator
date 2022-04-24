@@ -1,6 +1,4 @@
-function Result(props) {
-  const { result, resultRef } = props;
-
+function Result({ result, resultRef }) {
   return (
     <h1 id="calculator-number" ref={resultRef}>
       {result}

@@ -1,6 +1,4 @@
-function AllClear(props) {
-  const { allClear } = props;
-
+function AllClear({ allClear }) {
   const handleAllClearButtonClick = () => {
     allClear();
   };

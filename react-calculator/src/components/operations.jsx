@@ -1,8 +1,7 @@
 import React from 'react';
 
-function Operations(props) {
+function Operations({ setOperation, handleEqualityButtonClick }) {
   const operations = ['/', 'X', '-', '+', '='];
-  const { setOperation, handleEqualityButtonClick } = props;
 
   const handleOperationButtonClick = (e) => {
     if (e.target.textContent === '=') {
