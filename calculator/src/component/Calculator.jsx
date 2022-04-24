@@ -1,118 +1,108 @@
-import { Component } from 'react';
 import { calculator } from '../domain/calculator';
-import { CALCULATOR, ERROR_MESSAGE, LOCAL_STORAGE_KEY } from '../constant';
+import { CALCULATOR, ERROR_MESSAGE } from '../constant';
 import { storage } from '../domain/storage';
 import './Calculator.css';
+import { useEffect, useState } from 'react';
 
-export default class Calculator extends Component {
-  constructor() {
-    super();
+export default function Calculator() {
+  const [operations, setOperations] = useState(storage.getStoredOperations());
+  const [result, setResult] = useState(0);
 
-    const {
-      prevNumber = 0,
-      nextNumber = null,
-      operator = '',
-    } = storage.getStoredOperations(LOCAL_STORAGE_KEY);
+  useEffect(() => {
+    if (operations.nextNumber === null) {
+      setResult(operations.prevNumber);
+    } else {
+      setResult(operations.nextNumber);
+    }
 
-    this.state = {
-      prevNumber: Number(prevNumber),
-      nextNumber: nextNumber && Number(nextNumber),
-      operator: operator,
-    };
-  }
+    window.addEventListener('beforeunload', confirmExit);
+    window.addEventListener('unload', saveResult);
+  }, [operations]);
 
-  initialize = () => {
-    this.setState({
+  const initialize = () => {
+    setOperations({
       prevNumber: 0,
       nextNumber: null,
       operator: '',
     });
   };
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.confirmExit);
-    window.addEventListener('unload', this.saveResult);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.confirmExit);
-    window.removeEventListener('unload', this.saveResult);
-  }
-
-  confirmExit = (e) => {
+  const confirmExit = (e) => {
     e.preventDefault();
     e.returnValue = '';
   };
 
-  saveResult = () => {
-    storage.storeOperations(this.state);
+  const saveResult = () => {
+    storage.storeOperations(operations);
   };
 
-  changeNumber = (e) => {
-    if (!Number.isFinite(this.state.prevNumber)) {
-      this.initialize();
+  const changeNumber = (e) => {
+    if (!Number.isFinite(operations.prevNumber)) {
+      initialize();
     }
 
-    this.setState({
-      nextNumber: this.state.nextNumber * CALCULATOR.UNIT + Number(e.target.textContent),
+    setOperations({
+      ...operations,
+      nextNumber: operations.nextNumber * CALCULATOR.UNIT + Number(e.target.textContent),
     });
   };
 
-  calculate = (e) => {
-    if (!Number.isFinite(this.state.prevNumber)) return;
+  const calculate = (e) => {
+    if (!Number.isFinite(operations.prevNumber)) return;
 
-    if (this.state.nextNumber === null || this.state.operator === '=') {
-      this.setState({ operator: e.target.textContent });
+    if (operations.nextNumber === null || operations.operator === '=') {
+      setOperations({
+        ...operations,
+        operator: e.target.textContent,
+      });
       return;
     }
 
-    if (this.state.operator === '') {
-      this.setState({
-        prevNumber: this.state.nextNumber,
+    if (operations.operator === '') {
+      setOperations({
+        ...operations,
+        prevNumber: operations.nextNumber,
         nextNumber: null,
         operator: e.target.textContent,
       });
       return;
     }
 
-    this.setState({
-      prevNumber: calculator[this.state.operator](
-        this.state.prevNumber,
-        this.state.nextNumber
+    setOperations({
+      ...operations,
+      prevNumber: calculator[operations.operator](
+        operations.prevNumber,
+        operations.nextNumber
       ),
       nextNumber: null,
       operator: e.target.textContent,
     });
   };
 
-  render() {
-    const result =
-      this.state.nextNumber === null ? this.state.prevNumber : this.state.nextNumber;
-    return (
-      <div className="calculator">
-        <h1 id="total">
-          {Number.isFinite(this.state.prevNumber) ? result : ERROR_MESSAGE.INFINITY_ERROR}
-        </h1>
-        <div className="digits flex">
-          {CALCULATOR.NUMBERS.map((digit) => (
-            <button className="digit" key={digit} onClick={this.changeNumber}>
-              {digit}
-            </button>
-          ))}
-        </div>
-        <div className="modifiers subgrid">
-          <button className="modifier" onClick={this.initialize}>
-            AC
+  return (
+    <div className="calculator">
+      <h1 id="total">
+        {Number.isFinite(operations.prevNumber) ? result : ERROR_MESSAGE.INFINITY_ERROR}
+      </h1>
+      <div className="digits flex">
+        {CALCULATOR.NUMBERS.map((number) => (
+          <button className="digit" key={number} onClick={changeNumber}>
+            {number}
           </button>
-        </div>
-        <div className="operations subgrid">
-          {[...CALCULATOR.OPERATOR].map((operator, idx) => (
-            <button key={idx} className="operation" onClick={this.calculate}>
-              {operator}
-            </button>
-          ))}
-        </div>
+        ))}
       </div>
-    );
-  }
+      <div className="modifiers subgrid">
+        <button className="modifier" onClick={initialize}>
+          AC
+        </button>
+      </div>
+      <div className="operations subgrid">
+        {[...CALCULATOR.OPERATOR].map((operator, idx) => (
+          <button key={idx} className="operation" onClick={calculate}>
+            {operator}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }

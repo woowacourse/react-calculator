@@ -1,10 +1,16 @@
 import { LOCAL_STORAGE_KEY } from '../constant';
 
 export const storage = {
-  getStoredOperations: function (key) {
-    return JSON.parse(localStorage.getItem(key)) ?? {};
+  getStoredOperations: () => {
+    const {
+      prevNumber = 0,
+      nextNumber = null,
+      operator = '',
+    } = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) ?? {};
+
+    return { prevNumber, nextNumber, operator };
   },
-  storeOperations: function (operations) {
+  storeOperations: (operations) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(operations));
   },
 };
