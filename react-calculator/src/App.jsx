@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { MAX_NUMBER_LENGTH, RESULT, KEY_PREV_RESULT } from './constants.js';
 import store from './utils/store.js';
@@ -9,7 +9,6 @@ import AllClear from './components/AllClear.jsx';
 import Result from './components/Result.jsx';
 
 function App() {
-  const resultRef = useRef(null);
   const [operation, setOperation] = useState(null);
   const [firstNumber, setFirstNumber] = useState(
     store.getLocalStorage(KEY_PREV_RESULT) ? store.getLocalStorage(KEY_PREV_RESULT) : ''
@@ -35,7 +34,6 @@ function App() {
 
   const renderCalculatorResult = (calculatedResult) => {
     setResult(calculatedResult);
-    resultRef.current.textContent = result;
   };
 
   const setClickedNumber = (event) => {
@@ -67,7 +65,7 @@ function App() {
   return (
     <div id="app">
       <div className="calculator">
-        <Result result={result} resultRef={resultRef} />
+        <Result result={result} />
         <Digits setClickedNumber={setClickedNumber} />
         <AllClear allClearCalculator={allClearCalculator} />
         <Operations
