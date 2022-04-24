@@ -28,34 +28,33 @@ function Calculator() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(expression));
   };
 
-  const handleNumber = (e) => {
-    if (expression.operator === '') {
-      if (isOverOperandMaxLength(expression.firstOperand)) {
+  const updateOperandWithNewDigit = (newDigit) => {
+    const { firstOperand, secondOperand, operator } = expression;
+    if (operator === '') {
+      if (isOverOperandMaxLength(firstOperand)) {
         return;
       }
+
       setExpression({
         ...expression,
-        firstOperand:
-          expression.firstOperand === OPERAND_ERROR_VALUE
-            ? e.target.value
-            : expression.firstOperand + e.target.value,
+        firstOperand: firstOperand === OPERAND_ERROR_VALUE ? newDigit : firstOperand + newDigit,
       });
       return;
     }
 
-    if (isOverOperandMaxLength(expression.secondOperand)) {
+    if (isOverOperandMaxLength(secondOperand)) {
       return;
     }
     setExpression({
       ...expression,
-      secondOperand: expression.secondOperand + e.target.value,
+      secondOperand: secondOperand + newDigit,
     });
   };
 
-  const handleOperation = (e) => {
+  const updateOperation = (newOperation) => {
     if (expression.firstOperand === OPERAND_ERROR_VALUE) return;
 
-    if (e.target.value === '=') {
+    if (newOperation === '=') {
       calculate();
       return;
     }
@@ -63,7 +62,7 @@ function Calculator() {
     if (expression.operator !== '') return;
     setExpression({
       ...expression,
-      operator: e.target.value,
+      operator: newOperation,
     });
   };
 
@@ -72,12 +71,10 @@ function Calculator() {
   }
 
   function calculate() {
+    const { firstOperand, secondOperand, operator } = expression;
     if (!operation[expression.operator]) return;
 
-    const result = operation[expression.operator](
-      +expression.firstOperand,
-      +expression.secondOperand,
-    );
+    const result = operation[operator](+firstOperand, +secondOperand);
 
     setExpression({
       firstOperand: Number.isFinite(result) ? String(result) : OPERAND_ERROR_VALUE,
@@ -86,7 +83,7 @@ function Calculator() {
     });
   }
 
-  function clearResult() {
+  function resetExpression() {
     setExpression({
       firstOperand: '',
       secondOperand: '',
@@ -99,9 +96,9 @@ function Calculator() {
       <div className="calculator">
         <ResultField expression={expression} />
         <InputField
-          handleNumber={handleNumber}
-          handleOperation={handleOperation}
-          clearResult={clearResult}
+          updateOperandWithNewDigit={updateOperandWithNewDigit}
+          updateOperation={updateOperation}
+          resetExpression={resetExpression}
         />
       </div>
     </div>

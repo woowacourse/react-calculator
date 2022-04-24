@@ -1,6 +1,11 @@
-function OperatorButtonContainer({ handleOperation }) {
+function OperatorButtonContainer({ updateOperation }) {
+  const onClickOperationButton = (e) => {
+    const newOperation = e.target.value;
+    updateOperation(newOperation);
+  };
+
   return (
-    <div className="operations subgrid" onClick={handleOperation}>
+    <div className="operations subgrid" onClick={onClickOperationButton}>
       <button className="operation" value="/">
         /
       </button>

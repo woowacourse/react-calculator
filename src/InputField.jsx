@@ -2,12 +2,12 @@ import ACButtonContainer from './ACButtonContainer';
 import DigitButtonContainer from './DigitButtonContainer';
 import OperatorButtonContainer from './OperatorButtonContainer';
 
-function InputField({ handleNumber, handleOperation, clearResult }) {
+function InputField({ updateOperandWithNewDigit, updateOperation, resetExpression }) {
   return (
     <>
-      <DigitButtonContainer handleNumber={handleNumber} />
-      <ACButtonContainer clearResult={clearResult} />
-      <OperatorButtonContainer handleOperation={handleOperation} />
+      <DigitButtonContainer updateOperandWithNewDigit={updateOperandWithNewDigit} />
+      <ACButtonContainer resetExpression={resetExpression} />
+      <OperatorButtonContainer updateOperation={updateOperation} />
     </>
   );
 }

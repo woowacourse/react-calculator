@@ -1,6 +1,6 @@
-function ACButtonContainer({ clearResult }) {
+function ACButtonContainer({ resetExpression }) {
   return (
-    <div className="modifiers subgrid" onClick={clearResult}>
+    <div className="modifiers subgrid" onClick={resetExpression}>
       <button className="modifier" id="clear-button">
         AC
       </button>
