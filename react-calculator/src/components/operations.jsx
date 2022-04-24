@@ -31,6 +31,7 @@ function Operations(props) {
     }
     resetState();
   };
+
   return (
     <div className="operations subgrid">
       {operations.map((operator) => (

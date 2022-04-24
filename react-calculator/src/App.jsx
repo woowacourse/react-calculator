@@ -7,13 +7,13 @@ import store from './utils/store.js';
 
 function App() {
   const resultRef = useRef(null);
-  const [operation, setOperation] = useState('');
+  const [operation, setOperation] = useState(null);
   const [firstNumber, setFirstNumber] = useState(
     store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : ''
   );
   const [secondNumber, setSecondNumber] = useState('');
   const [result, setResult] = useState(
-    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : ''
+    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : 0
   );
 
   useEffect(() => {
@@ -90,14 +90,17 @@ function App() {
     <div id="app">
       <div className="calculator">
         <h1 id="calculator-number" ref={resultRef}>
-          {result || 0}
+          {result}
         </h1>
+
         <Digits handleDigit={handleDigit} />
+
         <div className="modifiers subgrid">
           <button className="modifier" onClick={handleModifierButtonClick}>
             AC
           </button>
         </div>
+
         <Operations
           operation={operation}
           setOperation={setOperations}
