@@ -78,13 +78,6 @@ const Calculator = () => {
       return;
     }
 
-    if (operation !== '=') {
-      this.setState({
-        operation,
-      });
-      return;
-    }
-
     const result = computeExpression({
       firstOperand: Number(firstOperand),
       secondOperand: Number(secondOperand),
