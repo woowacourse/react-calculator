@@ -43,16 +43,28 @@ class App extends Component {
     e.returnValue = '';
   };
 
-  #handleParentState = (state) => {
-    this.setState({ ...state });
-  };
-
   #triggerError = () => {
     this.setState({ ...initialState, isError: true });
   };
 
+  #setOperandValue = (operand, value) => {
+    this.setState({ [operand === 'first' ? 'firstOperand' : 'secondOperand']: value });
+  };
+
+  #setOperatorValue = (value) => {
+    this.setState({ operator: value });
+  };
+
+  #clearState = () => {
+    this.setState({ ...initialState });
+  };
+
+  #clearAndSetResultValue = (value) => {
+    this.setState({ ...initialState, firstOperand: value });
+  };
+
   render() {
-    const { isError, firstOperand, operator, secondOperand } = this.state;
+    const { firstOperand, secondOperand, operator, isError } = this.state;
 
     return (
       <div className="App">
@@ -66,12 +78,19 @@ class App extends Component {
               {secondOperand}
             </h1>
           )}
-          <DigitButtons state={this.state} handleParentState={this.#handleParentState} />
-          <AllClearButton handleParentState={this.#handleParentState} />
+          <DigitButtons
+            operator={operator}
+            firstOperand={firstOperand}
+            secondOperand={secondOperand}
+            setOperand={this.#setOperandValue}
+          />
+          <AllClearButton clearState={this.#clearState} />
           <OperationButtons
-            state={this.state}
-            initialState={initialState}
-            handleParentState={this.#handleParentState}
+            operator={operator}
+            firstOperand={firstOperand}
+            secondOperand={secondOperand}
+            setOperator={this.#setOperatorValue}
+            clearAndSetResult={this.#clearAndSetResultValue}
             triggerError={this.#triggerError}
           />
         </div>

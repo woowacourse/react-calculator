@@ -4,19 +4,16 @@ import { MAX_DIGIT_LENGTH } from '../constants';
 
 export default class DigitButtons extends Component {
   #handleDigitClick = ({ target }) => {
-    const { state, handleParentState } = this.props;
-    const { operator, secondOperand, firstOperand } = state;
+    const { operator, secondOperand, firstOperand, setOperand } = this.props;
     const number = target.textContent;
 
     if (operator) {
-      handleParentState({
-        secondOperand: this.#concatOperand(secondOperand, number),
-      });
+      setOperand('second', this.#concatOperand(secondOperand, number));
+
       return;
     }
-    handleParentState({
-      firstOperand: this.#concatOperand(firstOperand, number),
-    });
+
+    setOperand('first', this.#concatOperand(firstOperand, number));
   };
 
   #concatOperand(currentOperand, number) {

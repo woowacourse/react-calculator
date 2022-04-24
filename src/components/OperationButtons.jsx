@@ -9,38 +9,34 @@ const calculation = {
 
 export default class OperationButtons extends Component {
   #handleOperatorClick = ({ target }) => {
-    const { secondOperand } = this.props.state;
+    const { secondOperand, setOperator } = this.props;
     if (secondOperand) return;
 
-    this.props.handleParentState({
-      operator: target.textContent,
-    });
+    setOperator(target.textContent);
   };
 
   #handleResultButton = () => {
-    const { secondOperand } = this.props.state;
+    const { secondOperand } = this.props;
     if (!secondOperand) return;
 
     this.#showResult();
   };
 
   #showResult() {
+    const { triggerError, clearAndSetResult } = this.props;
     const result = this.#calculate();
 
     if (result === Infinity || result === -Infinity || Number.isNaN(result)) {
-      this.props.triggerError();
+      triggerError();
 
       return;
     }
 
-    this.props.handleParentState({
-      ...this.props.initialState,
-      firstOperand: String(result),
-    });
+    clearAndSetResult(String(result));
   }
 
   #calculate() {
-    const { operator, firstOperand, secondOperand } = this.props.state;
+    const { operator, firstOperand, secondOperand } = this.props;
 
     const calc = calculation[operator];
     return calc(Number(firstOperand), Number(secondOperand));
