@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
-import { MAX_NUMBER_LENGTH, RESULT } from './constants.js';
+import { MAX_NUMBER_LENGTH, RESULT, KEY_PREV_RESULT } from './constants.js';
 import store from './utils/store.js';
 
 import Operations from './components/Operations.jsx';
@@ -12,25 +12,25 @@ function App() {
   const resultRef = useRef(null);
   const [operation, setOperation] = useState(null);
   const [firstNumber, setFirstNumber] = useState(
-    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : ''
+    store.getLocalStorage(KEY_PREV_RESULT) ? store.getLocalStorage(KEY_PREV_RESULT) : ''
   );
   const [secondNumber, setSecondNumber] = useState('');
   const [result, setResult] = useState(
-    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : RESULT.RESET
+    store.getLocalStorage(KEY_PREV_RESULT) ? store.getLocalStorage(KEY_PREV_RESULT) : RESULT.RESET
   );
 
   useEffect(() => {
     window.addEventListener('beforeunload', onBeforeUnload);
   });
 
-  const onBeforeUnload = (e) => {
-    e.preventDefault();
-    e.returnValue = '';
+  const onBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = '';
     if (result === RESULT.RESET) {
-      localStorage.removeItem('prevResult');
+      localStorage.removeItem(KEY_PREV_RESULT);
       return;
     }
-    store.setLocalStorage('prevResult', result);
+    store.setLocalStorage(KEY_PREV_RESULT, result);
   };
 
   const renderCalculatorResult = (calculatedResult) => {
