@@ -67,6 +67,23 @@ function App() {
     }));
   };
 
+  const updateExpressionResult = ({ num1, operator, num2 }) => {
+    let expressionResult;
+
+    try {
+      expressionResult = `${calculateExpression(num1, operator, num2 || num1)}`;
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
+
+    setExpression({
+      prevNumber: expressionResult,
+      operator: '',
+      nextNumber: '',
+    });
+  };
+
   const handleClickAC = () => {
     setExpression({
       prevNumber: '',
@@ -113,25 +130,10 @@ function App() {
       return;
     }
 
-    const num1 = Number(prevNumber);
-    const num2 = Number(nextNumber);
-    let expressionResult;
-
-    try {
-      expressionResult = `${calculateExpression(
-        num1,
-        operator,
-        nextNumber ? num2 : num1
-      )}`;
-    } catch (error) {
-      alert(error.message);
-      return;
-    }
-
-    setExpression({
-      prevNumber: expressionResult,
-      operator: '',
-      nextNumber: '',
+    updateExpressionResult({
+      num1: Number(prevNumber),
+      operator,
+      num2: Number(nextNumber),
     });
   };
 
