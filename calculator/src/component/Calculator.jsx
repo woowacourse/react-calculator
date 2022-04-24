@@ -17,6 +17,11 @@ export default function Calculator() {
 
     window.addEventListener('beforeunload', confirmExit);
     window.addEventListener('unload', saveResult);
+
+    return () => {
+      window.removeEventListener('beforeunload', confirmExit);
+      window.removeEventListener('unload', saveResult);
+    };
   }, [operations]);
 
   const initialize = () => {
