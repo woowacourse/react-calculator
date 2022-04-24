@@ -8,6 +8,7 @@ import useCalculation from './Hooks/useCalculation';
 import TotalText from './Components/TotalText';
 
 import './Calculator.css';
+import AllClear from './Components/AllClear';
 
 function Calculator() {
   const { state, handler } = useCalculation();
@@ -37,11 +38,7 @@ function Calculator() {
     <div className="calculator">
       <TotalText>{totalNumber}</TotalText>
       <DigitButton onClickDigit={handleAddDigit} />
-      <div className="modifiers subgrid">
-        <Button type="button" className="modifier" onClick={handleAllClear}>
-          AC
-        </Button>
-      </div>
+      <AllClear onClick={handleAllClear} />
       <OperationButton
         currentOperator={inputOperator}
         onClickOperation={handleSetOperator}

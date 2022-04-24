@@ -56,12 +56,6 @@ body {
   order: 1;
 }
 
-.modifiers {
-  grid-area: modif;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-}
-
 .operations {
   grid-area: oper;
 }
