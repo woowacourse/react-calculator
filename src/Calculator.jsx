@@ -15,19 +15,18 @@ function Calculator() {
 
   const [expression, setExpression] = useState(initialValue);
 
+  useEffect(() => {
+    window.addEventListener('beforeunload', saveResult);
+    return () => {
+      window.removeEventListener('beforeunload', saveResult);
+    };
+  }, []);
+
   const saveResult = (e) => {
     e.preventDefault();
     e.returnValue = '';
     localStorage.setItem(STORAGE_KEY, JSON.stringify(expression));
   };
-
-  window.addEventListener('beforeunload', saveResult);
-
-  useEffect(() => {
-    return () => {
-      window.removeEventListener('beforeunload', saveResult);
-    };
-  });
 
   const handleNumber = (e) => {
     if (expression.operator === '') {
