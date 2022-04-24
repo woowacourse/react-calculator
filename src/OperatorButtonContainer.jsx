@@ -4,7 +4,7 @@ function OperatorButtonContainer({ handleOperation }) {
       <button className="operation" value="/">
         /
       </button>
-      <button className="operation" valuer="x">
+      <button className="operation" value="x">
         X
       </button>
       <button className="operation" value="-">
