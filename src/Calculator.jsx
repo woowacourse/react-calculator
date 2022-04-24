@@ -5,6 +5,7 @@ import Button from './Components/Button';
 import DigitButton from './Components/Digits';
 import OperationButton from './Components/Operations';
 import useCalculation from './Hooks/useCalculation';
+import TotalText from './Components/TotalText';
 
 import './Calculator.css';
 
@@ -34,7 +35,7 @@ function Calculator() {
 
   return (
     <div className="calculator">
-      <h1 id="total">{totalNumber === Infinity ? '오류' : totalNumber}</h1>
+      <TotalText>{totalNumber}</TotalText>
       <DigitButton onClickDigit={handleAddDigit} />
       <div className="modifiers subgrid">
         <Button type="button" className="modifier" onClick={handleAllClear}>
