@@ -7,6 +7,7 @@ const initialState = {
   isFirstNumber: true,
   operator: null,
   result: getLocalStorage(PREV_VALUE) || "0",
+  error: null,
 };
 
 export { initialState };

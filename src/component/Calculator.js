@@ -39,53 +39,46 @@ const Calculator = () => {
     dispatch({ type: INIT });
   }, []);
 
-  const onClickOperator = useCallback(
-    ({ target }) => {
-      const inputOperator = target.textContent;
+  const onClickOperator = useCallback(({ target }) => {
+    const inputOperator = target.textContent;
 
-      if (inputOperator === "=" && !data.operator) {
-        alert("올바른 계산이 아닙니다.");
-        return;
-      }
-      if (inputOperator === "=") {
-        dispatch({ type: CALCULATE });
-        return;
-      }
-      if (data.operator) {
-        alert("앞의 계산을 먼저 해주세요.");
-        return;
-      }
+    if (inputOperator === "=") {
+      dispatch({ type: CALCULATE });
+      return;
+    }
 
-      dispatch({ type: SET_OPERATOR, inputOperator });
-    },
-    [data.operator]
-  );
+    dispatch({ type: SET_OPERATOR, inputOperator });
+  }, []);
 
   return (
-    <div className="calculator">
-      <DisplayResult result={data.result} />
-      <div className="digits flex">
-        {Array.from({ length: 10 }, (_, index) => (
-          <NumberButton
-            key={index}
-            number={9 - index}
-            onClickNumber={onClickNumber}
-          />
-        ))}
+    <>
+      {data.error && <div>{data.error}</div>}
+      <div className="calculator">
+        <DisplayResult result={data.error ? "오류" : data.result} />
+        <div className="digits flex">
+          {Array.from({ length: 10 }, (_, index) => (
+            <NumberButton
+              key={index}
+              number={9 - index}
+              onClickNumber={onClickNumber}
+            />
+          ))}
+        </div>
+
+        <div className="modifiers subgrid">
+          <ClearButton onClickModifier={onClickModifier} />
+        </div>
+        <div className="operations subgrid">
+          {OPERATORS.map((operator) => (
+            <OperatorButton
+              key={operator}
+              operator={operator}
+              onClickOperator={onClickOperator}
+            />
+          ))}
+        </div>
       </div>
-      <div className="modifiers subgrid">
-        <ClearButton onClickModifier={onClickModifier} />
-      </div>
-      <div className="operations subgrid">
-        {OPERATORS.map((operator) => (
-          <OperatorButton
-            key={operator}
-            operator={operator}
-            onClickOperator={onClickOperator}
-          />
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
 

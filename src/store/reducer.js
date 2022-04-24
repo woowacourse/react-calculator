@@ -18,6 +18,7 @@ const reducer = (state, action) => {
         isFirstNumber: true,
         operator: null,
         result: "0",
+        error: null,
       };
     }
     case SET_NUMBER: {
@@ -44,6 +45,10 @@ const reducer = (state, action) => {
       };
     }
     case SET_OPERATOR: {
+      if (state.operator) {
+        return { ...state, error: "한번에 하나의 연산기호만 입력가능합니다." };
+      }
+
       return {
         ...state,
         isFirstNumber: false,
@@ -51,6 +56,10 @@ const reducer = (state, action) => {
       };
     }
     case CALCULATE: {
+      if (!state.operator) {
+        return { ...state, error: "올바른 계산이 아닙니다." };
+      }
+
       const total = calculate(
         state.firstNumber,
         state.operator,
@@ -65,6 +74,7 @@ const reducer = (state, action) => {
         isFirstNumber: true,
         operator: null,
         result: total === Infinity || isNaN(total) ? ERROR_TEXT : total,
+        error: null,
       };
     }
     default:
