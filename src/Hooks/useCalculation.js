@@ -15,6 +15,11 @@ function useCalculation() {
   const [inputNumbers, setNumbers] = useState([...initState.numbers]);
   const [inputOperator, setOperator] = useState(initState.operator);
 
+  const resetState = useCallback(() => {
+    setNumbers([...DEFAULT_STATE.numbers]);
+    setOperator(DEFAULT_STATE.operator);
+  }, []);
+
   const handleAddDigit = (digit) => {
     const numberIndex = inputOperator === '' ? 0 : 1;
     const newStateNumbers = [...inputNumbers];
@@ -22,6 +27,7 @@ function useCalculation() {
 
     if (newStateNumbers[numberIndex] === Infinity) {
       alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
+      resetState();
       return;
     }
 
@@ -56,8 +62,7 @@ function useCalculation() {
   };
 
   const handleAllClear = useCallback(() => {
-    setNumbers([...DEFAULT_STATE.numbers]);
-    setOperator(DEFAULT_STATE.operator);
+    resetState();
   }, []);
 
   const totalNumber = useMemo(
