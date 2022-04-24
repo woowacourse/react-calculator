@@ -1,9 +1,11 @@
 import { Component } from 'react';
 import './css/index.css';
 import {
+  DIGITS,
   FONT_SIZE_STANDARD,
   INFINITY_MESSAGE,
   MAX_CURRENT_LENGTH,
+  OPERATORS,
 } from './constants';
 
 class Calculator extends Component {
@@ -127,8 +129,6 @@ class Calculator extends Component {
 
   render() {
     const { current } = this.state;
-    const digits = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-    const operators = ['/', 'X', '-', '+', '='];
 
     return (
       <div className="App">
@@ -145,7 +145,7 @@ class Calculator extends Component {
             </h1>
           </div>
           <div className="digits flex">
-            {digits.map(digit => (
+            {DIGITS.map(digit => (
               <button
                 key={digit.toString()}
                 className="digit"
@@ -163,7 +163,7 @@ class Calculator extends Component {
             </button>
           </div>
           <div className="operations subgrid">
-            {operators.map(operator => (
+            {OPERATORS.map(operator => (
               <button
                 className="operation"
                 key={operator}
