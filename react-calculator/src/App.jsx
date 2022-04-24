@@ -29,23 +29,19 @@ function App() {
     store.setLocalStorage(KEY_PREV_RESULT, result);
   };
 
-  const renderCalculatorResult = (calculatedResult) => {
-    setResult(calculatedResult);
-  };
-
   const setClickedNumber = (event) => {
     const number = event.target.textContent;
 
     if (operation) {
       const secondNumberResult = secondNumber.length === MAX_NUMBER_LENGTH ? secondNumber : secondNumber + number;
       setSecondNumber(secondNumberResult);
-      renderCalculatorResult(secondNumberResult);
+      setResult(secondNumberResult);
       return;
     }
 
     const firstNumberResult = firstNumber.length === MAX_NUMBER_LENGTH ? firstNumber : firstNumber + number;
     setFirstNumber(firstNumberResult);
-    renderCalculatorResult(firstNumberResult);
+    setResult(firstNumberResult);
   };
 
   const resetState = () => {
@@ -55,7 +51,7 @@ function App() {
   };
 
   const allClearCalculator = () => {
-    renderCalculatorResult(RESULT.RESET);
+    setResult(RESULT.RESET);
     resetState();
   };
 
@@ -71,7 +67,7 @@ function App() {
           operation={operation}
           setOperation={setOperation}
           resetState={resetState}
-          renderCalculatorResult={renderCalculatorResult}
+          setResult={setResult}
         />
       </div>
     </div>

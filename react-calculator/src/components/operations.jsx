@@ -2,7 +2,7 @@ import React from 'react';
 import { OPERATIONS, INDIVISIBLE_NUMBER, RESULT } from '../constants.js';
 import { add, minus, divide, multiply } from '../utils/calculate.js';
 
-function Operations({ firstNumber, secondNumber, operation, setOperation, resetState, renderCalculatorResult }) {
+function Operations({ firstNumber, secondNumber, operation, setOperation, resetState, setResult }) {
   const calculate = () => {
     let calculatedResult = 0;
 
@@ -35,7 +35,7 @@ function Operations({ firstNumber, secondNumber, operation, setOperation, resetS
 
     if (operator === '=') {
       const calculatedResult = calculate();
-      renderCalculatorResult(calculatedResult);
+      setResult(calculatedResult);
       resetState();
       return;
     }
