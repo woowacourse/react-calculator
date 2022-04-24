@@ -37,7 +37,7 @@ function App() {
     setPrevNumber(prevNumber + number);
   };
 
-  const setOperator = (operator) => {
+  const handleOperation = (operator) => {
     if (!prevNumber || nextNumber) return;
     setOperation(operator);
   };
@@ -87,7 +87,7 @@ function App() {
             AC
           </button>
         </div>
-        <Operations setOperator={setOperator} calculate={calculate} />
+        <Operations handleOperation={handleOperation} calculate={calculate} />
       </div>
     </div>
   );

@@ -1,14 +1,14 @@
 import React from 'react';
 import { CALCULATOR } from '../constants.js';
 
-function Operations({ setOperator, calculate }) {
+function Operations({ handleOperation, calculate }) {
   const handleOperationButtonClick = (e) => {
     const operator = e.target.textContent;
     if (operator === '=') {
       calculate();
       return;
     }
-    setOperator(operator);
+    handleOperation(operator);
   };
 
   return (
