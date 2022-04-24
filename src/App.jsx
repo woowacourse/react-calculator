@@ -34,7 +34,7 @@ function App() {
       window.removeEventListener('beforeunload', handleBeforeunload);
       window.removeEventListener('unload', handleUnload);
     };
-  }, []);
+  }, [setExpression]);
 
   const handleBeforeunload = (e) => {
     e.preventDefault();
