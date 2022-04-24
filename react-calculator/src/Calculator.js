@@ -1,88 +1,59 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import ClearButton from "./components/ClearButton";
 import Digits from "./components/Digits";
 import Operators from "./components/Operators";
 import Screen from "./components/Screen";
 import { isOverMaxLength } from "./validator/index";
 
-export default class Calculator extends Component {
-  constructor() {
-    super();
-    const screenNumber = Number(localStorage.getItem("calculator-data"));
-    this.state = { screenNumber, recordNumber: 0, isNumberStep: true };
-  }
+function Calculator() {
+  const [screenNumber, setScreenNumber] = useState(
+    +localStorage.getItem("calculator-data") || 0
+  );
+  const [recordNumber, setRecordNumber] = useState(0);
+  const [isNumberStep, setIsNumberState] = useState(true);
 
-  componentDidUpdate() {
-    if (this.state.screenNumber === 0) {
-      localStorage.setItem("calculator-data", JSON.stringify(0));
-      this.removeBeforeUnloadEvent();
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  });
+
+  const onClickDigit = (enteredDigit) => {
+    if (!isNumberStep) {
+      setScreenNumber(enteredDigit);
+      setIsNumberState(true);
       return;
     }
-    this.addBeforeUnloadEvent();
-  }
-
-  setRecordNumber = (targetNumber) => {
-    this.setState({ recordNumber: targetNumber });
-  };
-
-  setScreenNumber = (targetNumber) => {
-    this.setState({ screenNumber: targetNumber });
-  };
-
-  setStep = (target) => {
-    this.setState({ isNumberStep: target });
-  };
-
-  onClickDigit = (enteredDigit) => {
-    if (!this.state.isNumberStep) {
-      this.setScreenNumber(enteredDigit);
-      this.setState({ isNumberStep: true });
-      return;
-    }
-    const prevNumber = this.state.screenNumber;
+    const prevNumber = screenNumber;
     if (!isOverMaxLength(prevNumber)) {
-      this.setScreenNumber(prevNumber * 10 + enteredDigit);
+      setScreenNumber(prevNumber * 10 + enteredDigit);
     }
   };
 
-  handleBeforeUnload = (e) => {
+  const handleBeforeUnload = (e) => {
     e.preventDefault();
-    if (isFinite(this.state.screenNumber)) {
-      localStorage.setItem(
-        "calculator-data",
-        JSON.stringify(this.state.screenNumber)
-      );
+    if (isFinite(screenNumber)) {
+      localStorage.setItem("calculator-data", JSON.stringify(screenNumber));
     }
     e.returnValue = "";
   };
 
-  addBeforeUnloadEvent = () => {
-    window.addEventListener("beforeunload", this.handleBeforeUnload);
-  };
-
-  removeBeforeUnloadEvent = () => {
-    window.removeEventListener("beforeunload", this.handleBeforeUnload);
-  };
-
-  render() {
-    const { screenNumber, isNumberStep, recordNumber } = this.state;
-    return (
-      <div className="calculator">
-        <Screen screenNumber={screenNumber} />
-        <Digits onClickDigit={this.onClickDigit} />
-        <Operators
-          setScreenNumber={this.setScreenNumber}
-          screenNumber={screenNumber}
-          setStep={this.setStep}
-          isNumberStep={isNumberStep}
-          recordNumber={recordNumber}
-          setRecordNumber={this.setRecordNumber}
-        />
-        <ClearButton
-          setScreenNumber={this.setScreenNumber}
-          setRecordNumber={this.setRecordNumber}
-        />
-      </div>
-    );
-  }
+  return (
+    <div className="calculator">
+      <Screen screenNumber={screenNumber} />
+      <Digits onClickDigit={onClickDigit} />
+      <Operators
+        setScreenNumber={setScreenNumber}
+        screenNumber={screenNumber}
+        setStep={setIsNumberState}
+        isNumberStep={isNumberStep}
+        recordNumber={recordNumber}
+        setRecordNumber={setRecordNumber}
+      />
+      <ClearButton
+        setScreenNumber={setScreenNumber}
+        setRecordNumber={setRecordNumber}
+      />
+    </div>
+  );
 }
+
+export default Calculator;
