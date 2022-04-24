@@ -18,6 +18,8 @@ export default function Calculator() {
     window.addEventListener('beforeunload', confirmExit);
     window.addEventListener('unload', saveResult);
 
+    console.log(operations);
+
     return () => {
       window.removeEventListener('beforeunload', confirmExit);
       window.removeEventListener('unload', saveResult);
@@ -44,6 +46,14 @@ export default function Calculator() {
   const changeNumber = (e) => {
     if (!Number.isFinite(operations.prevNumber)) {
       initialize();
+    }
+    if (operations.operator === '=') {
+      setOperations({
+        ...operations,
+        prevNumber:
+          operations.nextNumber * CALCULATOR.UNIT + Number(e.target.textContent),
+      });
+      return;
     }
 
     setOperations({
