@@ -3,7 +3,7 @@ import { CALCULATOR, ERROR_MESSAGE } from '../constant';
 import { storage } from '../domain/storage';
 import './Calculator.css';
 import { useEffect, useState } from 'react';
-import CalculatorButton from './CalculatorButton';
+import CalculatorButton from '../component/CalculatorButton';
 import { limitThreeDecimal } from '../utils';
 
 export default function Calculator() {
