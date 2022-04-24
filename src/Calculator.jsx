@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ERROR_MESSAGE, STORAGE_KEY, MAX_DIGIT } from './constants';
+import DigitButtons from './components/DigitButtons';
+import OperatorButtons from './components/OperatorButtons';
+import ACButton from './components/ACButton';
 
 function Calculator() {
   const state = localStorage.getItem(STORAGE_KEY)
@@ -14,25 +17,25 @@ function Calculator() {
   const [secondNumber, _setSecondNumber] = useState(state.secondNumber);
   const [operand, setOperand] = useState(state.operand);
 
-  const handleNumber = (e) => {
+  const setNumbers = (inputNumber) => {
     if (firstNumber === ERROR_MESSAGE) clearResult();
     if (operand === '') {
-      setFirstNumber(e.target.dataset.number);
+      setFirstNumber(inputNumber);
       return;
     }
-    setSecondNumber(e.target.dataset.number);
+    setSecondNumber(inputNumber);
   };
 
-  const handleOperation = (e) => {
+  const setOperators = (inputOperator) => {
     if (firstNumber === ERROR_MESSAGE) clearResult();
 
-    if (e.target.dataset.operator === '=') {
+    if (inputOperator === '=') {
       calculate();
       return;
     }
 
     if (operand !== '') return;
-    setOperand(e.target.dataset.operator);
+    setOperand(inputOperator);
   };
 
   const setFirstNumber = (value) => {
@@ -110,60 +113,9 @@ function Calculator() {
     <div className="App">
       <div className="calculator">
         <h1 id="total">{firstNumber + operand + secondNumber}</h1>
-        <div className="digits flex" onClick={handleNumber}>
-          <button className="digit" data-number="9">
-            9
-          </button>
-          <button className="digit" data-number="8">
-            8
-          </button>
-          <button className="digit" data-number="7">
-            7
-          </button>
-          <button className="digit" data-number="6">
-            6
-          </button>
-          <button className="digit" data-number="5">
-            5
-          </button>
-          <button className="digit" data-number="4">
-            4
-          </button>
-          <button className="digit" data-number="3">
-            3
-          </button>
-          <button className="digit" data-number="2">
-            2
-          </button>
-          <button className="digit" data-number="1">
-            1
-          </button>
-          <button className="digit" data-number="0">
-            0
-          </button>
-        </div>
-        <div className="modifiers subgrid" onClick={clearResult}>
-          <button className="modifier" id="clear-button">
-            AC
-          </button>
-        </div>
-        <div className="operations subgrid" onClick={handleOperation}>
-          <button className="operation" data-operator="/">
-            /
-          </button>
-          <button className="operation" data-operator="x">
-            X
-          </button>
-          <button className="operation" data-operator="-">
-            -
-          </button>
-          <button className="operation" data-operator="+">
-            +
-          </button>
-          <button id="calculate-button" data-operator="=">
-            =
-          </button>
-        </div>
+        <DigitButtons setNumbers={setNumbers}></DigitButtons>
+        <ACButton clearResult={clearResult}></ACButton>
+        <OperatorButtons setOperators={setOperators}></OperatorButtons>
       </div>
     </div>
   );
