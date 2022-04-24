@@ -71,7 +71,7 @@ function App() {
     let expressionResult;
 
     try {
-      expressionResult = `${calculateExpression(num1, operator, num2 || num1)}`;
+      expressionResult = `${calculateExpression(num1, operator, num2)}`;
     } catch (error) {
       alert(error.message);
       return;
@@ -130,10 +130,12 @@ function App() {
       return;
     }
 
+    const num1 = Number(prevNumber);
+    const num2 = Number(nextNumber);
     updateExpressionResult({
-      num1: Number(prevNumber),
+      num1,
       operator,
-      num2: Number(nextNumber),
+      num2: nextNumber ? num2 : num1,
     });
   };
 
