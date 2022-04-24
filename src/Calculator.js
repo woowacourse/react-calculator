@@ -47,8 +47,10 @@ const Calculator = () => {
     const sign = newStateNumbers[numberIndex] >= 0 ? 1 : -1;
     newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(digit) * sign;
 
-    if (newStateNumbers[numberIndex] === Infinity) {
+    if (Number.isNaN(newStateNumbers[numberIndex])) {
       alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
+      setNumbers([0, 0]);
+      setOperator('');
       return;
     }
 
