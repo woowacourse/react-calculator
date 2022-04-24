@@ -2,7 +2,7 @@ import React from 'react';
 
 function Operations(props) {
   const operations = ['/', 'X', '-', '+', '='];
-  const { operation, setOperation, add, minus, divide, multiply, resetState } = props;
+  const { setOperation, handleEqualityButtonClick } = props;
 
   const handleOperationButtonClick = (e) => {
     if (e.target.textContent === '=') {
@@ -10,26 +10,6 @@ function Operations(props) {
       return;
     }
     setOperation(e.target.textContent);
-  };
-
-  const handleEqualityButtonClick = () => {
-    switch (operation) {
-      case '+':
-        add();
-        break;
-      case '-':
-        minus();
-        break;
-      case '/':
-        divide();
-        break;
-      case 'X':
-        multiply();
-        break;
-      default:
-        break;
-    }
-    resetState();
   };
 
   return (

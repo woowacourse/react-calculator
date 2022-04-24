@@ -83,6 +83,26 @@ function App() {
     resetState();
   };
 
+  const handleEqualityButtonClick = () => {
+    switch (operation) {
+      case '+':
+        add();
+        break;
+      case '-':
+        minus();
+        break;
+      case '/':
+        divide();
+        break;
+      case 'X':
+        multiply();
+        break;
+      default:
+        break;
+    }
+    resetState();
+  };
+
   return (
     <div id="app">
       <div className="calculator">
@@ -90,13 +110,8 @@ function App() {
         <Digits setClickedNumber={setClickedNumber} />
         <AllClear allClear={allClear} />
         <Operations
-          operation={operation}
           setOperation={setOperation}
-          add={add}
-          minus={minus}
-          divide={divide}
-          multiply={multiply}
-          resetState={resetState}
+          handleEqualityButtonClick={handleEqualityButtonClick}
         />
       </div>
     </div>
