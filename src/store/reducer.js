@@ -1,5 +1,6 @@
 import {
   CALCULATE,
+  ERROR_MESSAGES,
   ERROR_TEXT,
   INIT,
   PREV_VALUE,
@@ -46,8 +47,7 @@ const reducer = (state, action) => {
     }
     case SET_OPERATOR: {
       if (state.operator) {
-        saveLocalStorage(PREV_VALUE, ERROR_TEXT);
-        return { ...state, error: "한번에 하나의 연산기호만 입력가능합니다." };
+        return { ...state, error: ERROR_MESSAGES.DUPLICATED_OPERATOR };
       }
 
       return {
@@ -58,8 +58,7 @@ const reducer = (state, action) => {
     }
     case CALCULATE: {
       if (!state.operator) {
-        saveLocalStorage(PREV_VALUE, ERROR_TEXT);
-        return { ...state, error: "올바른 계산이 아닙니다." };
+        return { ...state, error: ERROR_MESSAGES.INCORRECT_CALCULATION };
       }
 
       const total = calculate(
