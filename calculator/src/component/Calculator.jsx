@@ -3,7 +3,7 @@ import { CALCULATOR, ERROR_MESSAGE } from '../constant';
 import { storage } from '../domain/storage';
 import './Calculator.css';
 import { useEffect, useState } from 'react';
-import Button from './Button';
+import CalculatorButton from './CalculatorButton';
 
 export default function Calculator() {
   const [operations, setOperations] = useState(storage.getStoredOperations());
@@ -101,17 +101,27 @@ export default function Calculator() {
 
       <div className="digits flex">
         {CALCULATOR.NUMBERS.map((number) => (
-          <Button key={number} class="digit" onClick={changeNumber} content={number} />
+          <CalculatorButton
+            key={number}
+            class="digit"
+            onClick={changeNumber}
+            content={number}
+          />
         ))}
       </div>
 
       <div className="modifiers subgrid">
-        <Button class="modifier" onClick={initialize} content="AC" />
+        <CalculatorButton class="modifier" onClick={initialize} content="AC" />
       </div>
 
       <div className="operations subgrid">
         {[...CALCULATOR.OPERATOR].map((operator, idx) => (
-          <Button key={idx} class="operation" onClick={calculate} content={operator} />
+          <CalculatorButton
+            key={idx}
+            class="operation"
+            onClick={calculate}
+            content={operator}
+          />
         ))}
       </div>
     </div>
