@@ -80,10 +80,10 @@ class Calculator extends Component {
       '+': () => numbers[0] + numbers[1],
       '-': () => numbers[0] - numbers[1],
       X: () => numbers[0] * numbers[1],
-      '/': () => numbers[0] / numbers[1],
+      '/': () => Number.parseInt(numbers[0] / numbers[1], 10),
     };
 
-    const resultNumber = Number(operatorCollection[operator]().toFixed(2));
+    const resultNumber = operatorCollection[operator]();
     this.setState({ numbers: [resultNumber, 0], operator: '' });
   };
 
