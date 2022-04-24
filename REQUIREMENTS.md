@@ -45,4 +45,4 @@
 
 ## 🎯 step2 기능 요구사항
 
-- [ ] `Class Component`를 `Function Component`로 마이그레이션 합니다.
+- [x] `Class Component`를 `Function Component`로 마이그레이션 합니다.
