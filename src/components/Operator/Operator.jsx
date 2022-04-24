@@ -20,9 +20,9 @@ export default function Operator({ setOperatorState, calculate, allClear }) {
         </button>
       </div>
       <div className="operations subgrid" onClick={handleOperatorButtonClick}>
-        {['/', 'X', '-', '+', '='].map((operation, idx) => (
-          <button className="operation" key={idx}>
-            {operation}
+        {['/', 'X', '-', '+', '='].map(operator => (
+          <button className="operation" key={operator}>
+            {operator}
           </button>
         ))}
       </div>
