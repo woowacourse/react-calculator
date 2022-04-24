@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import Operations from './components/Operations.jsx';
 import Digits from './components/Digits.jsx';
-import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
+import { MAX_NUMBER_LENGTH, RESULT } from './constants.js';
 import store from './utils/store.js';
 import AllClear from './components/AllClear.jsx';
 import Result from './components/Result.jsx';
@@ -41,38 +41,15 @@ function App() {
     const number = event.target.textContent;
 
     if (operation) {
-      const secondNumberResult =
-        secondNumber.length === MAX_NUMBER_LENGTH ? secondNumber : secondNumber + number;
+      const secondNumberResult = secondNumber.length === MAX_NUMBER_LENGTH ? secondNumber : secondNumber + number;
       setSecondNumber(secondNumberResult);
       renderCalculatorResult(secondNumberResult);
       return;
     }
 
-    const firstNumberResult =
-      firstNumber.length === MAX_NUMBER_LENGTH ? firstNumber : firstNumber + number;
+    const firstNumberResult = firstNumber.length === MAX_NUMBER_LENGTH ? firstNumber : firstNumber + number;
     setFirstNumber(firstNumberResult);
     renderCalculatorResult(firstNumberResult);
-  };
-
-  const add = () => {
-    console.log(firstNumber, secondNumber);
-    renderCalculatorResult(Number(firstNumber) + Number(secondNumber));
-  };
-
-  const minus = () => {
-    renderCalculatorResult(Number(firstNumber) - Number(secondNumber));
-  };
-
-  const divide = () => {
-    if (secondNumber === INDIVISIBLE_NUMBER) {
-      renderCalculatorResult(RESULT.ERROR_MESSAGE);
-      return;
-    }
-    renderCalculatorResult(Math.floor(Number(firstNumber) / Number(secondNumber)));
-  };
-
-  const multiply = () => {
-    renderCalculatorResult(Number(firstNumber) * Number(secondNumber));
   };
 
   const resetState = () => {
@@ -86,26 +63,6 @@ function App() {
     resetState();
   };
 
-  const handleEqualityButtonClick = () => {
-    switch (operation) {
-      case '+':
-        add();
-        break;
-      case '-':
-        minus();
-        break;
-      case '/':
-        divide();
-        break;
-      case 'X':
-        multiply();
-        break;
-      default:
-        break;
-    }
-    resetState();
-  };
-
   return (
     <div id="app">
       <div className="calculator">
@@ -113,8 +70,14 @@ function App() {
         <Digits setClickedNumber={setClickedNumber} />
         <AllClear allClear={allClear} />
         <Operations
+          firstNumber={firstNumber}
+          secondNumber={secondNumber}
           setOperation={setOperation}
-          handleEqualityButtonClick={handleEqualityButtonClick}
+          setResult={setResult}
+          operation={operation}
+          result={result}
+          resetState={resetState}
+          renderCalculatorResult={renderCalculatorResult}
         />
       </div>
     </div>

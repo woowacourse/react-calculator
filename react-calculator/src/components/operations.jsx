@@ -1,13 +1,45 @@
 import React from 'react';
-import { OPERATIONS } from '../constants.js';
+import { OPERATIONS, INDIVISIBLE_NUMBER, RESULT } from '../constants.js';
+import { add, minus, divide, multiply } from '../utils/calculate.js';
 
-function Operations({ setOperation, handleEqualityButtonClick }) {
+function Operations({ firstNumber, secondNumber, operation, setOperation, resetState, renderCalculatorResult }) {
+  const calculate = () => {
+    let calculatedResult = 0;
+
+    switch (operation) {
+      case '+':
+        calculatedResult = add(firstNumber, secondNumber);
+        break;
+      case '-':
+        calculatedResult = minus(firstNumber, secondNumber);
+        break;
+      case '/':
+        if (secondNumber === INDIVISIBLE_NUMBER) {
+          calculatedResult = RESULT.ERROR_MESSAGE;
+          break;
+        }
+        calculatedResult = divide(firstNumber, secondNumber);
+        break;
+      case 'X':
+        calculatedResult = multiply(firstNumber, secondNumber);
+        break;
+      default:
+        break;
+    }
+
+    return calculatedResult;
+  };
+
   const handleOperationButtonClick = (e) => {
-    if (e.target.textContent === '=') {
-      handleEqualityButtonClick();
+    const operator = e.target.textContent;
+
+    if (operator === '=') {
+      const calculatedResult = calculate();
+      renderCalculatorResult(calculatedResult);
+      resetState();
       return;
     }
-    setOperation(e.target.textContent);
+    setOperation(operator);
   };
 
   return (
