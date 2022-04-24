@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import OperationButton from './components/OperationButton';
 import './Calculator.css';
 import operatorCollection from './utils/operator';
-
-const MAX_LENGTH = 3;
-const DIGIT_LIST = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-const OPERATION_LIST = ['/', 'X', '-', '+'];
+import { MAX_LENGTH, DIGIT_LIST, OPERATION_LIST } from './constant/calculator.js';
+import { CALCULATOR_STATE } from './constant/localStorage';
 
 const Calculator = () => {
   const [numbers, setNumbers] = useState([0, 0]);
@@ -13,7 +11,7 @@ const Calculator = () => {
   const totalNumber = !operator || numbers[1] === 0 ? numbers[0] : numbers[1];
 
   useEffect(() => {
-    const savedState = localStorage.getItem('CALCULATOR_STATE');
+    const savedState = localStorage.getItem(CALCULATOR_STATE);
 
     if (savedState) {
       const { numbers: savedNumber, operator: savedOperator } = JSON.parse(savedState);
@@ -34,7 +32,7 @@ const Calculator = () => {
     event.preventDefault();
     event.returnValue = '';
 
-    localStorage.setItem('CALCULATOR_STATE', JSON.stringify({ numbers, operator }));
+    localStorage.setItem(CALCULATOR_STATE, JSON.stringify({ numbers, operator }));
   };
 
   const handleAllClearClick = () => {
