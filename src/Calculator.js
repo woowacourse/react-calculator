@@ -4,7 +4,7 @@ import './Calculator.css';
 
 class Calculator extends Component {
   MAX_NUMBER = 1000;
-  DIGIT_LIST = Array.from({ length: 10 }, (_, index) => 9 - index);
+  DIGIT_LIST = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
   OPERATION_LIST = ['/', 'X', '-', '+'];
 
   constructor(props) {
