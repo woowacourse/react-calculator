@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 import { memo } from 'react';
-// eslint-disable-next-line react/prop-types
+
 const Modifier = ({ onClick }) => {
   return (
     <div className="modifiers subgrid">
@@ -8,6 +9,10 @@ const Modifier = ({ onClick }) => {
       </button>
     </div>
   );
+};
+
+Modifier.propTypes = {
+  onClick: PropTypes.func,
 };
 
 export default memo(Modifier);

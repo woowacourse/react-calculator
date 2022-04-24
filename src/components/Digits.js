@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-// eslint-disable-next-line react/prop-types
+
 const Digits = ({ onClick }) => {
   return (
     <div className="digits flex">
@@ -10,6 +11,10 @@ const Digits = ({ onClick }) => {
       ))}
     </div>
   );
+};
+
+Digits.propTypes = {
+  onClick: PropTypes.func,
 };
 
 export default Digits;

@@ -1,4 +1,5 @@
-// eslint-disable-next-line react/prop-types
+import PropTypes from 'prop-types';
+
 const Expression = ({ isError, firstOperand, operation, secondOperand }) => {
   return (
     <h1 id="total">
@@ -11,4 +12,10 @@ const Expression = ({ isError, firstOperand, operation, secondOperand }) => {
   );
 };
 
+Expression.propTypes = {
+  isError: PropTypes.bool,
+  firstOperand: PropTypes.number,
+  secondOperand: PropTypes.number,
+  operation: PropTypes.string,
+};
 export default Expression;
