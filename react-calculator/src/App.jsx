@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
-import Operations from './components/Operations.jsx';
-import Digits from './components/Digits.jsx';
 import { MAX_NUMBER_LENGTH, RESULT } from './constants.js';
 import store from './utils/store.js';
+
+import Operations from './components/Operations.jsx';
+import Digits from './components/Digits.jsx';
 import AllClear from './components/AllClear.jsx';
 import Result from './components/Result.jsx';
 
