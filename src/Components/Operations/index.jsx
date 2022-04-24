@@ -19,6 +19,7 @@ function OperationButton({ currentOperator, onClickOperation, onClickResult }) {
           {operation}
         </Container>
       ))}
+
       <Container type="submit" className="operation" onClick={onClickResult}>
         =
       </Container>

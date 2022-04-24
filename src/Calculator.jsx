@@ -41,7 +41,6 @@ function Calculator() {
           AC
         </Button>
       </div>
-
       <OperationButton
         currentOperator={inputOperator}
         onClickOperation={handleSetOperator}
