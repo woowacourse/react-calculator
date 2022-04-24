@@ -1,13 +1,9 @@
 import React from 'react';
+import { INITIAL_STATE } from '../constants/constant';
 
-const AllClearButton = ({ set }) => {
-  const { setSum, setNextNumbers, setOperator, setPrevNumbers } = set;
-
+const AllClearButton = ({ setState }) => {
   const onClickAllClear = () => {
-    setSum('');
-    setPrevNumbers([]);
-    setOperator('');
-    setNextNumbers([]);
+    setState(INITIAL_STATE);
   };
 
   return (

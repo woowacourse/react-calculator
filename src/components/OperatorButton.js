@@ -1,35 +1,40 @@
 import React from 'react';
 import { OPERATOR, ERROR_MSG } from '../constants/constant';
 
-const OperatorButton = ({ operand, state, set }) => {
+const OperatorButton = ({ operand, state, setState }) => {
   const { prevNumbers, operator, nextNumbers } = state;
-  const { setSum, setOperator } = set;
 
   const onClickOperator = () => {
-    const prevNumber = Number(prevNumbers.join(''));
-    const nextNumber = Number(nextNumbers.join(''));
-
     if (operand !== OPERATOR.EQUAL) {
-      setOperator(operand);
+      setState(prevState => ({ ...prevState, operator: operand }));
       return;
     }
 
+    setState(prevState => ({
+      ...prevState,
+      sum: calculateSum(),
+      operator: operand,
+    }));
+  };
+
+  const calculateSum = () => {
+    const prevNumber = Number(prevNumbers.join(''));
+    const nextNumber = Number(nextNumbers.join(''));
+
     switch (operator) {
       case OPERATOR.PLUS:
-        setSum(prevNumber + nextNumber);
-        break;
+        return prevNumber + nextNumber;
       case OPERATOR.SUBSTRACT:
-        setSum(prevNumber - nextNumber);
-        break;
+        return prevNumber - nextNumber;
       case OPERATOR.MULTI:
-        setSum(prevNumber * nextNumber);
-        break;
+        return prevNumber * nextNumber;
       case OPERATOR.DIVIDE:
         if (!isFinite(prevNumber / nextNumber)) {
-          setSum(ERROR_MSG.INFINITY);
-          break;
+          return ERROR_MSG.INFINITY;
         }
-        setSum(Math.floor(prevNumber / nextNumber));
+        return Math.floor(prevNumber / nextNumber);
+      default:
+        return prevNumber;
     }
   };
 

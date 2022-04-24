@@ -1,12 +1,20 @@
 import React from 'react';
-import { NUMBER_LIMIT, ERROR_MSG } from '../constants/constant';
+import {
+  NUMBER_LIMIT,
+  ERROR_MSG,
+  OPERATOR,
+  INITIAL_STATE,
+} from '../constants/constant';
 
-const NumberButton = ({ number, state, set }) => {
+const NumberButton = ({ number, state, setState }) => {
   const { prevNumbers, operator, nextNumbers } = state;
-  const { setPrevNumbers, setNextNumbers } = set;
 
   const onClickNumber = () => {
-    const isPrev = operator === '';
+    const isPrev = operator === '' || operator === OPERATOR.EQUAL;
+
+    if (operator === OPERATOR.EQUAL) {
+      setState(INITIAL_STATE);
+    }
 
     if (
       (isPrev && prevNumbers.length >= NUMBER_LIMIT) ||
@@ -16,12 +24,15 @@ const NumberButton = ({ number, state, set }) => {
       return;
     }
 
-    if (isPrev) {
-      setPrevNumbers([...prevNumbers, number]);
-      return;
-    }
-
-    setNextNumbers([...nextNumbers, number]);
+    isPrev
+      ? setState(prevState => ({
+          ...prevState,
+          prevNumbers: [...prevState.prevNumbers, number],
+        }))
+      : setState(prevState => ({
+          ...prevState,
+          nextNumbers: [...prevState.nextNumbers, number],
+        }));
   };
 
   return (
