@@ -3,6 +3,7 @@ import { CALCULATOR, ERROR_MESSAGE } from '../constant';
 import { storage } from '../domain/storage';
 import './Calculator.css';
 import { useEffect, useState } from 'react';
+import Button from './Button';
 
 export default function Calculator() {
   const [operations, setOperations] = useState(storage.getStoredOperations());
@@ -97,23 +98,20 @@ export default function Calculator() {
       <h1 id="total">
         {Number.isFinite(operations.prevNumber) ? result : ERROR_MESSAGE.INFINITY_ERROR}
       </h1>
+
       <div className="digits flex">
         {CALCULATOR.NUMBERS.map((number) => (
-          <button className="digit" key={number} onClick={changeNumber}>
-            {number}
-          </button>
+          <Button key={number} class="digit" onClick={changeNumber} content={number} />
         ))}
       </div>
+
       <div className="modifiers subgrid">
-        <button className="modifier" onClick={initialize}>
-          AC
-        </button>
+        <Button class="modifier" onClick={initialize} content="AC" />
       </div>
+
       <div className="operations subgrid">
         {[...CALCULATOR.OPERATOR].map((operator, idx) => (
-          <button key={idx} className="operation" onClick={calculate}>
-            {operator}
-          </button>
+          <Button key={idx} class="operation" onClick={calculate} content={operator} />
         ))}
       </div>
     </div>
