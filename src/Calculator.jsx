@@ -1,5 +1,77 @@
-import React, { Component } from 'react';
+/* eslint-disable no-shadow */
+/* eslint-disable react/jsx-curly-brace-presence */
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable func-names */
+/* eslint-disable no-unused-vars */
 
+import React, { useState } from 'react';
+import DigitButton from './DigitButton';
+import ModifierButton from './ModifierButton';
+import OperationButton from './OperationButton';
+import Result from './Result';
+
+const digits = ['9', '8', '7', '6', '5', '4', '3', '2', '1', '0'];
+const operations = ['/', 'X', '-', '+', '='];
+
+const DigitButtons = function (props) {
+  const { operand, setOperand, index } = props;
+  const digitButtons = digits.map(digit => (
+    <DigitButton
+      key={digit}
+      digit={digit}
+      operand={operand}
+      setOperand={setOperand}
+      index={index}
+    />
+  ));
+
+  return digitButtons;
+};
+
+const OperationButtons = function (props) {
+  const { operand, operator, setOperator, setIndex } = props;
+  const operationButtons = operations.map(operation => (
+    <OperationButton
+      key={operation}
+      operand={operand}
+      operation={operation}
+      operator={operator}
+      setOperator={setOperator}
+      setIndex={setIndex}
+    />
+  ));
+
+  return operationButtons;
+};
+
+const Calculator = function () {
+  const [operand, setOperand] = useState(['0', '']);
+  const [operator, setOperator] = useState('');
+  const [index, setIndex] = useState(0);
+
+  return (
+    <div className="calculator">
+      <Result operand={operand} operator={operator} />
+      <div className="digits flex">
+        <DigitButtons operand={operand} setOperand={setOperand} index={index} />
+      </div>
+      <div className="modifiers subgrid">
+        <ModifierButton setOperand={setOperand} setOperator={setOperator} setIndex={setIndex} />
+      </div>
+      <div className="operations subgrid">
+        <OperationButtons
+          operand={operand}
+          operator={operator}
+          setOperator={setOperator}
+          setIndex={setIndex}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Calculator;
+/*
 export default class Calculator extends Component {
   constructor() {
     super();
@@ -28,60 +100,6 @@ export default class Calculator extends Component {
 
   componentDidUpdate() {
     localStorage.setItem('state', JSON.stringify(this.state));
-  }
-
-  handleClickDigit(digit) {
-    if (this.state.operand[0] === '오류') {
-      alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
-      return;
-    }
-
-    if (+(this.state.operand[this.state.index] + digit) >= 1000) {
-      alert('숫자는 한번에 최대 3자리 수까지 입력 가능합니다.');
-      return;
-    }
-
-    switch (this.state.index) {
-      case 0:
-        this.setState(prevState => ({
-          operand: [String(+(prevState.operand[0] + digit)), ''],
-        }));
-        break;
-
-      case 1:
-        this.setState(prevState => ({
-          operand: [String(+prevState.operand[0]), String(+(prevState.operand[1] + digit))],
-        }));
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  handleClickOperation(operator) {
-    if (this.state.operand[0] === '오류') {
-      alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
-      return;
-    }
-
-    if (operator === '=') {
-      this.calculate(this.state.operand, this.state.operator);
-      return;
-    }
-
-    if (this.state.operator) {
-      return;
-    }
-
-    this.setState({ operator });
-    this.setState({ index: 1 });
-  }
-
-  handleClickModifier() {
-    this.setState({ operand: ['0', ''] });
-    this.setState({ operator: '' });
-    this.setState({ index: 0 });
   }
 
   calculate(operand, operator) {
@@ -117,69 +135,5 @@ export default class Calculator extends Component {
     this.setState({ index: 0 });
   }
 
-  renderDigit(i) {
-    return (
-      <button className="digit" type="button" onClick={this.handleClickDigit.bind(this, i)}>
-        {i}
-      </button>
-    );
-  }
-
-  renderModifier() {
-    return (
-      <button type="button" className="modifier" onClick={this.handleClickModifier.bind(this)}>
-        AC
-      </button>
-    );
-  }
-
-  renderResult() {
-    return (
-      <h1 id="total">
-        {this.state.operand[0]}
-        {this.state.operator}
-        {this.state.operand[1]}
-      </h1>
-    );
-  }
-
-  renderOperation(operation) {
-    return (
-      <button
-        type="button"
-        className="operation"
-        onClick={this.handleClickOperation.bind(this, operation)}
-      >
-        {operation}
-      </button>
-    );
-  }
-
-  render() {
-    return (
-      <div className="calculator">
-        {this.renderResult()}
-        <div className="digits flex">
-          {this.renderDigit('9')}
-          {this.renderDigit('8')}
-          {this.renderDigit('7')}
-          {this.renderDigit('6')}
-          {this.renderDigit('5')}
-          {this.renderDigit('4')}
-          {this.renderDigit('3')}
-          {this.renderDigit('2')}
-          {this.renderDigit('1')}
-          {this.renderDigit('0')}
-        </div>
-        <div className="modifiers subgrid">{this.renderModifier()}</div>
-        <div className="operations subgrid">
-          {this.renderOperation('/')}
-          {this.renderOperation('X')}
-          {this.renderOperation('-')}
-          {this.renderOperation('+')}
-          {this.renderOperation('=')}
-        </div>
-      </div>
-    );
-  }
 }
+*/
