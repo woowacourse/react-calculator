@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { DIGITS, OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constants';
+import InputField from './InputField';
+import ResultField from './ResultField';
+import { OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constants';
 import { operation } from './util';
 
 function Calculator() {
@@ -32,7 +34,6 @@ function Calculator() {
       if (isOverOperandMaxLength(expression.firstOperand)) {
         return;
       }
-
       setExpression({
         ...expression,
         firstOperand:
@@ -97,38 +98,12 @@ function Calculator() {
   return (
     <div className="App">
       <div className="calculator">
-        <h1 id="total">
-          {expression.firstOperand + expression.operator + expression.secondOperand}
-        </h1>
-        <div className="digits flex" onClick={handleNumber}>
-          {DIGITS.map((digit) => (
-            <button className="digit" data-number={digit}>
-              {digit}
-            </button>
-          ))}
-        </div>
-        <div className="modifiers subgrid" onClick={clearResult}>
-          <button className="modifier" id="clear-button">
-            AC
-          </button>
-        </div>
-        <div className="operations subgrid" onClick={handleOperation}>
-          <button className="operation" data-operator="/">
-            /
-          </button>
-          <button className="operation" data-operator="x">
-            X
-          </button>
-          <button className="operation" data-operator="-">
-            -
-          </button>
-          <button className="operation" data-operator="+">
-            +
-          </button>
-          <button id="calculate-button" data-operator="=">
-            =
-          </button>
-        </div>
+        <ResultField expression={expression} />
+        <InputField
+          handleNumber={handleNumber}
+          handleOperation={handleOperation}
+          clearResult={clearResult}
+        />
       </div>
     </div>
   );
