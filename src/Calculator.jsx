@@ -5,7 +5,7 @@ import { OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constant
 import { operation } from './util';
 
 function Calculator() {
-  const initialValue = localStorage.getItem(STORAGE_KEY)
+  const initialExpression = localStorage.getItem(STORAGE_KEY)
     ? JSON.parse(localStorage.getItem(STORAGE_KEY))
     : {
         firstOperand: '',
@@ -13,7 +13,7 @@ function Calculator() {
         operator: '',
       };
 
-  const [expression, setExpression] = useState(initialValue);
+  const [expression, setExpression] = useState(initialExpression);
 
   useEffect(() => {
     window.addEventListener('beforeunload', saveResult);
