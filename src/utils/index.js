@@ -1,20 +1,19 @@
+const calculateByOperation = {
+  '/': (firstOperand, secondOperand) =>
+    Math.floor(firstOperand / secondOperand),
+  X: (firstOperand, secondOperand) => firstOperand * secondOperand,
+  '-': (firstOperand, secondOperand) => firstOperand - secondOperand,
+  '+': (firstOperand, secondOperand) => firstOperand + secondOperand,
+};
+
 export const computeExpression = ({
   firstOperand,
   secondOperand,
   operation,
 }) => {
-  if (operation === '/') {
-    return Math.floor(firstOperand / secondOperand);
-  }
-  if (operation === 'X') {
-    return firstOperand * secondOperand;
-  }
-  if (operation === '-') {
-    return firstOperand - secondOperand;
-  }
-  if (operation === '+') {
-    return firstOperand + secondOperand;
-  }
+  const calculator = calculateByOperation[operation];
+  if (!calculator) throw new Error('잘못된 연산자를 입력하였습니다.');
+  return calculator(firstOperand, secondOperand);
 };
 
 export const hasInput = ({ firstOperand, secondOperand, operation }) =>
