@@ -23,20 +23,22 @@ export default class Calculator extends Component {
     }
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
-  }
-
-  componentDidUpdate() {
-    localStorage.setItem('state', JSON.stringify(this.state));
+    window.addEventListener('unload', this.handleUnload);
   }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    window.removeEventListener('unload', this.handleUnload);
   }
 
   handleBeforeUnload(event) {
     event.preventDefault();
     event.returnValue = '';
   }
+
+  handleUnload = () => {
+    localStorage.setItem('state', JSON.stringify(this.state));
+  };
 
   handleClickDigit(digit) {
     if (this.state.operand[0] === '오류') {
