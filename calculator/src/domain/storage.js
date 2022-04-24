@@ -10,7 +10,7 @@ export const storage = {
 
     return { prevNumber, nextNumber, operator };
   },
-  storeOperations: (operations) => {
+  saveOperations: (operations) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(operations));
   },
 };

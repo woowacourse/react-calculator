@@ -39,7 +39,7 @@ export default function Calculator() {
   };
 
   const saveResult = () => {
-    storage.storeOperations(operations);
+    storage.saveOperations(operations);
   };
 
   const changeNumber = (e) => {
