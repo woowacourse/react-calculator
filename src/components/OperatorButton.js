@@ -1,5 +1,9 @@
 import React from 'react';
-import { OPERATOR, ERROR_MSG, INITIAL_STATE } from '../constants/constant';
+import {
+  OPERATOR,
+  ERROR_MSG,
+  CALCULATOR_INITIAL_STATE,
+} from '../constants/constant';
 
 const OperatorButton = ({ selfOperand, state, setState }) => {
   const { prevNumbers, operator, nextNumbers } = state;
@@ -11,7 +15,7 @@ const OperatorButton = ({ selfOperand, state, setState }) => {
     }
 
     setState({
-      ...INITIAL_STATE,
+      ...CALCULATOR_INITIAL_STATE,
       sum: calculateSum(),
       operator: selfOperand,
     });

@@ -6,12 +6,12 @@ import Screen from './Screen';
 import {
   CONFIRM_MSG,
   OPERATOR_LIST,
-  INITIAL_STATE,
+  CALCULATOR_INITIAL_STATE,
 } from '../constants/constant';
 import { expressionStorage } from '../store/store';
 
 const Calculator = () => {
-  const [state, setState] = useState(INITIAL_STATE);
+  const [state, setState] = useState(CALCULATOR_INITIAL_STATE);
   const stateRef = useRef(state);
 
   useEffect(() => {
@@ -21,7 +21,6 @@ const Calculator = () => {
   useEffect(() => {
     setInitialState();
     window.addEventListener('beforeunload', confirmExist);
-
     return () => {
       window.removeEventListener('beforeunload', confirmExist);
     };

@@ -3,7 +3,7 @@ import {
   NUMBER_LIMIT,
   ERROR_MSG,
   OPERATOR,
-  INITIAL_STATE,
+  CALCULATOR_INITIAL_STATE,
 } from '../constants/constant';
 
 const NumberButton = ({ number, state, setState }) => {
@@ -13,7 +13,7 @@ const NumberButton = ({ number, state, setState }) => {
     const isPrev = operator === '' || operator === OPERATOR.EQUAL;
 
     if (operator === OPERATOR.EQUAL) {
-      setState(INITIAL_STATE);
+      setState(CALCULATOR_INITIAL_STATE);
     }
 
     if (
