@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ERROR_MESSAGE, STORAGE_KEY } from './constants';
+import { ERROR_MESSAGE, STORAGE_KEY, MAX_DIGIT } from './constants';
 
 function Calculator() {
   const state = localStorage.getItem(STORAGE_KEY)
@@ -36,21 +36,21 @@ function Calculator() {
   };
 
   const _setFirstNumber = (value) => {
-    if (isOverThreeDigit(firstNumber)) {
+    if (isOverMaxDigit(firstNumber)) {
       return;
     }
     setFirstNumber((prevState) => prevState + value);
   };
 
   const _setSecondNumber = (value) => {
-    if (isOverThreeDigit(secondNumber)) {
+    if (isOverMaxDigit(secondNumber)) {
       return;
     }
     setSecondNumber((prevState) => prevState + value);
   };
 
-  const isOverThreeDigit = (number) => {
-    return number.length >= 3;
+  const isOverMaxDigit = (number) => {
+    return number.length >= MAX_DIGIT;
   };
 
   const add = (firstNumber, secondNumber) => {
