@@ -7,10 +7,14 @@ import Operation from './components/Operation';
 import Result from './components/Result';
 import calculateResult from './utils/calculateResult';
 
+const DEFAULT_VALUE = { operand: ['0', ''], operator: '', index: 0 };
+
 function Calculator() {
-  const [operand, setOperand] = useState(['0', '']);
-  const [operator, setOperator] = useState('');
-  const [index, setIndex] = useState(0);
+  const [input, setInput] = useState({
+    operand: DEFAULT_VALUE.operand,
+    operator: DEFAULT_VALUE.operator,
+    index: DEFAULT_VALUE.index,
+  });
 
   const handleBeforeUnload = event => {
     event.preventDefault();
@@ -18,16 +22,17 @@ function Calculator() {
   };
 
   const handleUnload = () => {
-    const state = { operand, operator, index };
-    localStorage.setItem('state', JSON.stringify(state));
+    localStorage.setItem('state', JSON.stringify(input));
   };
 
   useEffect(() => {
     const localState = JSON.parse(localStorage.getItem('state'));
     if (localState) {
-      setOperator(localState.operator);
-      setIndex(localState.index);
-      setOperand(localState.operand);
+      setInput({
+        operator: localState.operator,
+        index: localState.index,
+        operand: localState.operand,
+      });
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -45,23 +50,30 @@ function Calculator() {
   }, [handleUnload]);
 
   const handleClickDigit = digit => {
-    if (operand[0] === '오류') {
+    if (input.operand[0] === '오류') {
       alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
       return;
     }
 
-    if (+(operand[index] + digit) >= 1000) {
+    if (+(input.operand[input.index] + digit) >= 1000) {
       alert('숫자는 한번에 최대 3자리 수까지 입력 가능합니다.');
       return;
     }
 
-    switch (index) {
+    switch (input.index) {
       case 0:
-        setOperand(prevOperand => [String(+(prevOperand[0] + digit)), '']);
+        setInput(prevState => {
+          return { ...prevState, operand: [String(+(prevState.operand[0] + digit)), ''] };
+        });
         break;
 
       case 1:
-        setOperand(prevOperand => [String(+prevOperand[0]), String(+(prevOperand[1] + digit))]);
+        setInput(prevState => {
+          return {
+            ...prevState,
+            operand: [String(+prevState.operand[0]), String(+(prevState.operand[1] + digit))],
+          };
+        });
         break;
 
       default:
@@ -69,53 +81,59 @@ function Calculator() {
     }
   };
 
-  const calculate = (operandFactor, operatorFactor) => {
-    if (!operatorFactor) {
+  const calculate = (operand, operator) => {
+    if (!operator) {
       return;
     }
 
-    const result = calculateResult(operandFactor, operatorFactor);
+    const result = calculateResult(operand, operator);
 
     if (result === Infinity) {
-      setOperator('');
-      setOperand(['오류', '']);
+      setInput(prevState => {
+        return { ...prevState, operand: ['오류', ''], operator: '' };
+      });
 
       return;
     }
 
-    setOperand([String(result), '']);
-    setOperator('');
-    setIndex(0);
+    setInput({
+      operator: '',
+      index: 0,
+      operand: [String(result), ''],
+    });
   };
 
-  const handleClickOperation = operatorFactor => {
-    if (operand[0] === '오류') {
+  const handleClickOperation = operator => {
+    if (input.operand[0] === '오류') {
       alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
       return;
     }
 
-    if (operatorFactor === '=') {
-      calculate(operand, operator);
+    if (operator === '=') {
+      calculate(input.operand, input.operator);
       return;
     }
 
-    if (operator) {
+    if (input.operator) {
       return;
     }
 
-    setOperator(operatorFactor);
-    setIndex(1);
+    setInput(prevState => {
+      return { ...prevState, operator, index: 1 };
+    });
   };
 
   const handleClickModifier = () => {
-    setOperand(['0', '']);
-    setOperator('');
-    setIndex(0);
+    setInput({
+      operand: DEFAULT_VALUE.operand,
+      operator: DEFAULT_VALUE.operator,
+      index: DEFAULT_VALUE.index,
+    });
   };
 
   return (
     <div className="calculator">
-      <Result operator={operator} operand={operand} />
+      <Result operator={input.operator} operand={input.operand} />
       <div className="digits flex">
         {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map(digit => (
           <Digit key={digit} digit={String(digit)} onClick={handleClickDigit} />
