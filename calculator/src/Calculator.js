@@ -16,9 +16,20 @@ class Calculator extends Component {
       operator: '',
       isLastClickOperator: false,
     };
+
+    this.componentCleanup = this.componentCleanup.bind(this);
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.componentCleanup);
+  }
+
+  componentWillUnmount() {
+    this.componentCleanup();
+    window.removeEventListener('beforeunload', this.componentCleanup);
+  }
+
+  componentCleanup() {
     localStorage.setItem('state', JSON.stringify(this.state));
   }
 
