@@ -4,14 +4,14 @@ import Operator from '../types';
 type Props = {
   operator: Operator;
   isFocused: boolean;
-  onClickOperator: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickOperator: (operator: Operator) => (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 function OperatorButton({ isFocused, operator, onClickOperator }: Props) {
   const className = isFocused ? 'operation focused' : 'operation';
 
   return (
-    <button className={className} type="button" data-operator={operator} onClick={onClickOperator}>
+    <button className={className} type="button" onClick={e => onClickOperator(operator)(e)}>
       {operator}
     </button>
   );

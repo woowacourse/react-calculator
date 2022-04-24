@@ -54,16 +54,14 @@ function Calculator() {
     setState(prevState => ({ ...prevState, nextNumber: newNumber, result: `${newNumber}` }));
   };
 
-  const onClickDigitBtn = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickDigitBtn = (digit: number) => (event: React.MouseEvent<HTMLButtonElement>) => {
     const { prevNumber, nextNumber, operator } = state;
-    const { digit } = (target as HTMLElement).dataset;
-    if (!digit) return;
 
     const isPrevNumberTurn = operator === Operator.empty;
     const targetNumber = isPrevNumberTurn ? prevNumber : nextNumber;
 
     if (targetNumber === null) {
-      updateNumber({ isPrevNumberTurn, newNumber: Number(digit) });
+      updateNumber({ isPrevNumberTurn, newNumber: digit });
       return;
     }
 
@@ -71,14 +69,15 @@ function Calculator() {
       window.alert(ERROR_MESSAGE.MAX_DIGIT);
       return;
     }
-    updateNumber({ isPrevNumberTurn, newNumber: Number(targetNumber + digit) });
+
+    const newNumberToString = `${targetNumber}${digit}`;
+    updateNumber({ isPrevNumberTurn, newNumber: Number(newNumberToString) });
   };
 
   const onClickReset = () => setState({ ...initialState });
 
-  const onClickOperator = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
+  const onClickOperator = (operator: Operator) => (event: React.MouseEvent<HTMLButtonElement>) => {
     const { prevNumber } = state;
-    const { operator } = (target as HTMLElement).dataset as { operator: Operator };
 
     if (!operator) return;
 
