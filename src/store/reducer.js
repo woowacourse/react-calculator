@@ -46,6 +46,7 @@ const reducer = (state, action) => {
     }
     case SET_OPERATOR: {
       if (state.operator) {
+        saveLocalStorage(PREV_VALUE, ERROR_TEXT);
         return { ...state, error: "한번에 하나의 연산기호만 입력가능합니다." };
       }
 
@@ -57,6 +58,7 @@ const reducer = (state, action) => {
     }
     case CALCULATE: {
       if (!state.operator) {
+        saveLocalStorage(PREV_VALUE, ERROR_TEXT);
         return { ...state, error: "올바른 계산이 아닙니다." };
       }
 

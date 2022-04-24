@@ -14,6 +14,7 @@ import ClearButton from "./ClearButton";
 import DisplayResult from "./DisplayResult";
 import NumberButton from "./NumberButton";
 import OperatorButton from "./OperatorButton";
+import ErrorMessage from "./ErrorMessage";
 
 const Calculator = () => {
   const [data, dispatch] = useReducer(reducer, initialState);
@@ -52,7 +53,7 @@ const Calculator = () => {
 
   return (
     <>
-      {data.error && <div>{data.error}</div>}
+      {data.error && <ErrorMessage error={data.error} />}
       <div className="calculator">
         <DisplayResult result={data.error ? "오류" : data.result} />
         <div className="digits flex">
