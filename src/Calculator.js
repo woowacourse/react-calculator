@@ -3,7 +3,7 @@ import OperationButton from './OperationButton';
 import './Calculator.css';
 
 class Calculator extends Component {
-  MAX_NUMBER = 1000;
+  MAX_LENGTH = 3;
   DIGIT_LIST = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
   OPERATION_LIST = ['/', 'X', '-', '+'];
 
@@ -18,10 +18,6 @@ class Calculator extends Component {
       numbers: [0, 0],
       operator: '',
     };
-  }
-
-  #isExceedMaxNumber(number) {
-    return number >= this.MAX_NUMBER && number !== Infinity;
   }
 
   componentDidMount() {
@@ -52,7 +48,9 @@ class Calculator extends Component {
   handleDigitClick = (digit) => {
     const numberIndex = this.state.operator === '' ? 0 : 1;
     const newStateNumbers = [...this.state.numbers];
-    newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(digit);
+    const sign = newStateNumbers[numberIndex] >= 0 ? 1 : -1;
+
+    newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(digit) * sign;
 
     if (newStateNumbers[numberIndex] === Infinity) {
       alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
@@ -60,7 +58,7 @@ class Calculator extends Component {
       return;
     }
 
-    if (this.#isExceedMaxNumber(newStateNumbers[numberIndex])) {
+    if (this.isExceedMaxLength(newStateNumbers[numberIndex])) {
       alert('숫자는 세 자리까지 입력 가능합니다.');
       return;
     }
@@ -86,6 +84,10 @@ class Calculator extends Component {
     const resultNumber = operatorCollection[operator]();
     this.setState({ numbers: [resultNumber, 0], operator: '' });
   };
+
+  isExceedMaxLength(number) {
+    return String(Math.abs(number)).length > this.MAX_LENGTH && number !== Infinity;
+  }
 
   setOperator = (operator) => {
     this.setState({ operator });
