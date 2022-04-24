@@ -5,6 +5,5 @@ import './scss/style.scss';
 
 const $root = document.getElementById('root');
 if ($root) {
-  const root = ReactDOM.createRoot($root);
-  root.render(<Calculator />);
+  ReactDOM.createRoot($root).render(<Calculator />);
 }
