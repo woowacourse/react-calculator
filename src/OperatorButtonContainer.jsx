@@ -1,19 +1,19 @@
 function OperatorButtonContainer({ handleOperation }) {
   return (
     <div className="operations subgrid" onClick={handleOperation}>
-      <button className="operation" data-operator="/">
+      <button className="operation" value="/">
         /
       </button>
-      <button className="operation" data-operator="x">
+      <button className="operation" valuer="x">
         X
       </button>
-      <button className="operation" data-operator="-">
+      <button className="operation" value="-">
         -
       </button>
-      <button className="operation" data-operator="+">
+      <button className="operation" value="+">
         +
       </button>
-      <button id="calculate-button" data-operator="=">
+      <button className="operation" value="=">
         =
       </button>
     </div>

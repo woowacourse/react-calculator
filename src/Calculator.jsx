@@ -38,8 +38,8 @@ function Calculator() {
         ...expression,
         firstOperand:
           expression.firstOperand === OPERAND_ERROR_VALUE
-            ? e.target.dataset.number
-            : expression.firstOperand + e.target.dataset.number,
+            ? e.target.value
+            : expression.firstOperand + e.target.value,
       });
       return;
     }
@@ -49,14 +49,14 @@ function Calculator() {
     }
     setExpression({
       ...expression,
-      secondOperand: expression.secondOperand + e.target.dataset.number,
+      secondOperand: expression.secondOperand + e.target.value,
     });
   };
 
   const handleOperation = (e) => {
     if (expression.firstOperand === OPERAND_ERROR_VALUE) return;
 
-    if (e.target.dataset.operator === '=') {
+    if (e.target.value === '=') {
       calculate();
       return;
     }
@@ -64,7 +64,7 @@ function Calculator() {
     if (expression.operator !== '') return;
     setExpression({
       ...expression,
-      operator: e.target.dataset.operator,
+      operator: e.target.value,
     });
   };
 
