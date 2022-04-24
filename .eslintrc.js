@@ -11,4 +11,7 @@ module.exports = {
     },
   },
   extends: 'react-app',
+  rules: {
+    'react/no-unused-class-component-methods': 'warn',
+  },
 };
