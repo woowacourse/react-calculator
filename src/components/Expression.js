@@ -6,7 +6,7 @@ const Expression = ({ isError, firstOperand, operation, secondOperand }) => {
         ? '오류'
         : `${firstOperand}
           ${operation ?? ''}
-          ${secondOperand}`}
+          ${secondOperand < 0 ? '' : secondOperand}`}
     </h1>
   );
 };

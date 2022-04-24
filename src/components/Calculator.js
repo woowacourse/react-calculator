@@ -27,18 +27,19 @@ const computeExpression = ({ firstOperand, secondOperand, operation }) => {
 };
 
 const hasInput = ({ firstOperand, secondOperand, operation }) =>
-  firstOperand !== '0' || secondOperand !== '' || operation !== null;
+  firstOperand !== 0 || secondOperand !== -1 || operation !== null;
 
 const computeNextOperand = (currentOperand, digit) => {
+  currentOperand = String(currentOperand);
   return currentOperand.length >= 3
-    ? `${currentOperand.slice(0, -1)}${digit}`
-    : `${Number(currentOperand + digit)}`;
+    ? Number(`${currentOperand.slice(0, -1)}${digit}`)
+    : Number(currentOperand + digit);
 };
 
 const Calculator = () => {
   const [state, setState] = useState({
-    firstOperand: '0',
-    secondOperand: '',
+    firstOperand: 0,
+    secondOperand: -1,
     operation: null,
     isError: false,
   });
@@ -71,7 +72,10 @@ const Calculator = () => {
     state.operation
       ? setState((prevState) => ({
           ...prevState,
-          secondOperand: computeNextOperand(prevState.secondOperand, digit),
+          secondOperand: computeNextOperand(
+            prevState.secondOperand === -1 ? 0 : prevState.secondOperand,
+            digit,
+          ),
         }))
       : setState((prevState) => ({
           ...prevState,
@@ -96,8 +100,8 @@ const Calculator = () => {
     if (isFinite(result)) {
       setState((prevState) => ({
         ...prevState,
-        firstOperand: `${result}`,
-        secondOperand: '',
+        firstOperand: result,
+        secondOperand: -1,
         operation: null,
       }));
       return;
@@ -110,8 +114,8 @@ const Calculator = () => {
 
   const onClickModifier = useCallback(() => {
     setState({
-      firstOperand: '0',
-      secondOperand: '',
+      firstOperand: 0,
+      secondOperand: -1,
       operation: null,
       isError: false,
     });
