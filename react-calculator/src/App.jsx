@@ -18,6 +18,10 @@ function App() {
 
   useEffect(() => {
     window.addEventListener('beforeunload', onBeforeUnload);
+
+    return function cleanup() {
+      window.removeEventListener('beforeunload', onBeforeUnload);
+    };
   });
 
   const renderCalculatorNumber = (calculatedResult) => {
