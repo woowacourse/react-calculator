@@ -9,14 +9,11 @@ import AllClear from './components/AllClear.jsx';
 import Result from './components/Result.jsx';
 
 function App() {
+  const prevResult = store.getLocalStorage(KEY_PREV_RESULT);
   const [operation, setOperation] = useState(null);
-  const [firstNumber, setFirstNumber] = useState(
-    store.getLocalStorage(KEY_PREV_RESULT) ? store.getLocalStorage(KEY_PREV_RESULT) : ''
-  );
+  const [firstNumber, setFirstNumber] = useState(prevResult || '');
   const [secondNumber, setSecondNumber] = useState('');
-  const [result, setResult] = useState(
-    store.getLocalStorage(KEY_PREV_RESULT) ? store.getLocalStorage(KEY_PREV_RESULT) : RESULT.RESET
-  );
+  const [result, setResult] = useState(prevResult || RESULT.RESET);
 
   useEffect(() => {
     window.addEventListener('beforeunload', onBeforeUnload);

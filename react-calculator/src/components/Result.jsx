@@ -1,9 +1,5 @@
-function Result({ result, resultRef }) {
-  return (
-    <h1 id="calculator-number" ref={resultRef}>
-      {result}
-    </h1>
-  );
+function Result({ result }) {
+  return <h1 id="calculator-number">{result}</h1>;
 }
 
 export default Result;
