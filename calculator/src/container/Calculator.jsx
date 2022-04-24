@@ -1,13 +1,13 @@
 import { calculator } from '../domain/calculator';
 import { CALCULATOR, ERROR_MESSAGE } from '../constant';
-import { storage } from '../domain/storage';
+import { getStoredOperations, saveOperations } from '../domain/storage';
 import './Calculator.css';
 import { useEffect, useState } from 'react';
 import CalculatorButton from '../component/CalculatorButton';
 import { limitThreeDecimal } from '../utils';
 
 export default function Calculator() {
-  const [operations, setOperations] = useState(storage.getStoredOperations());
+  const [operations, setOperations] = useState(getStoredOperations());
   const [result, setResult] = useState(0);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function Calculator() {
   };
 
   const saveResult = () => {
-    storage.saveOperations(operations);
+    saveOperations(operations);
   };
 
   const changeNumber = (e) => {
