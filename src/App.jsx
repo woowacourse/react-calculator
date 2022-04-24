@@ -62,22 +62,20 @@ export default function App() {
     setFirstOperand(result);
   };
 
-  const getDisplayContent = () => {
-    if (isError) return <>오류</>;
-
-    return (
-      <>
-        {firstOperand}
-        {operator}
-        {secondOperand}
-      </>
-    );
-  };
+  const displayContent = isError ? (
+    '오류'
+  ) : (
+    <>
+      {firstOperand}
+      {operator}
+      {secondOperand}
+    </>
+  );
 
   return (
     <div className="App">
       <div className="calculator">
-        <Display displayContent={getDisplayContent()} />
+        <Display displayContent={displayContent} />
 
         <DigitButtons
           firstOperand={firstOperand}
