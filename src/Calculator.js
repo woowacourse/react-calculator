@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import OperationButton from './components/OperationButton';
 import './Calculator.css';
 import operatorCollection from './utils/operator';
-import { MAX_LENGTH, DIGIT_LIST, OPERATION_LIST } from './constant/calculator.js';
+import { isExceedMaxLength, isEmptyOperator } from './validation';
+import { DIGIT_LIST, OPERATION_LIST } from './constant/calculator.js';
 import { CALCULATOR_STATE } from './constant/localStorage';
 
 const Calculator = () => {
@@ -62,7 +63,7 @@ const Calculator = () => {
   };
 
   const handleResultClick = () => {
-    if (operator === '') {
+    if (isEmptyOperator(operator)) {
       alert('연산자를 입력해주세요.');
       return;
     }
@@ -71,10 +72,6 @@ const Calculator = () => {
 
     setNumbers([resultNumber, 0]);
     setOperator('');
-  };
-
-  const isExceedMaxLength = (number) => {
-    return String(Math.abs(number)).length > MAX_LENGTH && number !== Infinity;
   };
 
   return (
