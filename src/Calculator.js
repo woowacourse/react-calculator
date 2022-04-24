@@ -82,6 +82,7 @@ class Calculator extends Component {
     };
 
     const resultNumber = operatorCollection[operator]();
+
     this.setState({ numbers: [resultNumber, 0], operator: '' });
   };
 
@@ -95,8 +96,7 @@ class Calculator extends Component {
 
   render() {
     const { operator, numbers } = this.state;
-    let totalNumber = !operator || numbers[1] === 0 ? numbers[0] : numbers[1];
-    if (totalNumber === Infinity) totalNumber = '오류';
+    const totalNumber = !operator || numbers[1] === 0 ? numbers[0] : numbers[1];
 
     const operationButtonProps = {
       currentOperator: operator,
@@ -106,7 +106,7 @@ class Calculator extends Component {
     return (
       <div className="App">
         <div className="calculator">
-          <h1 id="total">{totalNumber}</h1>
+          <h1 id="total">{Number.isNaN(totalNumber) ? '오류' : totalNumber}</h1>
           <div className="digits flex">
             {this.DIGIT_LIST.map((digit) => (
               <button
