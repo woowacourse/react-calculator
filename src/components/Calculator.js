@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useLayoutEffect, useEffect, useState } from 'react';
 import '../styles/Calculator.css';
 
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
@@ -25,153 +25,152 @@ const computeNextOperand = (currentOperand, digit) => {
     : `${Number(currentOperand + digit)}`;
 };
 
-class Calculator extends Component {
-  constructor() {
-    super();
+const Calculator = () => {
+  const [state, setState] = useState({
+    firstOperand: '0',
+    secondOperand: '',
+    operation: null,
+    isError: false,
+  });
+
+  useLayoutEffect(() => {
     const memoizedState = JSON.parse(localStorage.getItem('prevState'));
-    this.state = memoizedState
-      ? memoizedState
-      : {
-          firstOperand: '0',
-          secondOperand: '',
-          operation: null,
-          isError: false,
-        };
-  }
+    if (!memoizedState) return;
+    setState(memoizedState);
+  }, []);
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.onBeforeUnload);
-  }
+  useEffect(() => {
+    window.addEventListener('beforeunload', handleWindowClose);
+    return () => window.removeEventListener('beforeunload', handleWindowClose);
+  }, [state]);
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.onBeforeUnload);
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-  }
+  const handleWindowClose = (e) => {
+    e.preventDefault();
+    if (!hasInput(state)) return;
 
-  initState = () => {
-    this.setState({
+    localStorage.setItem('prevState', JSON.stringify(state));
+    return (e.returnValue = '');
+  };
+
+  const handleClickDigit = ({ target }) => {
+    const { textContent: digit } = target;
+    state.operation
+      ? setState((prevState) => ({
+          ...prevState,
+          secondOperand: computeNextOperand(prevState.secondOperand, digit),
+        }))
+      : setState((prevState) => ({
+          ...prevState,
+          firstOperand: computeNextOperand(prevState.firstOperand, digit),
+        }));
+  };
+
+  const handleClickOperation = ({ target }) => {
+    const { textContent: operation } = target;
+    if (operation !== '=') {
+      setState((prevState) => ({
+        ...prevState,
+        operation,
+      }));
+      return;
+    }
+    const result = computeExpression({
+      firstOperand: Number(state.firstOperand),
+      secondOperand: Number(state.secondOperand),
+      operation: state.operation,
+    });
+
+    if (isFinite(result)) {
+      setState((prevState) => ({
+        ...prevState,
+        firstOperand: `${result}`,
+        secondOperand: '',
+        operation: null,
+      }));
+      return;
+    }
+    setState((prevState) => ({
+      ...prevState,
+      isError: false,
+    }));
+  };
+
+  const handleInitState = () => {
+    setState({
       firstOperand: '0',
       secondOperand: '',
       operation: null,
       isError: false,
     });
   };
-
-  onClickDigit = ({ target }) => {
-    const { textContent: digit } = target;
-    this.state.operation
-      ? this.setState(({ secondOperand }) => ({
-          secondOperand: computeNextOperand(secondOperand, digit),
-          isError: false,
-        }))
-      : this.setState(({ firstOperand }) => ({
-          firstOperand: computeNextOperand(firstOperand, digit),
-          isError: false,
-        }));
-  };
-
-  onClickOperation = ({ target }) => {
-    const { textContent: operation } = target;
-    if (operation !== '=') {
-      this.setState({ operation });
-      return;
-    }
-
-    const result = computeExpression({
-      firstOperand: Number(this.state.firstOperand),
-      secondOperand: Number(this.state.secondOperand),
-      operation: this.state.operation,
-    });
-
-    if (isFinite(result)) {
-      this.setState({
-        firstOperand: `${result}`,
-        secondOperand: '',
-        operation: null,
-      });
-      return;
-    }
-
-    this.setState(() => ({
-      isError: true,
-    }));
-  };
-
-  onBeforeUnload = (e) => {
-    e.preventDefault();
-    localStorage.setItem('prevState', JSON.stringify(this.state));
-    if (hasInput(this.state)) {
-      e.returnValue = '';
-    }
-  };
-
-  render() {
-    return (
-      <>
-        <div>숫자는 3자리 까지만 입력이 가능합니다.</div>
-        <div className="calculator">
-          <h1 id="total">
-            {this.state.isError
-              ? '오류'
-              : `${this.state.firstOperand}
-            ${this.state.operation ?? ''}
-            ${this.state.secondOperand}`}
-          </h1>
-          <div className="digits flex">
-            <button className="digit" onClick={this.onClickDigit}>
-              9
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              8
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              7
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              6
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              5
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              4
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              3
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              2
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              1
-            </button>
-            <button className="digit" onClick={this.onClickDigit}>
-              0
-            </button>
-          </div>
-          <div className="modifiers subgrid" onClick={this.initState}>
-            <button className="modifier">AC</button>
-          </div>
-          <div className="operations subgrid">
-            <button className="operation" onClick={this.onClickOperation}>
-              /
-            </button>
-            <button className="operation" onClick={this.onClickOperation}>
-              X
-            </button>
-            <button className="operation" onClick={this.onClickOperation}>
-              -
-            </button>
-            <button className="operation" onClick={this.onClickOperation}>
-              +
-            </button>
-            <button className="operation" onClick={this.onClickOperation}>
-              =
-            </button>
-          </div>
+  return (
+    <>
+      <div>숫자는 3자리 까지만 입력이 가능합니다.</div>
+      <div className="calculator">
+        <h1 id="total">
+          {state.isError
+            ? '오류'
+            : `${state.firstOperand}
+            ${state.operation ?? ''}
+            ${state.secondOperand}`}
+        </h1>
+        <div className="digits flex">
+          <button className="digit" onClick={handleClickDigit}>
+            9
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            8
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            7
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            6
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            5
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            4
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            3
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            2
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            1
+          </button>
+          <button className="digit" onClick={handleClickDigit}>
+            0
+          </button>
         </div>
-      </>
-    );
-  }
-}
+        <div className="modifiers subgrid">
+          <button className="modifier" onClick={handleInitState}>
+            AC
+          </button>
+        </div>
+        <div className="operations subgrid">
+          <button className="operation" onClick={handleClickOperation}>
+            /
+          </button>
+          <button className="operation" onClick={handleClickOperation}>
+            X
+          </button>
+          <button className="operation" onClick={handleClickOperation}>
+            -
+          </button>
+          <button className="operation" onClick={handleClickOperation}>
+            +
+          </button>
+          <button className="operation" onClick={handleClickOperation}>
+            =
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
 export default Calculator;
