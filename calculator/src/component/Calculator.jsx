@@ -21,6 +21,14 @@ export default class Calculator extends Component {
     };
   }
 
+  initialize = () => {
+    this.setState({
+      prevNumber: 0,
+      nextNumber: null,
+      operator: '',
+    });
+  };
+
   componentDidMount() {
     window.addEventListener('beforeunload', this.confirmExit);
     window.addEventListener('unload', this.saveResult);
@@ -74,14 +82,6 @@ export default class Calculator extends Component {
       ),
       nextNumber: null,
       operator: e.target.textContent,
-    });
-  };
-
-  initialize = () => {
-    this.setState({
-      prevNumber: 0,
-      nextNumber: null,
-      operator: '',
     });
   };
 
