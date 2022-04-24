@@ -1,5 +1,4 @@
 const MAX_NUMBER_LENGTH = 3;
-const INDIVISIBLE_NUMBER = '0';
 
 const RESULT = {
   ERROR_MESSAGE: '오류',
@@ -11,4 +10,4 @@ const CALCULATOR = {
   OPERATIONS: ['/', 'X', '-', '+', '='],
 };
 
-export { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT, CALCULATOR };
+export { MAX_NUMBER_LENGTH, RESULT, CALCULATOR };

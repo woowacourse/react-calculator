@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Digits from './components/digits.jsx';
 import Operations from './components/operations.jsx';
-import { INDIVISIBLE_NUMBER, MAX_NUMBER_LENGTH, RESULT } from './constants.js';
+import { MAX_NUMBER_LENGTH, RESULT } from './constants.js';
 
 const prevResult = localStorage.getItem('prevResult');
 
@@ -49,26 +49,26 @@ function App() {
   };
 
   const calculate = () => {
+    if (!nextNumber) return;
+
+    let calculationResult;
     switch (operation) {
       case '+':
-        setResult(Number(prevNumber) + Number(nextNumber));
+        calculationResult = Number(prevNumber) + Number(nextNumber);
         break;
       case '-':
-        setResult(Number(prevNumber) - Number(nextNumber));
+        calculationResult = Number(prevNumber) - Number(nextNumber);
         break;
       case '/':
-        if (nextNumber === INDIVISIBLE_NUMBER) {
-          setResult(RESULT.ERROR_MESSAGE);
-          return;
-        }
-        setResult(Math.floor(Number(prevNumber) / Number(nextNumber)));
+        calculationResult = Math.floor(Number(prevNumber) / Number(nextNumber));
         break;
       case 'X':
-        setResult(Number(prevNumber) * Number(nextNumber));
+        calculationResult = Number(prevNumber) * Number(nextNumber);
         break;
       default:
         break;
     }
+    setResult(calculationResult === Infinity ? RESULT.ERROR_MESSAGE : calculationResult);
     resetCalculation();
   };
 
