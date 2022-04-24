@@ -8,15 +8,19 @@ import {
   OPERATORS,
 } from './constants';
 
+const initialState = {
+  total: 0,
+  current: 0,
+  operator: '',
+  isLastClickOperator: false,
+};
+
 class Calculator extends Component {
   constructor() {
     super();
 
     this.state = JSON.parse(localStorage.getItem('state')) ?? {
-      total: 0,
-      current: 0,
-      operator: '',
-      isLastClickOperator: false,
+      ...initialState,
     };
 
     this.componentCleanup = this.componentCleanup.bind(this);
@@ -119,12 +123,7 @@ class Calculator extends Component {
   }
 
   handleClear() {
-    this.setState({
-      total: 0,
-      current: 0,
-      operator: '',
-      isLastClickOperator: false,
-    });
+    this.setState({ ...initialState });
   }
 
   render() {
