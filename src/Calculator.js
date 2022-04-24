@@ -31,25 +31,25 @@ class Calculator extends Component {
       this.setState(JSON.parse(savedState));
     }
 
-    window.addEventListener('beforeunload', this.onBeforeUnload);
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.onBeforeUnload);
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
   }
 
-  onBeforeUnload = (event) => {
+  handleBeforeUnload = (event) => {
     event.preventDefault();
     event.returnValue = '';
 
     localStorage.setItem('CALCULATOR_STATE', JSON.stringify(this.state));
   };
 
-  onClickAllClear = () => {
+  handleAllClearClick = () => {
     this.setState(this.defaultState);
   };
 
-  onClickDigit = ({ target }) => {
+  handleDigitClick = ({ target }) => {
     const numberIndex = this.state.operator === '' ? 0 : 1;
     const newStateNumbers = [...this.state.numbers];
     newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(target.innerText);
@@ -68,7 +68,7 @@ class Calculator extends Component {
     this.setState({ numbers: newStateNumbers });
   };
 
-  onClickResult = () => {
+  handleResultClick = () => {
     const { operator, numbers } = this.state;
 
     if (operator === '') {
@@ -107,13 +107,13 @@ class Calculator extends Component {
           <h1 id="total">{totalNumber}</h1>
           <div className="digits flex">
             {this.DIGIT_LIST.map((digit) => (
-              <button key={digit} className="digit" onClick={this.onClickDigit}>
+              <button key={digit} className="digit" onClick={this.handleDigitClick}>
                 {digit}
               </button>
             ))}
           </div>
           <div className="modifiers subgrid">
-            <button className="modifier" onClick={this.onClickAllClear}>
+            <button className="modifier" onClick={this.handleAllClearClick}>
               AC
             </button>
           </div>
@@ -123,7 +123,7 @@ class Calculator extends Component {
                 {operation}
               </OperationButton>
             ))}
-            <button className="operation" onClick={this.onClickResult}>
+            <button className="operation" onClick={this.handleResultClick}>
               =
             </button>
           </div>
