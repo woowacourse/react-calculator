@@ -1,13 +1,14 @@
 import React from 'react';
 import { DIGITS } from '../../constants';
+import Button from '../Button';
 
 function Digits({ handleClickDigit }) {
   return (
     <div className="digits flex">
       {DIGITS.map((digit) => (
-        <button className="digit" key={digit} onClick={handleClickDigit}>
+        <Button className="digit" handleClick={handleClickDigit} key={digit}>
           {digit}
-        </button>
+        </Button>
       ))}
     </div>
   );

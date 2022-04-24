@@ -1,11 +1,12 @@
 import React from 'react';
+import Button from '../Button';
 
 function AllClear({ handleClickAC }) {
   return (
     <div className="modifiers subgrid">
-      <button className="modifier" onClick={handleClickAC}>
+      <Button className="modifier" handleClick={handleClickAC}>
         AC
-      </button>
+      </Button>
     </div>
   );
 }

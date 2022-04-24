@@ -1,17 +1,18 @@
 import React from 'react';
 import { OPERATORS } from '../../constants';
+import Button from '../Button';
 
 function Operators({ handleClickOperator }) {
   return (
     <div className="operations subgrid">
       {OPERATORS.map((operator) => (
-        <button
+        <Button
           className="operation"
+          handleClick={handleClickOperator}
           key={operator}
-          onClick={handleClickOperator}
         >
           {operator}
-        </button>
+        </Button>
       ))}
     </div>
   );
