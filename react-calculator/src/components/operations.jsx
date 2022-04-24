@@ -1,48 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { CALCULATOR } from '../constants.js';
 
-class Operations extends Component {
-  confirmOperation = () => {
-    const { operation, resetState } = this.props;
-    switch (operation) {
-      case '+':
-        this.props.add();
-        break;
-      case '-':
-        this.props.minus();
-        break;
-      case '/':
-        this.props.divide();
-        break;
-      case '*':
-        this.props.multiply();
-        break;
-      default:
-        break;
-    }
-    resetState();
-  };
-
-  OperationButtonClick = (e) => {
-    const operation = e.target.textContent;
-    if (operation === '=') {
-      this.confirmOperation();
+function Operations({ setOperator, calculate }) {
+  const handleOperationButtonClick = (e) => {
+    const operator = e.target.textContent;
+    if (operator === '=') {
+      calculate();
       return;
     }
-    this.props.setOperation(operation);
+    setOperator(operator);
   };
 
-  render() {
-    return (
-      <div className="operations subgrid" onClick={this.handleOperationButtonClick}>
-        {CALCULATOR.OPERATIONS.map((operation, index) => (
-          <button className="operation" key={index}>
-            {operation}
-          </button>
-        ))}
-      </div>
-    );
-  }
+  return (
+    <div className="operations subgrid" onClick={handleOperationButtonClick}>
+      {CALCULATOR.OPERATIONS.map((operator, index) => (
+        <button type="button" className="operation" key={index}>
+          {operator}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 export default Operations;
