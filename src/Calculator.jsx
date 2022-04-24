@@ -11,14 +11,12 @@ function Calculator() {
         operator: '',
       };
 
-  const [firstOperand, setFirstOperand] = useState(initialValue.firstOperand);
-  const [secondOperand, setSecondOperand] = useState(initialValue.secondOperand);
-  const [operator, setOperator] = useState(initialValue.operator);
+  const [expression, setExpression] = useState(initialValue);
 
   const saveResult = (e) => {
     e.preventDefault();
     e.returnValue = '';
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ firstOperand, secondOperand, operator }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(expression));
   };
 
   window.addEventListener('beforeunload', saveResult);
@@ -30,34 +28,43 @@ function Calculator() {
   });
 
   const handleNumber = (e) => {
-    if (operator === '') {
-      if (isOverOperandMaxLength(firstOperand)) {
+    if (expression.operator === '') {
+      if (isOverOperandMaxLength(expression.firstOperand)) {
         return;
       }
-      setFirstOperand(
-        firstOperand === OPERAND_ERROR_VALUE
-          ? e.target.dataset.number
-          : firstOperand + e.target.dataset.number,
-      );
+
+      setExpression({
+        ...expression,
+        firstOperand:
+          expression.firstOperand === OPERAND_ERROR_VALUE
+            ? e.target.dataset.number
+            : expression.firstOperand + e.target.dataset.number,
+      });
       return;
     }
 
-    if (isOverOperandMaxLength(secondOperand)) {
+    if (isOverOperandMaxLength(expression.secondOperand)) {
       return;
     }
-    setSecondOperand(secondOperand + e.target.dataset.number);
+    setExpression({
+      ...expression,
+      secondOperand: expression.secondOperand + e.target.dataset.number,
+    });
   };
 
   const handleOperation = (e) => {
-    if (firstOperand === OPERAND_ERROR_VALUE) return;
+    if (expression.firstOperand === OPERAND_ERROR_VALUE) return;
 
     if (e.target.dataset.operator === '=') {
       calculate();
       return;
     }
 
-    if (operator !== '') return;
-    setOperator(e.target.dataset.operator);
+    if (expression.operator !== '') return;
+    setExpression({
+      ...expression,
+      operator: e.target.dataset.operator,
+    });
   };
 
   function isOverOperandMaxLength(number) {
@@ -65,25 +72,34 @@ function Calculator() {
   }
 
   function calculate() {
-    if (!operation[operator]) return;
+    if (!operation[expression.operator]) return;
 
-    const result = operation[operator](+firstOperand, +secondOperand);
+    const result = operation[expression.operator](
+      +expression.firstOperand,
+      +expression.secondOperand,
+    );
 
-    setFirstOperand(Number.isFinite(result) ? String(result) : OPERAND_ERROR_VALUE);
-    setSecondOperand('');
-    setOperator('');
+    setExpression({
+      firstOperand: Number.isFinite(result) ? String(result) : OPERAND_ERROR_VALUE,
+      secondOperand: '',
+      operator: '',
+    });
   }
 
   function clearResult() {
-    setFirstOperand('');
-    setSecondOperand('');
-    setOperator('');
+    setExpression({
+      firstOperand: '',
+      secondOperand: '',
+      operator: '',
+    });
   }
 
   return (
     <div className="App">
       <div className="calculator">
-        <h1 id="total">{firstOperand + operator + secondOperand}</h1>
+        <h1 id="total">
+          {expression.firstOperand + expression.operator + expression.secondOperand}
+        </h1>
         <div className="digits flex" onClick={handleNumber}>
           {DIGITS.map((digit) => (
             <button className="digit" data-number={digit}>
