@@ -15,6 +15,9 @@ function Calculator() {
 
   useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   });
 
   const onClickDigit = (enteredDigit) => {
