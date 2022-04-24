@@ -4,6 +4,7 @@ import { storage } from '../domain/storage';
 import './Calculator.css';
 import { useEffect, useState } from 'react';
 import CalculatorButton from './CalculatorButton';
+import { limitThreeDecimal } from '../utils';
 
 export default function Calculator() {
   const [operations, setOperations] = useState(storage.getStoredOperations());
@@ -11,9 +12,9 @@ export default function Calculator() {
 
   useEffect(() => {
     if (operations.nextNumber === null) {
-      setResult(operations.prevNumber);
+      setResult(limitThreeDecimal(operations.prevNumber));
     } else {
-      setResult(operations.nextNumber);
+      setResult(limitThreeDecimal(operations.nextNumber));
     }
 
     window.addEventListener('beforeunload', confirmExit);
