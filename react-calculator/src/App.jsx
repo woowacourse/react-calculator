@@ -4,6 +4,7 @@ import Digits from './components/digits.jsx';
 import Operations from './components/operations.jsx';
 import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
 import store from './utils/store.js';
+import AllClear from './components/AllClear.jsx';
 
 function App() {
   const resultRef = useRef(null);
@@ -76,7 +77,7 @@ function App() {
     setSecondNumber('');
   };
 
-  const handleModifierButtonClick = () => {
+  const allClear = () => {
     renderCalculatorResult(RESULT.RESET);
     resetState();
   };
@@ -89,13 +90,7 @@ function App() {
         </h1>
 
         <Digits setClickedNumber={setClickedNumber} />
-
-        <div className="modifiers subgrid">
-          <button className="modifier" onClick={handleModifierButtonClick}>
-            AC
-          </button>
-        </div>
-
+        <AllClear allClear={allClear} />
         <Operations
           operation={operation}
           setOperation={setOperation}

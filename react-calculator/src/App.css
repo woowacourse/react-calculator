@@ -32,7 +32,7 @@ button {
   border: 0.5px solid #98999b;
 }
 
-.modifiers button {
+.allClear button {
   background-color: #ccc;
 }
 
@@ -72,7 +72,7 @@ button {
   order: 1;
 }
 
-.modifiers {
+.allClear {
   grid-area: modif;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
