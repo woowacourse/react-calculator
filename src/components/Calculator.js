@@ -3,10 +3,12 @@ import '../styles/Calculator.css';
 const digitList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const operationList = ['/', 'X', '-', '+', '='];
 
-const DEFAULT_FIRST_OPERAND_VALUE = '0';
-const DEFAULT_SECOND_OPERAND_VALUE = '';
-const DEFAULT_OPERATION_VALUE = null;
-const DEFAULT_IS_ERROR_VALUE = false;
+const DEFAULT_VALUE = {
+  firstOperand: '0',
+  secondOperand: '',
+  operation: null,
+  isError: false,
+};
 
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   if (operation === '/') {
@@ -23,8 +25,8 @@ const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   }
 };
 
-const hasInput = ({ firstOperand, secondOperand, operation }) => {
-  return firstOperand !== '0' || secondOperand !== '' || operation !== null;
+const hasInput = (input) => {
+  return Object.keys(input).some((key) => input[key] !== DEFAULT_VALUE[key]);
 };
 
 const computeNextOperand = (currentOperand, digit) => {
@@ -42,18 +44,18 @@ const Calculator = () => {
   } = useMemo(() => JSON.parse(localStorage.getItem('prevState')), []);
 
   const [firstOperand, setFirstOperand] = useState(
-    prevFirstOperand ?? DEFAULT_FIRST_OPERAND_VALUE,
+    prevFirstOperand ?? DEFAULT_VALUE.firstOperand,
   );
 
   const [secondOperand, setSecondOperand] = useState(
-    prevSecondOperand ?? DEFAULT_SECOND_OPERAND_VALUE,
+    prevSecondOperand ?? DEFAULT_VALUE.secondOperand,
   );
 
   const [operation, setOperation] = useState(
-    prevOperation ?? DEFAULT_OPERATION_VALUE,
+    prevOperation ?? DEFAULT_VALUE.operation,
   );
 
-  const [isError, setIsError] = useState(prevIsError ?? DEFAULT_IS_ERROR_VALUE);
+  const [isError, setIsError] = useState(prevIsError ?? DEFAULT_VALUE.isError);
 
   const onClickDigit = (digit) => {
     setIsError(false);
@@ -91,8 +93,8 @@ const Calculator = () => {
 
     if (isFinite(result)) {
       setFirstOperand(`${result}`);
-      setSecondOperand(DEFAULT_SECOND_OPERAND_VALUE);
-      setOperation(DEFAULT_OPERATION_VALUE);
+      setSecondOperand(DEFAULT_VALUE.secondOperand);
+      setOperation(DEFAULT_VALUE.operation);
 
       return;
     }
@@ -101,10 +103,10 @@ const Calculator = () => {
   };
 
   const initializeState = () => {
-    setFirstOperand(DEFAULT_FIRST_OPERAND_VALUE);
-    setSecondOperand(DEFAULT_SECOND_OPERAND_VALUE);
-    setOperation(DEFAULT_OPERATION_VALUE);
-    setIsError(DEFAULT_IS_ERROR_VALUE);
+    setFirstOperand(DEFAULT_VALUE.firstOperand);
+    setSecondOperand(DEFAULT_VALUE.secondOperand);
+    setOperation(DEFAULT_VALUE.operation);
+    setIsError(DEFAULT_VALUE.isError);
   };
 
   const onBeforeUnload = (e) => {
