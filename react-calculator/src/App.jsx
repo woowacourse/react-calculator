@@ -13,7 +13,7 @@ function App() {
   );
   const [secondNumber, setSecondNumber] = useState('');
   const [result, setResult] = useState(
-    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : 0
+    store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : RESULT.RESET
   );
 
   useEffect(() => {
@@ -23,7 +23,10 @@ function App() {
   const onBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = '';
-    if (result === '' || result === RESULT.RESET) return;
+    if (result === RESULT.RESET) {
+      localStorage.removeItem('prevResult');
+      return;
+    }
     store.setLocalStorage('prevResult', result);
   };
 
