@@ -41,7 +41,7 @@ const Calculator = () => {
     e.preventDefault();
     if (!hasInput(ref.current)) return;
     localStorage.setItem('prevState', JSON.stringify(ref.current));
-    return (e.returnValue = '');
+    e.returnValue = '';
   };
 
   const onClickDigit = (digit) => () => {
