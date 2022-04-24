@@ -1,7 +1,6 @@
 import { ERROR_MSG, OPERATOR } from "../constants/constant";
 
 export const getCalculateNumber = (operator, { prevNumbers, nextNumbers }) => {
-  console.log(operator, prevNumbers, nextNumbers);
   if (operator === OPERATOR.PLUS) {
     return prevNumbers + nextNumbers;
   }
