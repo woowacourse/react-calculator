@@ -11,17 +11,23 @@ export default function Calculator() {
   const [result, setResult] = useState(0);
 
   useEffect(() => {
+    window.addEventListener('beforeunload', confirmExit);
+
+    return () => {
+      window.removeEventListener('beforeunload', confirmExit);
+    };
+  }, []);
+
+  useEffect(() => {
     if (operations.nextNumber === null) {
       setResult(limitThreeDecimal(operations.prevNumber));
     } else {
       setResult(limitThreeDecimal(operations.nextNumber));
     }
 
-    window.addEventListener('beforeunload', confirmExit);
     window.addEventListener('unload', saveResult);
 
     return () => {
-      window.removeEventListener('beforeunload', confirmExit);
       window.removeEventListener('unload', saveResult);
     };
   }, [operations]);
