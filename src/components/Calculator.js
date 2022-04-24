@@ -1,8 +1,15 @@
-import { useLayoutEffect, useEffect, useState, useRef } from 'react';
+import {
+  useLayoutEffect,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import '../styles/Calculator.css';
-
-const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-const OPERATIONS = ['/', 'X', '-', '+', '='];
+import Expression from './Expression';
+import Digits from './Digits';
+import Modifier from './Modifier';
+import Operations from './Operations';
 
 const computeExpression = ({ firstOperand, secondOperand, operation }) => {
   if (operation === '/') {
@@ -60,7 +67,7 @@ const Calculator = () => {
     return (e.returnValue = '');
   };
 
-  const handleClickDigit = (digit) => () => {
+  const onClickDigit = (digit) => () => {
     state.operation
       ? setState((prevState) => ({
           ...prevState,
@@ -72,7 +79,7 @@ const Calculator = () => {
         }));
   };
 
-  const handleClickOperation = (operation) => () => {
+  const onClickOperation = (operation) => () => {
     if (operation !== '=') {
       setState((prevState) => ({
         ...prevState,
@@ -101,52 +108,28 @@ const Calculator = () => {
     }));
   };
 
-  const handleInitState = () => {
+  const onClickModifier = useCallback(() => {
     setState({
       firstOperand: '0',
       secondOperand: '',
       operation: null,
       isError: false,
     });
-  };
+  }, []);
+
   return (
     <>
       <div>숫자는 3자리 까지만 입력이 가능합니다.</div>
       <div className="calculator">
-        <h1 id="total">
-          {state.isError
-            ? '오류'
-            : `${state.firstOperand}
-            ${state.operation ?? ''}
-            ${state.secondOperand}`}
-        </h1>
-        <div className="digits flex">
-          {DIGITS.map((digit) => (
-            <button
-              className="digit"
-              onClick={handleClickDigit(digit)}
-              key={digit}
-            >
-              {digit}
-            </button>
-          ))}
-        </div>
-        <div className="modifiers subgrid">
-          <button className="modifier" onClick={handleInitState}>
-            AC
-          </button>
-        </div>
-        <div className="operations subgrid">
-          {OPERATIONS.map((operation) => (
-            <button
-              className="operation"
-              onClick={handleClickOperation(operation)}
-              key={operation}
-            >
-              {operation}
-            </button>
-          ))}
-        </div>
+        <Expression
+          isError={state.isError}
+          firstOperand={state.firstOperand}
+          operation={state.operation}
+          secondOperand={state.secondOperand}
+        />
+        <Digits onClick={onClickDigit} />
+        <Modifier onClick={onClickModifier} />
+        <Operations onClick={onClickOperation} />
       </div>
     </>
   );
