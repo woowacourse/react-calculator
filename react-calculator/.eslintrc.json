@@ -12,7 +12,7 @@
     "import/extensions": ["error", "always"],
     "max-depth": ["error", 2],
     "no-param-reassign": "off",
-    "no-use-before-define": "off"
+    "no-use-before-define": "off",
   },
   "plugins": ["prettier"]
 }

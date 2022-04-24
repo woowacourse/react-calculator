@@ -18,22 +18,18 @@ function App() {
 
   useEffect(() => {
     window.addEventListener('beforeunload', onBeforeUnload);
-
-    return function cleanup() {
-      window.removeEventListener('beforeunload', onBeforeUnload);
-    };
   });
-
-  const renderCalculatorNumber = (calculatedResult) => {
-    setResult(calculatedResult);
-    resultRef.current.textContent = result;
-  };
 
   const onBeforeUnload = (e) => {
     e.preventDefault();
     e.returnValue = '';
     if (result === '' || result === RESULT.RESET) return;
     store.setLocalStorage('prevResult', result);
+  };
+
+  const renderCalculatorNumber = (calculatedResult) => {
+    setResult(calculatedResult);
+    resultRef.current.textContent = result;
   };
 
   const handleDigit = (number) => {
