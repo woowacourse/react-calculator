@@ -7,24 +7,28 @@ const calculation = {
   '/': (a, b) => Math.trunc(a / b),
 };
 
-export default class OperationButtons extends Component {
-  #handleOperatorClick = ({ target }) => {
-    const { secondOperand, setOperator } = this.props;
+export default function OperationButtons({
+  operator,
+  firstOperand,
+  secondOperand,
+  setOperator,
+  triggerError,
+  clearAndSetResult,
+}) {
+  const handleOperatorClick = ({ target }) => {
     if (secondOperand) return;
 
     setOperator(target.textContent);
   };
 
-  #handleResultButton = () => {
-    const { secondOperand } = this.props;
+  const handleResultButton = () => {
     if (!secondOperand) return;
 
-    this.#showResult();
+    showResult();
   };
 
-  #showResult() {
-    const { triggerError, clearAndSetResult } = this.props;
-    const result = this.#calculate();
+  const showResult = () => {
+    const result = calculate();
 
     if (result === Infinity || result === -Infinity || Number.isNaN(result)) {
       triggerError();
@@ -33,36 +37,33 @@ export default class OperationButtons extends Component {
     }
 
     clearAndSetResult(String(result));
-  }
+  };
 
-  #calculate() {
-    const { operator, firstOperand, secondOperand } = this.props;
-
+  const calculate = () => {
     const calc = calculation[operator];
-    return calc(Number(firstOperand), Number(secondOperand));
-  }
 
-  render() {
-    return (
-      <div className="operations subgrid">
-        {Object.keys(calculation).map((operator) => (
-          <button
-            key={operator}
-            type="button"
-            className="operation"
-            onClick={this.#handleOperatorClick}
-          >
-            {operator}
-          </button>
-        ))}
+    return calc(Number(firstOperand), Number(secondOperand));
+  };
+
+  return (
+    <div className="operations subgrid">
+      {Object.keys(calculation).map((operator) => (
         <button
-          className="operation result-button"
+          key={operator}
           type="button"
-          onClick={this.#handleResultButton}
+          className="operation"
+          onClick={handleOperatorClick}
         >
-          =
+          {operator}
         </button>
-      </div>
-    );
-  }
+      ))}
+      <button
+        className="operation result-button"
+        type="button"
+        onClick={handleResultButton}
+      >
+        =
+      </button>
+    </div>
+  );
 }

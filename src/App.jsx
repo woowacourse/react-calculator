@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './App.css';
 
@@ -13,90 +13,87 @@ const initialState = {
   isError: false,
 };
 
-class App extends Component {
-  constructor() {
-    super();
+function App() {
+  const [state, setState] = useState(
+    JSON.parse(localStorage.getItem('state')) || { ...initialState }
+  );
 
-    this.state = JSON.parse(localStorage.getItem('state')) || { ...initialState };
-  }
-
-  componentDidMount() {
-    window.localStorage.removeItem('state');
-
-    window.addEventListener('beforeunload', this.#handleBeforeUnload);
-
-    window.addEventListener('pagehide', () => {
-      const { firstOperand, operator } = this.state;
-
-      if (firstOperand !== '0' || operator) {
-        window.localStorage.setItem('state', JSON.stringify(this.state));
-      }
-
-      window.removeEventListener('beforeunload', this.#handleBeforeUnload);
-    });
-  }
-
-  #handleBeforeUnload = (e) => {
+  const handleBeforeUnload = (e) => {
     e.preventDefault();
 
     // chorme에서 confirm 추가를 위해서 필요
     e.returnValue = '';
   };
 
-  #triggerError = () => {
-    this.setState({ ...initialState, isError: true });
+  const triggerError = () => {
+    setState({ ...initialState, isError: true });
   };
 
-  #setOperandValue = (operand, value) => {
-    this.setState({ [operand === 'first' ? 'firstOperand' : 'secondOperand']: value });
+  const setOperandValue = (operand, value) => {
+    setState((prevState) => ({
+      ...prevState,
+      [operand === 'first' ? 'firstOperand' : 'secondOperand']: value,
+    }));
   };
 
-  #setOperatorValue = (value) => {
-    this.setState({ operator: value });
+  const setOperatorValue = (value) => {
+    setState((prevState) => ({ ...prevState, operator: value }));
   };
 
-  #clearState = () => {
-    this.setState({ ...initialState });
+  const clearState = () => {
+    setState({ ...initialState });
   };
 
-  #clearAndSetResultValue = (value) => {
-    this.setState({ ...initialState, firstOperand: value });
+  const clearAndSetResultValue = (value) => {
+    setState({ ...initialState, firstOperand: value });
   };
 
-  render() {
-    const { firstOperand, secondOperand, operator, isError } = this.state;
+  useEffect(() => {
+    window.localStorage.removeItem('state');
 
-    return (
-      <div className="App">
-        <div className="calculator">
-          {isError ? (
-            <h1 id="total">오류</h1>
-          ) : (
-            <h1 id="total">
-              {firstOperand}
-              {operator}
-              {secondOperand}
-            </h1>
-          )}
-          <DigitButtons
-            operator={operator}
-            firstOperand={firstOperand}
-            secondOperand={secondOperand}
-            setOperand={this.#setOperandValue}
-          />
-          <AllClearButton clearState={this.#clearState} />
-          <OperationButtons
-            operator={operator}
-            firstOperand={firstOperand}
-            secondOperand={secondOperand}
-            setOperator={this.#setOperatorValue}
-            clearAndSetResult={this.#clearAndSetResultValue}
-            triggerError={this.#triggerError}
-          />
-        </div>
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    window.addEventListener('pagehide', () => {
+      const { firstOperand, operator } = state;
+
+      if (firstOperand !== '0' || operator) {
+        window.localStorage.setItem('state', JSON.stringify(state));
+      }
+
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    });
+  }, []);
+
+  return (
+    <div className="App">
+      <div className="calculator">
+        {state.isError ? (
+          <h1 id="total">오류</h1>
+        ) : (
+          <h1 id="total">
+            {state.firstOperand}
+            {state.operator}
+            {state.secondOperand}
+          </h1>
+        )}
+        <DigitButtons
+          operator={state.operator}
+          firstOperand={state.firstOperand}
+          secondOperand={state.secondOperand}
+          setOperand={setOperandValue}
+        />
+        <AllClearButton clearState={clearState} />
+        <OperationButtons
+          operator={state.operator}
+          firstOperand={state.firstOperand}
+          secondOperand={state.secondOperand}
+          setOperator={setOperatorValue}
+          clearAndSetResult={clearAndSetResultValue}
+          triggerError={triggerError}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
