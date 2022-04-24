@@ -20,7 +20,7 @@ function Calculator() {
     return () => {
       window.removeEventListener('beforeunload', saveResult);
     };
-  }, []);
+  });
 
   const saveResult = (e) => {
     e.preventDefault();
