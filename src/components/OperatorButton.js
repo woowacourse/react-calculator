@@ -1,20 +1,20 @@
 import React from 'react';
-import { OPERATOR, ERROR_MSG } from '../constants/constant';
+import { OPERATOR, ERROR_MSG, INITIAL_STATE } from '../constants/constant';
 
-const OperatorButton = ({ operand, state, setState }) => {
+const OperatorButton = ({ selfOperand, state, setState }) => {
   const { prevNumbers, operator, nextNumbers } = state;
 
   const onClickOperator = () => {
-    if (operand !== OPERATOR.EQUAL) {
-      setState(prevState => ({ ...prevState, operator: operand }));
+    if (selfOperand !== OPERATOR.EQUAL) {
+      setState(prevState => ({ ...prevState, operator: selfOperand }));
       return;
     }
 
-    setState(prevState => ({
-      ...prevState,
+    setState({
+      ...INITIAL_STATE,
       sum: calculateSum(),
-      operator: operand,
-    }));
+      operator: selfOperand,
+    });
   };
 
   const calculateSum = () => {
@@ -40,7 +40,7 @@ const OperatorButton = ({ operand, state, setState }) => {
 
   return (
     <button className="operation" onClick={onClickOperator}>
-      {operand}
+      {selfOperand}
     </button>
   );
 };

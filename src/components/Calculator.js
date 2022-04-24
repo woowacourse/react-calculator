@@ -69,7 +69,7 @@ const Calculator = () => {
           {OPERATOR_LIST.map((operand, index) => (
             <OperatorButton
               key={index}
-              operand={operand}
+              selfOperand={operand}
               state={state}
               setState={setState}
             />
