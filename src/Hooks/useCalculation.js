@@ -1,7 +1,8 @@
 import { useState, useMemo, useCallback } from 'react';
-import { MAX_NUMBER, STORAGE_NAME } from '../Constants';
+import { MAX_NUMBER, MIN_NUMBER, STORAGE_NAME } from '../Constants';
 
-const isExceedMaxNumber = (number) => number >= MAX_NUMBER && number !== Infinity;
+const isExceedMaxNumber = (number) =>
+  (number >= MAX_NUMBER || number <= MIN_NUMBER) && number !== Infinity;
 
 const savedState = JSON.parse(localStorage.getItem(STORAGE_NAME));
 const DEFAULT_STATE = {
@@ -23,7 +24,10 @@ function useCalculation() {
   const handleAddDigit = (digit) => {
     const numberIndex = inputOperator === '' ? 0 : 1;
     const newStateNumbers = [...inputNumbers];
-    newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(digit);
+    const prevDigit = newStateNumbers[numberIndex] * 10;
+    const addDigit = prevDigit >= 0 ? Number(digit) : -Number(digit);
+
+    newStateNumbers[numberIndex] = prevDigit + addDigit;
 
     if (newStateNumbers[numberIndex] === Infinity) {
       alert('무한한 숫자는 입력할 수 없어, 입력값을 초기화합니다.');
