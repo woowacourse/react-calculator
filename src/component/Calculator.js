@@ -104,9 +104,7 @@ const Calculator = () => {
   });
 
   const onClickNumber = useCallback(({ target }) => {
-    const inputNumber = target.textContent;
-
-    dispatch({ type: SET_NUMBER, inputNumber });
+    dispatch({ type: SET_NUMBER, inputNumber: target.textContent });
   }, []);
 
   const onClickModifier = useCallback(() => {
