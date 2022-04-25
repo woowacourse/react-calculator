@@ -9,7 +9,7 @@ import {
 } from "../constants";
 import { calculate, saveLocalStorage } from "../utils";
 
-const reducer = (state, action) => {
+const calculatorReducer = (state, action) => {
   switch (action.type) {
     case RESET: {
       saveLocalStorage(PREV_VALUE, 0);
@@ -66,6 +66,7 @@ const reducer = (state, action) => {
         state.operator,
         state.secondNumber
       );
+      console.log("total", total);
       saveLocalStorage(PREV_VALUE, total);
 
       return {
@@ -83,4 +84,4 @@ const reducer = (state, action) => {
   }
 };
 
-export { reducer };
+export { calculatorReducer };

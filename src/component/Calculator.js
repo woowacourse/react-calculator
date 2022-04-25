@@ -7,8 +7,8 @@ import {
   SET_OPERATOR,
 } from "../constants";
 
-import { reducer } from "../store/reducer";
-import { initialState } from "../store/initialState";
+import { calculatorReducer } from "../store/calculatorReducer";
+import { initialCalculatorState } from "../store/initialCalculatorState";
 
 import ClearButton from "./ClearButton";
 import DisplayResult from "./DisplayResult";
@@ -17,7 +17,10 @@ import OperatorButton from "./OperatorButton";
 import ErrorMessage from "./ErrorMessage";
 
 const Calculator = () => {
-  const [calculatorState, dispatch] = useReducer(reducer, initialState);
+  const [calculatorState, dispatch] = useReducer(
+    calculatorReducer,
+    initialCalculatorState
+  );
 
   const handleUnload = useCallback((event) => {
     event.preventDefault();

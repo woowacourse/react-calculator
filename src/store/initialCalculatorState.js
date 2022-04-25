@@ -1,7 +1,7 @@
 import { PREV_VALUE } from "../constants";
 import { getLocalStorage } from "../utils";
 
-const initialState = {
+const initialCalculatorState = {
   firstNumber: getLocalStorage(PREV_VALUE) || 0,
   secondNumber: 0,
   isFirstNumber: true,
@@ -10,4 +10,4 @@ const initialState = {
   error: null,
 };
 
-export { initialState };
+export { initialCalculatorState };
