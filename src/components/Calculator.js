@@ -16,12 +16,11 @@ const Calculator = () => {
 
   stateRef.current = state;
 
-  useEffect(() => {
-    setInitialState();
-    window.addEventListener('beforeunload', confirmExist);
-    return () => {
-      window.removeEventListener('beforeunload', confirmExist);
-    };
+  const confirmExist = useCallback(event => {
+    event.preventDefault();
+    event.returnValue = CONFIRM_MSG;
+
+    expressionStorage.setExpression(stateRef.current);
   }, []);
 
   const setInitialState = () => {
@@ -32,11 +31,12 @@ const Calculator = () => {
     setState({ sum, prevNumbers, operator, nextNumbers });
   };
 
-  const confirmExist = useCallback(event => {
-    event.preventDefault();
-    event.returnValue = CONFIRM_MSG;
-
-    expressionStorage.setExpression(stateRef.current);
+  useEffect(() => {
+    setInitialState();
+    window.addEventListener('beforeunload', confirmExist);
+    return () => {
+      window.removeEventListener('beforeunload', confirmExist);
+    };
   }, []);
 
   return (
