@@ -47,7 +47,7 @@ const Calculator = () => {
           {Array.from({ length: 10 }).map((_, index) => (
             <NumberButton
               key={index}
-              number={-(index - 9)}
+              number={9 - index}
               state={state}
               setState={setState}
             />
