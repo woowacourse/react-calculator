@@ -65,7 +65,11 @@ export default function App() {
     const expression = expressionRef.current.textContent;
     const digit = e.target.textContent;
 
-    if (isArithmeticOperator(expression) || expression === '0') {
+    if (
+      isArithmeticOperator(expression) ||
+      expression === '0' ||
+      expression === '오류'
+    ) {
       expressionRef.current.textContent = digit;
       return;
     }
@@ -131,7 +135,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener('beforeunload', handleUnload);
+    window.addEventListener('unload', handleUnload);
     return () => {
       window.removeEventListener('beforeunload', handleUnload);
     };
