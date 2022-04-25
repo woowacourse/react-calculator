@@ -29,13 +29,7 @@ const Calculator = () => {
     if (!expression) return;
 
     const { sum, prevNumbers, operator, nextNumbers } = expression;
-    setState(prevState => ({
-      ...prevState,
-      sum,
-      prevNumbers,
-      operator,
-      nextNumbers,
-    }));
+    setState({ sum, prevNumbers, operator, nextNumbers });
   };
 
   const confirmExist = useCallback(event => {
