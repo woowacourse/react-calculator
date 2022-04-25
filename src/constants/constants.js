@@ -19,13 +19,12 @@ export const MODIFIERS = {
   ORDERED_LIST: ['AC'],
 };
 export const DEFAULT_STATE = {
-  numberStrings: [''],
+  numbers: [0],
   operator: null,
-  displayedText: '0',
 };
 export const ERROR_RESULT = '오류';
 export const ERROR_MESSAGES = {
   DIGIT_MAX_LENGTH_EXCEEDED: '입력한 수가 세자리를 초과했습니다.',
-  NO_SECOND_NUMBER_SUBMITTED: '두번째 수가 입력되지 않았습니다.',
+  NUMBERS_MAX_COUNT_EXCEEDED: '두 수만 연산할 수 있습니다.',
   INVALID_OPERATOR: '올바르지 않은 연산자입니다.',
 };
