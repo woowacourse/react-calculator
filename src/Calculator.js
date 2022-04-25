@@ -52,8 +52,8 @@ export default function Calculator() {
 
   return (
     <div className="calculator">
-      <Screen screenNumber={screenNumber}></Screen>
-      <Digits onClickDigit={onClickDigit}></Digits>
+      <Screen screenNumber={screenNumber} />
+      <Digits onClickDigit={onClickDigit} />
       <Operators
         setScreenNumber={setScreenNumber}
         screenNumber={screenNumber}
@@ -61,11 +61,11 @@ export default function Calculator() {
         isNumberStep={isNumberStep}
         recordNumber={recordNumber}
         setRecordNumber={setRecordNumber}
-      ></Operators>
+      />
       <ClearButton
         setScreenNumber={setScreenNumber}
         setRecordNumber={setRecordNumber}
-      ></ClearButton>
+      />
     </div>
   );
 }
