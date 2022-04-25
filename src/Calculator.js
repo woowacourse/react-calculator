@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import DisplayResult from "./component/DisplayResult";
+import NumberButton from "./component/buttons/NumberButton";
+import ModifierButton from "./component/buttons/ModifierButton";
+import OperatorButton from "./component/buttons/OperatorButton";
 import calculate from "./utils/calculate";
+
 import "./css/calculator.css";
 
 export default function App() {
@@ -20,14 +24,6 @@ export default function App() {
       e.returnValue = "";
     });
   }, []);
-
-  const initState = () => {
-    setFirstNumber(0);
-    setSecondNumber(0);
-    setOperator(null);
-    setIsFirstNumber(true);
-    setResult(0);
-  };
 
   const onClickNumber = (e) => {
     const inputNumber = e.target.textContent;
@@ -59,7 +55,11 @@ export default function App() {
   };
 
   const onClickModifier = () => {
-    initState();
+    setFirstNumber(0);
+    setSecondNumber(0);
+    setOperator(null);
+    setIsFirstNumber(true);
+    setResult(0);
     localStorage.setItem("prevValue", 0);
   };
 
@@ -88,23 +88,9 @@ export default function App() {
     <div id="app">
       <div className="calculator">
         <DisplayResult result={result} />
-        <div className="digits flex" onClick={onClickNumber}>
-          {Array.from({ length: 10 }, (v, i) => (
-            <button className="digit" key={9 - i}>
-              {9 - i}
-            </button>
-          ))}
-        </div>
-        <div className="modifiers subgrid" onClick={onClickModifier}>
-          <button className="modifier">AC</button>
-        </div>
-        <div className="operations subgrid" onClick={onClickOperator}>
-          {Array.from(["/", "X", "-", "+", "="], (v, i) => (
-            <button className="digit" key={v}>
-              {v}
-            </button>
-          ))}
-        </div>
+        <NumberButton onClick={onClickNumber} />
+        <ModifierButton onClick={onClickModifier} />
+        <OperatorButton onClick={onClickOperator} />
       </div>
     </div>
   );
