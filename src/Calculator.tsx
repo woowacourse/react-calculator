@@ -55,16 +55,22 @@ const errorState = (errorMessage: string): CalculatorState => ({
   result: errorMessage,
 });
 
-const saveCurrentStateBeforeLeave = (event: BeforeUnloadEvent, state: CalculatorState) => {
-  event.preventDefault();
-  localStorage.setItem(localStorageKey, JSON.stringify(state));
-};
-
 function Calculator() {
   const [state, setState] = useState<CalculatorState>({ ...initialState });
 
   useEffect(() => {
-    window.addEventListener('beforeunload', e => saveCurrentStateBeforeLeave(e, state));
+    const localState = JSON.parse(localStorage.getItem(localStorageKey) || '{}');
+    setState({ ...initialState, ...localState });
+  }, []);
+
+  useEffect(() => {
+    const saveCurrentStateBeforeLeave = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      localStorage.setItem(localStorageKey, JSON.stringify(state));
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', saveCurrentStateBeforeLeave);
+    return () => window.removeEventListener('beforeunload', saveCurrentStateBeforeLeave);
   }, [state]);
 
   const handleClickDigitBtn = (digit: number) => {
