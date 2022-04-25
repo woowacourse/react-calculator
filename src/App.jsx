@@ -11,6 +11,7 @@ import {
   CALCULATOR_NUMBER_LIST,
   CALCULATOR_OPERATOR_LIST,
   EQUAL,
+  INFINITY_ERROR_TEXT,
 } from './constants';
 import {
   validateOperatorIsDuplicated,
@@ -99,7 +100,8 @@ function App() {
 
   function handleUnload() {
     let lastExpression = expressionRef.current.textContent;
-    lastExpression = lastExpression === '오류' ? 0 : lastExpression;
+    lastExpression =
+      lastExpression === INFINITY_ERROR_TEXT ? 0 : lastExpression;
 
     storage.set(CALCULATOR_DATA_KEY, { ...calcData, lastExpression });
   }
