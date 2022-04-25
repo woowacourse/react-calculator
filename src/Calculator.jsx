@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DigitButton from './components/DigitButton';
 import OperationButton from './components/OperationButton';
 import './Calculator.css';
 import operatorCollection from './utils/operator';
@@ -81,15 +82,7 @@ const Calculator = () => {
         <h1 id="total">{Number.isNaN(totalNumber) ? '오류' : totalNumber}</h1>
         <div className="digits flex">
           {DIGIT_LIST.map((digit) => (
-            <button
-              key={digit}
-              className="digit"
-              onClick={() => {
-                handleDigitClick(digit);
-              }}
-            >
-              {digit}
-            </button>
+            <DigitButton key={digit} digit={digit} clickHandler={handleDigitClick} />
           ))}
         </div>
         <div className="modifiers subgrid">
