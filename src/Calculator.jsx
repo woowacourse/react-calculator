@@ -1,10 +1,11 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-shadow */
 /* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable func-names */
 /* eslint-disable no-unused-vars */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DigitButton from './DigitButton';
 import ModifierButton from './ModifierButton';
 import OperationButton from './OperationButton';
@@ -29,13 +30,14 @@ const DigitButtons = function (props) {
 };
 
 const OperationButtons = function (props) {
-  const { operand, operator, setOperator, setIndex } = props;
+  const { operand, operator, setOperand, setOperator, setIndex } = props;
   const operationButtons = operations.map(operation => (
     <OperationButton
       key={operation}
       operand={operand}
       operation={operation}
       operator={operator}
+      setOperand={setOperand}
       setOperator={setOperator}
       setIndex={setIndex}
     />
@@ -48,6 +50,8 @@ const Calculator = function () {
   const [operand, setOperand] = useState(['0', '']);
   const [operator, setOperator] = useState('');
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {});
 
   return (
     <div className="calculator">
@@ -62,6 +66,7 @@ const Calculator = function () {
         <OperationButtons
           operand={operand}
           operator={operator}
+          setOperand={setOperand}
           setOperator={setOperator}
           setIndex={setIndex}
         />
