@@ -92,13 +92,11 @@ const Calculator = () => {
         </div>
         <div className="operations subgrid">
           {OPERATION_LIST.map((operation) => (
-            <OperationButton key={operation} currentOperator={operator} setOperator={setOperator}>
+            <OperationButton key={operation} currentOperator={operator} clickHandler={setOperator}>
               {operation}
             </OperationButton>
           ))}
-          <button className="operation" onClick={handleResultClick}>
-            =
-          </button>
+          <OperationButton clickHandler={handleResultClick}>=</OperationButton>
         </div>
       </div>
     </div>
