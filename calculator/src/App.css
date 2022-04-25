@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
 body {
   height: 100vh;
   display: flex;
@@ -23,6 +25,11 @@ body {
 button {
   font-size: 2rem;
   border: 0.5px solid #98999b;
+}
+
+button:hover {
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 .modifiers button {
