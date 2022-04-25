@@ -5,6 +5,7 @@ import CalculatorInputField from './components/CalculatorInputField';
 import { LOCAL_STORAGE_EXPRESSION_KEY } from './constants';
 import useExpression from './hooks/useExpression';
 import { CustomLocalStorage } from './utils/CustomLocalStorage';
+import useUnload from './hooks/useUnLoad';
 
 function App() {
   const {
@@ -15,39 +16,18 @@ function App() {
     handleClickOperator,
   } = useExpression();
 
-  const expressionRef = useRef(expression);
-
-  useEffect(() => {
-    expressionRef.current = expression;
-  }, [expression]);
 
   useEffect(() => {
     const expression = CustomLocalStorage.load(LOCAL_STORAGE_EXPRESSION_KEY);
     if (expression) {
       setExpression(expression);
     }
+  }, []);
 
-    window.addEventListener('beforeunload', handleBeforeunload);
-    window.addEventListener('unload', handleUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeunload);
-      window.removeEventListener('unload', handleUnload);
-    };
-  }, [setExpression]);
-
-  const handleBeforeunload = (e) => {
-    e.preventDefault();
-    e.returnValue = '';
-  };
-
-  const handleUnload = () => {
-    CustomLocalStorage.save(
-      LOCAL_STORAGE_EXPRESSION_KEY,
-      expressionRef.current
-    );
-  };
-
+  useUnload(() =>
+    CustomLocalStorage.save(LOCAL_STORAGE_EXPRESSION_KEY, expression)
+  );
+    
   return (
     <div id="app">
       <div className="calculator">
