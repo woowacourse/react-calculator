@@ -4,9 +4,7 @@ import DigitButton from './DigitButton';
 import ModifierButton from './ModifierButton';
 import OperationButton from './OperationButton';
 import Result from './Result';
-
-const digits = ['9', '8', '7', '6', '5', '4', '3', '2', '1', '0'];
-const operations = ['/', 'X', '-', '+', '='];
+import { digits, operations } from '../constants/buttonChar';
 
 const Calculator = function () {
   const [operand, setOperand] = useState(['0', '']);

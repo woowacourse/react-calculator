@@ -26,7 +26,8 @@
 
 - [ ] setState 여러 번 호출
 - [x] 사용자 이탈 시에만 localStorage 저장
-- [ ] '오류' 발생 코드 반복 리팩터링
+- [x] '오류' 발생 코드 반복 리팩터링
 - [x] `render`부분 반복문 리팩터링
 - [x] 컴포넌트 분리
-- [ ] `calculate` operand 리팩터링
+- [x] `calculate` operand 리팩터링
+- [ ] 연산수행 후 숫자를 누르면 결과 뒤에 숫자가 붙어버림

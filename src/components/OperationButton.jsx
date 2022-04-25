@@ -1,32 +1,8 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable func-names */
-const calculate = function (props) {
-  const { operand, operator } = props;
-  let result = null;
-  switch (operator) {
-    case '+':
-      result = +operand[0] + +operand[1];
-      break;
-    case '-':
-      result = +operand[0] - +operand[1];
-      break;
-    case 'X':
-      result = +operand[0] * +operand[1];
-      break;
-    case '/':
-      result = Math.floor(+operand[0] / +operand[1]);
-      break;
-    default:
-      break;
-  }
-
-  if (result === Infinity) {
-    return [['오류', ''], '', 0];
-  }
-
-  return [[String(result), ''], '', 0];
-};
+import ALERT from '../constants/alertMessage';
+import calculate from '../core/calculate';
 
 const OperationButton = function (props) {
   const { operand, operation, operator, setOperand, setOperator, setIndex } = props;
@@ -36,15 +12,19 @@ const OperationButton = function (props) {
 
   const handleClickOperation = () => {
     if (operand[0] === '오류') {
-      alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
+      alert(ALERT.INFINITY);
       return;
     }
+
     if (operator && operation !== '=') {
+      alert(ALERT.OPERATOR_EXIST);
       return;
     }
+
     if (operator && operation === '=') {
-      [tempOperand, tempOperator, tempIndex] = calculate(props);
+      [tempOperand, tempOperator, tempIndex] = calculate(operand, operator);
     }
+
     if (!operator) {
       tempOperand = operand;
       tempOperator = operation;

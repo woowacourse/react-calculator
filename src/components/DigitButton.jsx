@@ -2,18 +2,20 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
 /* eslint-disable react/react-in-jsx-scope */
+import ALERT from '../constants/alertMessage';
+
 const DigitButton = function (props) {
   const { digit, operand, setOperand, index } = props;
   const handleClickDigit = () => {
     let operandList = null;
 
     if (operand[0] === '오류') {
-      alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
+      alert(ALERT.INFINITY);
       return;
     }
 
     if (+(operand[index] + digit) >= 1000) {
-      alert('숫자는 한번에 최대 3자리 수까지 입력 가능합니다.');
+      alert(ALERT.MAX_DIGIT);
       return;
     }
 
