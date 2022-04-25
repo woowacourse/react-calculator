@@ -49,21 +49,19 @@ export default class App extends Component {
     }
 
     this.setState({
-      secondNumber: this.state.secondNumber + inputNumber,
+      secondNumber: this.state.secondNumber * 10 + Number(inputNumber),
     });
   };
 
   onClickOperator = (e) => {
-    const inputOperator = e.target.textContent;
     if (this.state.firstNumber === "") return;
-    if (inputOperator === "=" && this.state.secondNumber === "") return;
 
-    this.setState({
-      result: this.state.result + inputOperator,
-    });
+    const inputOperator = e.target.textContent;
+    if (inputOperator === "=" && this.state.secondNumber === "") return;
 
     if (inputOperator !== "=") {
       this.setState({
+        result: this.state.result + inputOperator,
         firstNumber: this.state.firstNumber,
         operator: inputOperator,
         isFirstNumber: false,
@@ -71,7 +69,7 @@ export default class App extends Component {
       return;
     }
 
-    this.calculate();
+    this.onCalculate();
   };
 
   onClickModifier = () => {
@@ -79,8 +77,33 @@ export default class App extends Component {
     localStorage.setItem("prevValue", 0);
   };
 
-  calculate = () => {
-    const res = (() => {
+  onCalculate = () => {
+    const res = this.calculateValue();
+
+    if (res === Infinity || isNaN(res)) {
+      this.setState({
+        firstNumber: 0,
+        secondNumber: 0,
+        result: "오류",
+        operator: null,
+        isFirstNumber: true,
+      });
+      localStorage.setItem("prevValue", "오류");
+      return;
+    }
+
+    this.setState({
+      firstNumber: res,
+      secondNumber: 0,
+      result: res,
+      operator: null,
+      isFirstNumber: true,
+    });
+    localStorage.setItem("prevValue", res);
+  };
+
+  calculateValue() {
+    return (() => {
       switch (this.state.operator) {
         case "+":
           return this.add();
@@ -94,26 +117,7 @@ export default class App extends Component {
           throw new Error("존재하지 않는 연산자입니다.");
       }
     })();
-
-    this.setState({ result: res }, () => {
-      this.initState();
-
-      if (res === Infinity || isNaN(res)) {
-        this.setState({
-          firstNumber: 0,
-          result: "오류",
-        });
-        localStorage.setItem("prevValue", "오류");
-        return;
-      }
-
-      this.setState({
-        firstNumber: res,
-        result: res,
-      });
-      localStorage.setItem("prevValue", res);
-    });
-  };
+  }
 
   add() {
     return this.state.firstNumber + this.state.secondNumber;
@@ -137,26 +141,21 @@ export default class App extends Component {
         <div className="calculator">
           <DisplayResult result={this.state.result} />
           <div className="digits flex" onClick={this.onClickNumber}>
-            <button className="digit">9</button>
-            <button className="digit">8</button>
-            <button className="digit">7</button>
-            <button className="digit">6</button>
-            <button className="digit">5</button>
-            <button className="digit">4</button>
-            <button className="digit">3</button>
-            <button className="digit">2</button>
-            <button className="digit">1</button>
-            <button className="digit">0</button>
+            {Array.from({ length: 10 }, (v, i) => (
+              <button className="digit" key={9 - i}>
+                {9 - i}
+              </button>
+            ))}
           </div>
           <div className="modifiers subgrid" onClick={this.onClickModifier}>
             <button className="modifier">AC</button>
           </div>
           <div className="operations subgrid" onClick={this.onClickOperator}>
-            <button className="operation">/</button>
-            <button className="operation">X</button>
-            <button className="operation">-</button>
-            <button className="operation">+</button>
-            <button className="operation">=</button>
+            {Array.from(["/", "X", "-", "+", "="], (v, i) => (
+              <button className="digit" key={v}>
+                {v}
+              </button>
+            ))}
           </div>
         </div>
       </div>
