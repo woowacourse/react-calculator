@@ -3,6 +3,7 @@ import DigitButton from './components/DigitButton';
 import OperationButton from './components/OperationButton';
 import './Calculator.css';
 import operatorCollection from './utils/operator';
+import storage from './utils/storage';
 import { isExceedMaxLength, isEmptyOperator } from './validation';
 import { DIGIT_LIST, OPERATION_LIST } from './constant/calculator.js';
 import { CALCULATOR_STATE } from './constant/localStorage';
@@ -14,10 +15,11 @@ const Calculator = () => {
   const totalNumber = !operator || numbers[1] === 0 ? numbers[0] : numbers[1];
 
   useEffect(() => {
-    const savedState = localStorage.getItem(CALCULATOR_STATE);
+    const savedState = storage.loadData(CALCULATOR_STATE);
 
     if (savedState) {
-      const { numbers: savedNumber, operator: savedOperator } = JSON.parse(savedState);
+      const { numbers: savedNumber, operator: savedOperator } = savedState;
+
       setNumbers(savedNumber);
       setOperator(savedOperator);
     }
@@ -35,7 +37,7 @@ const Calculator = () => {
     event.preventDefault();
     event.returnValue = '';
 
-    localStorage.setItem(CALCULATOR_STATE, JSON.stringify({ numbers, operator }));
+    storage.saveData(CALCULATOR_STATE, { numbers, operator });
   };
 
   const handleDigitClick = (digit) => {
