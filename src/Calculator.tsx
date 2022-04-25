@@ -10,6 +10,7 @@ const ERROR_MESSAGE = {
   NOT_OPERATOR: '유효한 연산자가 아닙니다',
   INPUT_ORDER: '숫자를 먼저 입력해 주세요',
   MAX_DIGIT: '최대 세자리 숫자까지만 입력이 됩니다.',
+  MULTIPLE_OPERATOR: '연산자를 연속적으로 입력할 수 없습니다',
 };
 
 const operators: Array<Operator> = [Operator.plus, Operator.minus, Operator.multiply, Operator.divide];
@@ -103,12 +104,15 @@ function Calculator() {
     });
   };
 
-  const handleClickOperatorBtn = (operator: Operator) => {
+  const handleClickOperatorBtn = (_operator: Operator) => {
     const { prevNumber } = state;
 
-    if (operator === null) return;
+    if (state.operator) {
+      window.alert(ERROR_MESSAGE.MULTIPLE_OPERATOR);
+      return;
+    }
 
-    const isValidOperator = Object.values(Operator).includes(operator);
+    const isValidOperator = Object.values(Operator).includes(_operator);
     if (!isValidOperator) {
       setState({ ...errorState(ERROR_MESSAGE.NOT_OPERATOR) });
       return;
@@ -118,7 +122,7 @@ function Calculator() {
       return;
     }
 
-    setState({ ...state, operator, result: `${prevNumber}${operator}`, completed: false });
+    setState({ ...state, operator: _operator, result: `${prevNumber}${_operator}`, completed: false });
   };
 
   const handleClickCalculateBtn = () => {
