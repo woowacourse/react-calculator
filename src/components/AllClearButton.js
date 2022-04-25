@@ -1,9 +1,9 @@
 import React from 'react';
 import { CALCULATOR_INITIAL_STATE } from '../constants/constant';
 
-const AllClearButton = ({ setState }) => {
+const AllClearButton = ({ clear }) => {
   const onClickAllClear = () => {
-    setState(CALCULATOR_INITIAL_STATE);
+    clear(CALCULATOR_INITIAL_STATE);
   };
 
   return (

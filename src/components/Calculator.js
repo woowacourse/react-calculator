@@ -60,7 +60,7 @@ const Calculator = () => {
           ))}
         </div>
         <div className="modifiers subgrid">
-          <AllClearButton setState={setState} />
+          <AllClearButton clear={setState} />
         </div>
         <div className="operations subgrid">
           {OPERATOR_LIST.map((operand, index) => (
