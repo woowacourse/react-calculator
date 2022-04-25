@@ -50,7 +50,7 @@ export default function App() {
     e.returnValue = '';
   };
 
-  const handleUnload = () => {
+  const handleUnload = (_) => {
     const lastExpression = Number(expressionRef.current.textContent);
     storage.set(CALCULATOR_DATA_KEY, {
       savedFirstOperand: firstOperand,
@@ -73,7 +73,7 @@ export default function App() {
     expressionRef.current.textContent += digit;
   };
 
-  const handleModifierClick = () => {
+  const handleModifierClick = (_) => {
     expressionRef.current.textContent = 0;
 
     setFirstOperand(0);
