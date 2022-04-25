@@ -2,14 +2,14 @@ import React from 'react';
 import { NUMBER_LIMIT, ERROR_MSG } from '../constants/constant';
 import { CALCULATOR_INITIAL_STATE } from '../constants/constant';
 
-const NumberButton = ({ number, state, setState }) => {
-  const { sum, prevNumbers, operator, nextNumbers } = state;
+const NumberButton = ({ number, equationState, setEquationState }) => {
+  const { sum, prevNumbers, operator, nextNumbers } = equationState;
 
   const onClickNumber = () => {
     const isPrev = operator === '';
 
     if (sum !== '') {
-      setState({ ...CALCULATOR_INITIAL_STATE });
+      setEquationState({ ...CALCULATOR_INITIAL_STATE });
     }
 
     if (
@@ -21,11 +21,11 @@ const NumberButton = ({ number, state, setState }) => {
     }
 
     isPrev
-      ? setState(prevState => ({
+      ? setEquationState(prevState => ({
           ...prevState,
           prevNumbers: [...prevState.prevNumbers, number],
         }))
-      : setState(prevState => ({
+      : setEquationState(prevState => ({
           ...prevState,
           nextNumbers: [...prevState.nextNumbers, number],
         }));

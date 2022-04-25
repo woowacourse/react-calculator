@@ -1,12 +1,12 @@
 import React from 'react';
 import { OPERATOR, CALCULATOR_INITIAL_STATE } from '../constants/constant';
 
-const OperatorButton = ({ selfOperand, state, setState, calculate }) => {
-  const { prevNumbers } = state;
+const OperatorButton = props => {
+  const { selfOperand, prevNumbers, setEquationState, calculate } = props;
 
   const onClickOperator = () => {
     if (prevNumbers.length === 0) {
-      setState({
+      setEquationState({
         ...CALCULATOR_INITIAL_STATE,
         prevNumbers: [0],
         operator: selfOperand,
@@ -14,7 +14,7 @@ const OperatorButton = ({ selfOperand, state, setState, calculate }) => {
     }
 
     if (selfOperand !== OPERATOR.EQUAL) {
-      setState(prevState => ({ ...prevState, operator: selfOperand }));
+      setEquationState(prevState => ({ ...prevState, operator: selfOperand }));
       return;
     }
 

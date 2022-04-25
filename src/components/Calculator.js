@@ -13,11 +13,11 @@ import {
 import { expressionStorage } from '../store/store';
 
 const Calculator = () => {
-  const [state, setState] = useState(CALCULATOR_INITIAL_STATE);
-  const { prevNumbers, operator, nextNumbers } = state;
-  const stateRef = useRef(state);
+  const [equationState, setEquationState] = useState(CALCULATOR_INITIAL_STATE);
+  const { prevNumbers, operator, nextNumbers } = equationState;
+  const stateRef = useRef(equationState);
 
-  stateRef.current = state;
+  stateRef.current = equationState;
 
   const confirmExist = useCallback(event => {
     event.preventDefault();
@@ -31,7 +31,7 @@ const Calculator = () => {
     if (!expression) return;
 
     const { sum, prevNumbers, operator, nextNumbers } = expression;
-    setState({ sum, prevNumbers, operator, nextNumbers });
+    setEquationState({ sum, prevNumbers, operator, nextNumbers });
   };
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const Calculator = () => {
   }, []);
 
   const onClickEqual = () => {
-    setState({
+    setEquationState({
       ...CALCULATOR_INITIAL_STATE,
       sum: calculateEquation(),
     });
@@ -73,27 +73,27 @@ const Calculator = () => {
   return (
     <div id="app">
       <div className="calculator">
-        <Screen state={state} />
+        <Screen equationState={equationState} />
         <div className="digits flex">
           {Array.from({ length: 10 }).map((_, index) => (
             <NumberButton
               key={index}
               number={9 - index}
-              state={state}
-              setState={setState}
+              equationState={equationState}
+              setEquationState={setEquationState}
             />
           ))}
         </div>
         <div className="modifiers subgrid">
-          <AllClearButton clear={setState} />
+          <AllClearButton clear={setEquationState} />
         </div>
         <div className="operations subgrid">
           {OPERATOR_LIST.map((operand, index) => (
             <OperatorButton
               key={index}
               selfOperand={operand}
-              state={state}
-              setState={setState}
+              prevNumbers={prevNumbers}
+              setEquationState={setEquationState}
               calculate={onClickEqual}
             />
           ))}

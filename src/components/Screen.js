@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Screen = ({ state }) => {
-  const { prevNumbers, operator, nextNumbers, sum } = state;
+const Screen = ({ equationState }) => {
+  const { prevNumbers, operator, nextNumbers, sum } = equationState;
 
   return (
     <h1 className="total">
