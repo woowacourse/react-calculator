@@ -10,6 +10,7 @@ const Calculator = function () {
   const [operand, setOperand] = useState(['0', '']);
   const [operator, setOperator] = useState('');
   const [index, setIndex] = useState(0);
+  const [isCalculated, setIsCalculated] = useState(false);
 
   const handleBeforeUnload = e => {
     e.preventDefault();
@@ -52,6 +53,8 @@ const Calculator = function () {
             operand={operand}
             setOperand={setOperand}
             index={index}
+            isCalculated={isCalculated}
+            setIsCalculated={setIsCalculated}
           />
         ))}
       </div>
@@ -68,6 +71,7 @@ const Calculator = function () {
             setOperand={setOperand}
             setOperator={setOperator}
             setIndex={setIndex}
+            setIsCalculated={setIsCalculated}
           />
         ))}
       </div>

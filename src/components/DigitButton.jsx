@@ -5,7 +5,7 @@
 import ALERT from '../constants/alertMessage';
 
 const DigitButton = function (props) {
-  const { digit, operand, setOperand, index } = props;
+  const { digit, operand, setOperand, index, isCalculated, setIsCalculated } = props;
   const handleClickDigit = () => {
     let operandList = null;
 
@@ -14,7 +14,7 @@ const DigitButton = function (props) {
       return;
     }
 
-    if (+(operand[index] + digit) >= 1000) {
+    if (+(operand[index] + digit) >= 1000 && !isCalculated) {
       alert(ALERT.MAX_DIGIT);
       return;
     }
@@ -32,6 +32,11 @@ const DigitButton = function (props) {
         break;
     }
 
+    if (isCalculated) {
+      operandList = [digit, ''];
+    }
+
+    setIsCalculated(false);
     setOperand(operandList);
   };
 
