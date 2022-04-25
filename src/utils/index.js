@@ -1,3 +1,5 @@
+import { ERROR_TEXT } from "../constants";
+
 const calculate = (firstNumber, operator, secondNumber) => {
   switch (operator) {
     case "+":
@@ -9,7 +11,7 @@ const calculate = (firstNumber, operator, secondNumber) => {
     case "/":
       return Math.trunc(Number(firstNumber) / Number(secondNumber));
     default:
-      throw new Error("존재하지 않는 연산자입니다.");
+      return ERROR_TEXT;
   }
 };
 
