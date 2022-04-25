@@ -47,7 +47,12 @@ const calculatorReducer = (state, action) => {
     }
     case SET_OPERATOR: {
       if (state.operator) {
-        return { ...state, error: ERROR_MESSAGES.DUPLICATED_OPERATOR };
+        return {
+          ...state,
+          isFirstNumber: true,
+          operator: null,
+          error: ERROR_MESSAGES.DUPLICATED_OPERATOR,
+        };
       }
 
       return {
@@ -57,8 +62,12 @@ const calculatorReducer = (state, action) => {
       };
     }
     case CALCULATE: {
-      if (!state.operator) {
-        return { ...state, error: ERROR_MESSAGES.INCORRECT_CALCULATION };
+      if (!state.operator || !state.secondNumber) {
+        return {
+          ...state,
+          isFirstNumber: true,
+          error: ERROR_MESSAGES.INCORRECT_CALCULATION,
+        };
       }
 
       const total = calculate(
@@ -66,7 +75,6 @@ const calculatorReducer = (state, action) => {
         state.operator,
         state.secondNumber
       );
-      console.log("total", total);
       saveLocalStorage(PREV_VALUE, total);
 
       return {
