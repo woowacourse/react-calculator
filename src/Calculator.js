@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DisplayResult from "./component/DisplayResult";
+import calculate from "./utils/calculate";
 import "./css/calculator.css";
 
 export default function App() {
@@ -63,7 +64,7 @@ export default function App() {
   };
 
   const onCalculate = () => {
-    const res = calculateValue();
+    const res = calculate(firstNumber, secondNumber, operator);
 
     if (res === Infinity || isNaN(res)) {
       setFirstNumber(0);
@@ -81,39 +82,6 @@ export default function App() {
     setOperator(null);
     setIsFirstNumber(true);
     localStorage.setItem("prevValue", res);
-  };
-
-  const calculateValue = () => {
-    return (() => {
-      switch (operator) {
-        case "+":
-          return add();
-        case "-":
-          return sub();
-        case "X":
-          return multiple();
-        case "/":
-          return divide();
-        default:
-          throw new Error("존재하지 않는 연산자입니다.");
-      }
-    })();
-  };
-
-  const add = () => {
-    return firstNumber + secondNumber;
-  };
-
-  const sub = () => {
-    return firstNumber - secondNumber;
-  };
-
-  const divide = () => {
-    return Math.floor(firstNumber / secondNumber);
-  };
-
-  const multiple = () => {
-    return firstNumber * secondNumber;
   };
 
   return (
