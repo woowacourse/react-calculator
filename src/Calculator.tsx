@@ -34,14 +34,14 @@ const operatorMap = {
 type CalculatorState = {
   prevNumber: null | number;
   nextNumber: null | number;
-  operator: Operator;
+  operator: null | Operator;
   result: string;
 };
 
 const initialState: CalculatorState = {
   prevNumber: null,
   nextNumber: null,
-  operator: Operator.empty,
+  operator: null,
   result: '0',
 };
 
@@ -75,7 +75,7 @@ function Calculator() {
   const handleClickDigitBtn = (digit: number) => {
     const { prevNumber, nextNumber, operator } = state;
 
-    const isPrevNumberTurn = operator === Operator.empty;
+    const isPrevNumberTurn = operator === null;
     const targetNumber = isPrevNumberTurn ? prevNumber : nextNumber;
 
     // 첫번째 피연산자가 비어있건 두번째 피연산자가 비어있건 상관없이 업데이트 한다
@@ -96,7 +96,7 @@ function Calculator() {
   const handleClickOperatorBtn = (operator: Operator) => {
     const { prevNumber } = state;
 
-    if (!operator) return;
+    if (operator === null) return;
 
     const isValidOperator = Object.values(Operator).includes(operator);
     if (!isValidOperator) {
@@ -115,9 +115,9 @@ function Calculator() {
     const { prevNumber, nextNumber, operator } = state;
 
     if (prevNumber === null) return;
-    if (!operator) return;
+    if (operator === null) return;
     if (nextNumber === null) {
-      setState(prevState => ({ ...prevState, operator: Operator.empty }));
+      setState(prevState => ({ ...prevState, operator: null }));
       return;
     }
 
@@ -134,7 +134,7 @@ function Calculator() {
       return;
     }
 
-    setState({ prevNumber: result, nextNumber: null, operator: Operator.empty, result: `${result}` });
+    setState({ prevNumber: result, nextNumber: null, operator: null, result: `${result}` });
   };
 
   const handleClickResetBtn = () => setState({ ...initialState });

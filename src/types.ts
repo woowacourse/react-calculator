@@ -1,5 +1,4 @@
 enum Operator {
-  empty = '',
   plus = '+',
   minus = '-',
   multiply = '*',
