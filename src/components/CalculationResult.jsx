@@ -1,11 +1,9 @@
 import React from 'react';
 
-class CalculationResult extends React.Component {
-  render() {
-    const { prevNumber, operator, nextNumber } = this.props.expression;
+function CalculationResult({ expression }) {
+  const { prevNumber, operator, nextNumber } = expression;
 
-    return <h1 id="total">{prevNumber + operator + nextNumber || '0'}</h1>;
-  }
+  return <h1 id="total">{prevNumber + operator + nextNumber || '0'}</h1>;
 }
 
 export default CalculationResult;
