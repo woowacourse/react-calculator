@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
 /* eslint-disable react/react-in-jsx-scope */
-
 const ModifierButton = function (props) {
   const { setOperand, setOperator, setIndex } = props;
   const handleClickModifier = () => {

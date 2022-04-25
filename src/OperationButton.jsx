@@ -1,10 +1,8 @@
 /* eslint-disable no-alert */
-/* eslint-disable no-unused-vars */
-/* eslint-disable func-names */
 /* eslint-disable react/react-in-jsx-scope */
-
+/* eslint-disable func-names */
 const calculate = function (props) {
-  const { operand, operator, setOperand, setOperator, setIndex } = props;
+  const { operand, operator } = props;
   let result = null;
   switch (operator) {
     case '+':

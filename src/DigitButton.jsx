@@ -1,7 +1,7 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-unused-vars */
 /* eslint-disable func-names */
 /* eslint-disable react/react-in-jsx-scope */
-
 const DigitButton = function (props) {
   const { digit, operand, setOperand, index } = props;
   const handleClickDigit = () => {
