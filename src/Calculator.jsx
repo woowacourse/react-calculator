@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Digit from './components/Digit';
 import Modifier from './components/Modifier';
 import Operation from './components/Operation';
@@ -22,8 +22,14 @@ function Calculator() {
     event.returnValue = '';
   };
 
+  const storedInput = useRef(input);
+
+  useEffect(() => {
+    storedInput.current = input;
+  }, [input]);
+
   const handleUnload = () => {
-    save('calculator', input);
+    save('calculator', storedInput.current);
   };
 
   useEffect(() => {
@@ -38,18 +44,13 @@ function Calculator() {
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleUnload);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('unload', handleUnload);
-    return () => {
       window.removeEventListener('unload', handleUnload);
     };
-  }, [handleUnload]);
+  }, []);
 
   const handleClickDigit = digit => {
     if (input.operand[0] === '오류') {
