@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class Screen extends Component {
-  render() {
-    return <h1 id="total">{this.props.screenNumber}</h1>;
-  }
+export default function Screen({ screenNumber }) {
+  return <h1 id="total">{screenNumber}</h1>;
 }

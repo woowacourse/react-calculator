@@ -1,20 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class Digit extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { ...props };
-  }
-  render() {
-    return (
-      <button
-        className="digit"
-        onClick={() => {
-          this.state.onClickDigit(this.state.digit);
-        }}
-      >
-        {this.state.digit}
-      </button>
-    );
-  }
+export default function Digit({ digit, onClickDigit }) {
+  return (
+    <button
+      className="digit"
+      onClick={() => {
+        onClickDigit(digit);
+      }}
+    >
+      {digit}
+    </button>
+  );
 }
