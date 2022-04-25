@@ -17,4 +17,6 @@
 
 ### Step 2
 
-- [ ] Step1의 Class Component를 Function Component로 마이그레이션 합니다.
+- [x] Step1의 Class Component를 Function Component로 마이그레이션 합니다.
+- [x] Step1에서의 피드백을 적용합니다.
+- [x] 전체 코드를 리팩토링 합니다.
