@@ -3,16 +3,18 @@ import Digits from './Digits';
 import AllClear from './AllClear';
 import Operators from './Operators';
 
-class CalculatorInputField extends React.Component {
-  render() {
-    return (
-      <>
-        <AllClear handleClickAC={this.props.handleClickAC} />
-        <Digits handleClickDigit={this.props.handleClickDigit} />
-        <Operators handleClickOperator={this.props.handleClickOperator} />
-      </>
-    );
-  }
+function CalculatorInputField({
+  handleClickAC,
+  handleClickDigit,
+  handleClickOperator,
+}) {
+  return (
+    <>
+      <AllClear handleClickAC={handleClickAC} />
+      <Digits handleClickDigit={handleClickDigit} />
+      <Operators handleClickOperator={handleClickOperator} />
+    </>
+  );
 }
 
 export default CalculatorInputField;

@@ -1,21 +1,21 @@
 import React from 'react';
+import { OPERATORS } from '../../constants';
+import Button from '../Button';
 
-class Operators extends React.Component {
-  render() {
-    return (
-      <div className="operations subgrid">
-        {['/', 'X', '-', '+', '='].map((operator) => (
-          <button
-            className="operation"
-            key={operator}
-            onClick={this.props.handleClickOperator}
-          >
-            {operator}
-          </button>
-        ))}
-      </div>
-    );
-  }
+function Operators({ handleClickOperator }) {
+  return (
+    <div className="operators subgrid">
+      {Object.values(OPERATORS).map((operator) => (
+        <Button
+          className="operator"
+          handleClick={handleClickOperator}
+          key={operator}
+        >
+          {operator}
+        </Button>
+      ))}
+    </div>
+  );
 }
 
 export default Operators;

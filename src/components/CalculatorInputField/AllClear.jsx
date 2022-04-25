@@ -1,15 +1,14 @@
 import React from 'react';
+import Button from '../Button';
 
-class AllClear extends React.Component {
-  render() {
-    return (
-      <div className="modifiers subgrid">
-        <button className="modifier" onClick={this.props.handleClickAC}>
-          AC
-        </button>
-      </div>
-    );
-  }
+function AllClear({ handleClickAC }) {
+  return (
+    <div className="modifiers subgrid">
+      <Button className="modifier" handleClick={handleClickAC}>
+        AC
+      </Button>
+    </div>
+  );
 }
 
 export default AllClear;
