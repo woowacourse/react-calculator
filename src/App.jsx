@@ -68,7 +68,7 @@ export default function App() {
     if (
       isArithmeticOperator(expression) ||
       expression === '0' ||
-      expression === '오류'
+      expression === INFINITY_ERROR_TEXT
     ) {
       expressionRef.current.textContent = digit;
       return;
