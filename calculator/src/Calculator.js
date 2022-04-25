@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import './css/index.css';
 import { FONT_SIZE_STANDARD, INFINITY_MESSAGE, MAX_CURRENT_LENGTH, INIT_STATE } from './constants';
-import { loadStateLocal, saveStateLocal } from './localStorageManager';
+import { loadCalculationProgressLocal, saveCalculationProgressLocal } from './localStorageManager';
 
 const digits = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
 const operators = ['/', 'X', '-', '+', '='];
 
 const Calculator = () => {
-  const [state, setState] = useState(loadStateLocal());
+  const [state, setState] = useState(loadCalculationProgressLocal());
   const { total, current, operator, isLastClickOperator } = state;
 
   useEffect(() => {
-    saveStateLocal(state);
+    saveCalculationProgressLocal(state);
   });
 
   const handleDigitClick = (e) => {
