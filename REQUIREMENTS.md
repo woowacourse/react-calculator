@@ -1,6 +1,6 @@
 ## 2단계
 
-- [ ] class component를 function component로 교체하기
+- [x] class component를 function component로 교체하기
 
 ### 1단계 피드백 반영 사항
 

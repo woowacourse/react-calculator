@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import NumberButtons from "./NumberButtons";
 import OperatorButtons from "./OperandButtons";
 import Screen from "./Screen";
@@ -16,6 +16,31 @@ import { getCalculateNumber } from "../utils/utils";
 const Calculator = () => {
   const [calculatorInfo, setCalculatorInfo] = useState(INIT_CALCULATOR_INFO);
   const { prevNumber, nextNumber, operator, sum } = calculatorInfo;
+
+  useEffect(() => {
+    const expression = expressionStorage.getExpression();
+    if (!expression) {
+      return;
+    }
+    setCalculatorInfo(expression);
+  }, []);
+
+  const confirmExist = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.returnValue = CONFIRM_MSG;
+      expressionStorage.setExpression(calculatorInfo);
+    },
+    [calculatorInfo]
+  );
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", confirmExist);
+    return () => {
+      window.removeEventListener("beforeunload", confirmExist);
+    };
+  }, [confirmExist]);
+
   const onClickNumber = (e) => {
     const number = e.target.textContent;
     const isPrev = operator === "";
