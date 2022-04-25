@@ -17,6 +17,7 @@ import {
   validateOperatorIsDuplicated,
   isArithmeticOperator,
   toFixedValue,
+  validateExperssionIsError,
 } from './utils';
 
 export default function App() {
@@ -92,6 +93,7 @@ export default function App() {
 
     try {
       validateOperatorIsDuplicated(expression);
+      validateExperssionIsError(expression);
     } catch ({ message }) {
       alert(message);
       return;
