@@ -1,3 +1,5 @@
+import { ErrorMessage } from "../constants/constants";
+
 const calculateValue = (firstNumber, secondNumber, operator) => {
   return (() => {
     switch (operator) {
@@ -10,7 +12,7 @@ const calculateValue = (firstNumber, secondNumber, operator) => {
       case "/":
         return divide(firstNumber, secondNumber);
       default:
-        throw new Error("존재하지 않는 연산자입니다.");
+        throw new Error(ErrorMessage);
     }
   })();
 };
