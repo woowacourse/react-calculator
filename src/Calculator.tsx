@@ -110,7 +110,7 @@ function Calculator() {
       return;
     }
 
-    setState(prevState => ({ ...prevState, operator, result: `${prevNumber}${operator}` }));
+    setState({ ...state, operator, result: `${prevNumber}${operator}` });
   };
 
   const handleClickCalculateBtn = () => {
@@ -119,7 +119,7 @@ function Calculator() {
     if (prevNumber === null) return;
     if (operator === null) return;
     if (nextNumber === null) {
-      setState(prevState => ({ ...prevState, operator: null }));
+      setState({ ...state, operator: null });
       return;
     }
 
