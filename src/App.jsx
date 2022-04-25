@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import Button from './components/common/Button';
 
@@ -18,17 +18,17 @@ import {
   operations,
 } from './utils';
 
-const initialCalcData = {
+const initCalcData = {
   firstOperand: 0,
   secondOperand: 0,
-  operator: '',
+  operator: null,
   calculationResult: 0,
-  lastExpression: '',
+  lastExpression: null,
 };
 
 const defaultCalcData = storage.get(CALCULATOR_DATA_KEY)
   ? storage.get(CALCULATOR_DATA_KEY)
-  : initialCalcData;
+  : initCalcData;
 
 function App() {
   const [calcData, setCalcData] = useState(defaultCalcData);
@@ -48,10 +48,10 @@ function App() {
 
   function initialize() {
     expressionRef.current.textContent = 0;
-    setCalcData(initialCalcData);
+    setCalcData(initCalcData);
   }
 
-  function handleModifierClick(e) {
+  function handleModifierClick() {
     initialize();
   }
 
@@ -98,7 +98,9 @@ function App() {
   }
 
   function handleUnload() {
-    const lastExpression = Number(expressionRef.current.textContent);
+    let lastExpression = expressionRef.current.textContent;
+    lastExpression = lastExpression === '오류' ? 0 : lastExpression;
+
     storage.set(CALCULATOR_DATA_KEY, { ...calcData, lastExpression });
   }
 
