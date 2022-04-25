@@ -64,33 +64,35 @@ function Calculator() {
     window.addEventListener('beforeunload', e => saveCurrentStateBeforeLeave(e, state));
   }, [state]);
 
-  const updateNumber = (isPrevNumberTurn: boolean, newNumber: number) => {
-    if (isPrevNumberTurn) {
-      setState(prevState => ({ ...prevState, prevNumber: newNumber, result: `${newNumber}` }));
-      return;
-    }
-    setState(prevState => ({ ...prevState, nextNumber: newNumber, result: `${newNumber}` }));
-  };
-
   const handleClickDigitBtn = (digit: number) => {
     const { prevNumber, nextNumber, operator } = state;
 
     const isPrevNumberTurn = operator === null;
     const targetNumber = isPrevNumberTurn ? prevNumber : nextNumber;
 
-    // 첫번째 피연산자가 비어있건 두번째 피연산자가 비어있건 상관없이 업데이트 한다
-    if (targetNumber === null) {
-      updateNumber(isPrevNumberTurn, digit);
-      return;
-    }
-
-    // 첫번째 피연산자 혹은 두번째 피연산자의 길이가 3을 초과하면
-    if (`${targetNumber}`.length >= 3) {
+    // 첫번째 피연산자 혹은 두번째 피연산자의 길이가 3을 초과하면 에러를 띄운다
+    if (`${targetNumber ?? ''}`.length >= 3) {
       window.alert(ERROR_MESSAGE.MAX_DIGIT);
       return;
     }
 
-    updateNumber(isPrevNumberTurn, Number(`${targetNumber}${digit}`));
+    if (isPrevNumberTurn) {
+      const newNumber = Number(`${prevNumber ?? ''}${digit}`);
+      setState({
+        ...state,
+        prevNumber: newNumber,
+        result: `${newNumber}`,
+      });
+      return;
+    }
+
+    const newNumber = `${nextNumber ?? ''}${digit}`;
+    const result = `${prevNumber}${operator}${newNumber}`;
+    setState({
+      ...state,
+      nextNumber: Number(newNumber),
+      result,
+    });
   };
 
   const handleClickOperatorBtn = (operator: Operator) => {
@@ -108,7 +110,7 @@ function Calculator() {
       return;
     }
 
-    setState(prevState => ({ ...prevState, operator }));
+    setState(prevState => ({ ...prevState, operator, result: `${prevNumber}${operator}` }));
   };
 
   const handleClickCalculateBtn = () => {
