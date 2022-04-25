@@ -17,7 +17,7 @@ import OperatorButton from "./OperatorButton";
 import ErrorMessage from "./ErrorMessage";
 
 const Calculator = () => {
-  const [data, dispatch] = useReducer(reducer, initialState);
+  const [calculatorState, dispatch] = useReducer(reducer, initialState);
 
   const handleUnload = useCallback((event) => {
     event.preventDefault();
@@ -30,7 +30,7 @@ const Calculator = () => {
     return () => {
       window.removeEventListener("beforeunload", handleUnload);
     };
-  });
+  }, []);
 
   const onClickNumber = useCallback(({ target }) => {
     dispatch({ type: SET_NUMBER, inputNumber: target.textContent });
@@ -53,9 +53,11 @@ const Calculator = () => {
 
   return (
     <>
-      {data.error && <ErrorMessage error={data.error} />}
+      {calculatorState.error && <ErrorMessage error={calculatorState.error} />}
       <div className="calculator">
-        <DisplayResult result={data.error ? "오류" : data.result} />
+        <DisplayResult
+          result={calculatorState.error ? "오류" : calculatorState.result}
+        />
         <div className="digits flex">
           {Array.from({ length: 10 }, (_, index) => (
             <NumberButton
