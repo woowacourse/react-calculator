@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DigitButton from './components/DigitButton';
 import OperationButton from './components/OperationButton';
+import ACButton from './components/ACButton';
 import './Calculator.css';
 import operatorCollection from './utils/operator';
 import storage from './utils/storage';
@@ -87,9 +88,7 @@ const Calculator = () => {
           ))}
         </div>
         <div className="modifiers subgrid">
-          <button className="modifier" onClick={resetState}>
-            AC
-          </button>
+          <ACButton clickHandler={resetState}>AC</ACButton>
         </div>
         <div className="operations subgrid">
           {OPERATION_LIST.map((operation) => (
