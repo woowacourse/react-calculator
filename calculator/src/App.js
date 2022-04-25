@@ -1,73 +1,75 @@
-import React, { Component, createRef } from "react";
-
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
-
-import DigitComponent from "./Components/DigitComponent";
-import OperationComponent from "./Components/OperationComponent";
-import AllClearComponent from "./Components/AllClearComponent";
-
 import { SCREEN } from "./constant";
+import AllClearWrapper from "./containers/AllClearWrapper";
+import DigitWrapper from "./containers/DigitWrapper";
+import OperationWrapper from "./containers/OperationWrapper";
 
-window.onbeforeunload = () => {
-  return 0;
+const handleBeforeunload = (event) => {
+  event.preventDefault();
+  event.returnValue = "";
 };
 
-export default class App extends Component {
-  constructor() {
-    super();
+const initCalculateInfo = {
+  firstNumber: 0,
+  secondNumber: "",
+  operation: "",
+}
 
-    this.state = {
-      firstNumber: 0,
-      operation: "",
-      secondNumber: "",
-    };
+const App = () => {
+  const [calculateInfo, setCalculateInfo] = useState(initCalculateInfo);
+  const [screenFont, setScreenFont] = useState("bigFont");
+  const calculateScreenElement = useRef();
 
-    this.calculateScreenElement = createRef();
-  }
+  const convertToLocaleString = (number) => number.toLocaleString("ko-KR");
 
-  convertToLocaleString = (number) => number.toLocaleString("ko-KR");
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeunload);
 
-  componentDidMount() {
-    const calculateInfo = JSON.parse(localStorage.getItem("calculateInfo"));
+    const localCalculateInfo = JSON.parse(localStorage.getItem("calculateInfo"));
 
-    this.setState(calculateInfo);
-  }
+    setCalculateInfo(localCalculateInfo);
 
-  componentDidUpdate() {
-    const calculateScreenElement = this.calculateScreenElement.current;
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeunload);
+    }
+  }, []);
 
-    calculateScreenElement.textContent = this.convertToLocaleString(
-      this.state.secondNumber === ""
-        ? this.state.firstNumber
-        : this.state.secondNumber
-    );
+  useEffect(() => {
+    calculateScreenElement.current.textContent.length > SCREEN.FONT_SIZE_SCALE_STANDARD
+      ? setScreenFont("smallFont")
+      : setScreenFont("bigFont");
 
-    calculateScreenElement.textContent.length > SCREEN.FONT_SIZE_SCALE_STANDARD
-      ? (calculateScreenElement.style.fontSize = "3rem")
-      : (calculateScreenElement.style.fontSize = "4rem");
+    const handleUnload = () => {
+      localStorage.setItem("calculateInfo", JSON.stringify(calculateInfo));  
+    }
+    window.addEventListener("unload", handleUnload);
 
-    localStorage.setItem("calculateInfo", JSON.stringify(this.state));
-  }
+    return () => {
+      window.removeEventListener("unload", handleUnload);
+    }
+  }, [calculateInfo]);
 
-  render() {
-    return (
+  return (
+    <>
       <div className="calculator">
-        <h1 className="total" ref={this.calculateScreenElement}>
-          0
+        <h1 className={`total ${screenFont === "bigFont" ? "bigFont" : "smallFont"} `} ref={calculateScreenElement}>
+          {convertToLocaleString(calculateInfo.secondNumber || calculateInfo.firstNumber)}
         </h1>
-        <DigitComponent
-          calculateInfo={this.state}
-          setCalculateInfo={this.setState.bind(this)}
+        <DigitWrapper
+          calculateInfo={calculateInfo}
+          setCalculateInfo={setCalculateInfo}
         />
-        <AllClearComponent
-          calculateInfo={this.state}
-          setCalculateInfo={this.setState.bind(this)}
+        <AllClearWrapper
+          setCalculateInfo={setCalculateInfo}
         />
-        <OperationComponent
-          calculateInfo={this.state}
-          setCalculateInfo={this.setState.bind(this)}
+        <OperationWrapper
+          calculateInfo={calculateInfo}
+          setCalculateInfo={setCalculateInfo}
         />
       </div>
-    );
-  }
+    </>
+  )
 }
+
+export default App;

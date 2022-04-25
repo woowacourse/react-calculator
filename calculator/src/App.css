@@ -52,7 +52,6 @@ button {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
-  font-size: 4rem;
 }
 
 .digits {
@@ -83,4 +82,12 @@ button {
 
 .subgrid {
   display: grid;
+}
+
+.bigFont {
+  font-size: 4rem;
+}
+
+.smallFont {
+  font-size: 3rem;
 }
