@@ -45,11 +45,11 @@ const Calculator = () => {
   const onClickEqual = () => {
     setState({
       ...CALCULATOR_INITIAL_STATE,
-      sum: calculateSum(),
+      sum: calculateEquation(),
     });
   };
 
-  const calculateSum = () => {
+  const calculateEquation = () => {
     const prevNumber = Number(prevNumbers.join(''));
     const nextNumber = Number(nextNumbers.join(''));
 
