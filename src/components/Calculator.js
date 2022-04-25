@@ -14,9 +14,7 @@ const Calculator = () => {
   const [state, setState] = useState(CALCULATOR_INITIAL_STATE);
   const stateRef = useRef(state);
 
-  useEffect(() => {
-    stateRef.current = state;
-  });
+  stateRef.current = state;
 
   useEffect(() => {
     setInitialState();
