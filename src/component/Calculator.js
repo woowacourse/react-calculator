@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useReducer } from "react";
 import {
   CALCULATE,
-  INIT,
+  RESET,
   OPERATORS,
   SET_NUMBER,
   SET_OPERATOR,
@@ -37,7 +37,7 @@ const Calculator = () => {
   }, []);
 
   const onClickModifier = useCallback(() => {
-    dispatch({ type: INIT });
+    dispatch({ type: RESET });
   }, []);
 
   const onClickOperator = useCallback(({ target }) => {

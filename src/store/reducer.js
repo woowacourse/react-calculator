@@ -2,7 +2,7 @@ import {
   CALCULATE,
   ERROR_MESSAGES,
   ERROR_TEXT,
-  INIT,
+  RESET,
   PREV_VALUE,
   SET_NUMBER,
   SET_OPERATOR,
@@ -11,7 +11,7 @@ import { calculate, saveLocalStorage } from "../utils";
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case INIT: {
+    case RESET: {
       saveLocalStorage(PREV_VALUE, 0);
       return {
         firstNumber: 0,
