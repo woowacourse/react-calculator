@@ -75,13 +75,13 @@ const Calculator = () => {
     if (isLastClickOperator) return;
 
     if (!isOperatorExist()) {
-      calculate(current);
+      updateResult(current);
     }
 
     if (isOperatorExist()) {
-      const result = operate(total, current, operator);
+      const result = calculate(total, current, operator);
 
-      calculate(result);
+      updateResult(result);
     }
   };
 
@@ -90,7 +90,7 @@ const Calculator = () => {
     setIsLastClickOperator(true);
   };
 
-  const calculate = result => {
+  const updateResult = result => {
     setTotal(result);
     setCurrent(result);
   };
@@ -99,7 +99,7 @@ const Calculator = () => {
     return operator !== '';
   };
 
-  const operate = (a, b, operator) => {
+  const calculate = (a, b, operator) => {
     switch (operator) {
       case '+':
         return a + b;
