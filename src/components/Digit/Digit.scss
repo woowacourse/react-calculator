@@ -1,0 +1,20 @@
+.digits {
+  grid-area: digit;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+
+  & button {
+    background-color: #efefef;
+    flex: 1 0 30%;
+
+    &.wide {
+      flex: 2 0 60%;
+      order: 1;
+    }
+
+    &:hover {
+      background-color: #ddd;
+    }
+  }
+}
