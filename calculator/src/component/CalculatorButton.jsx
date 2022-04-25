@@ -2,7 +2,12 @@ import PropTypes from 'prop-types';
 
 export default function CalculatorButton({ className, handleClick, content }) {
   return (
-    <button className={className} onClick={handleClick}>
+    <button
+      className={className}
+      onClick={(e) => {
+        handleClick(e.target.textContent);
+      }}
+    >
       {content}
     </button>
   );

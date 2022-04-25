@@ -1,104 +1,10 @@
-import { calculator } from '../domain/calculator';
 import { CALCULATOR, ERROR_MESSAGE } from '../constant';
-import { getStoredOperations, saveOperations } from '../domain/storage';
-import './Calculator.css';
-import { useEffect, useState } from 'react';
 import CalculatorButton from '../component/CalculatorButton';
-import { upToThreeDecimalPoint } from '../utils';
+import useCalculate from '../hooks/useCalculate';
+import './Calculator.css';
 
 export default function Calculator() {
-  const [operations, setOperations] = useState(getStoredOperations());
-  const [result, setResult] = useState(0);
-
-  useEffect(() => {
-    window.addEventListener('beforeunload', confirmExit);
-
-    return () => {
-      window.removeEventListener('beforeunload', confirmExit);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (operations.nextNumber === null) {
-      setResult(upToThreeDecimalPoint(operations.prevNumber));
-    } else {
-      setResult(upToThreeDecimalPoint(operations.nextNumber));
-    }
-
-    window.addEventListener('unload', saveResult);
-
-    return () => {
-      window.removeEventListener('unload', saveResult);
-    };
-  }, [operations]);
-
-  const initialize = () => {
-    setOperations({
-      prevNumber: 0,
-      nextNumber: null,
-      operator: '',
-    });
-  };
-
-  const confirmExit = (e) => {
-    e.preventDefault();
-    e.returnValue = '';
-  };
-
-  const saveResult = () => {
-    saveOperations(operations);
-  };
-
-  const changeNumber = (e) => {
-    if (!Number.isFinite(operations.prevNumber)) {
-      initialize();
-    }
-    if (operations.operator === '=') {
-      setOperations({
-        ...operations,
-        prevNumber:
-          operations.nextNumber * CALCULATOR.UNIT + Number(e.target.textContent),
-      });
-      return;
-    }
-
-    setOperations({
-      ...operations,
-      nextNumber: operations.nextNumber * CALCULATOR.UNIT + Number(e.target.textContent),
-    });
-  };
-
-  const calculate = (e) => {
-    if (!Number.isFinite(operations.prevNumber)) return;
-
-    if (operations.nextNumber === null || operations.operator === '=') {
-      setOperations({
-        ...operations,
-        operator: e.target.textContent,
-      });
-      return;
-    }
-
-    if (operations.operator === '') {
-      setOperations({
-        ...operations,
-        prevNumber: operations.nextNumber,
-        nextNumber: null,
-        operator: e.target.textContent,
-      });
-      return;
-    }
-
-    setOperations({
-      ...operations,
-      prevNumber: calculator[operations.operator](
-        operations.prevNumber,
-        operations.nextNumber
-      ),
-      nextNumber: null,
-      operator: e.target.textContent,
-    });
-  };
+  const { operations, result, changeNumber, initialize, calculate } = useCalculate();
 
   return (
     <div className="calculator">
