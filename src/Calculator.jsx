@@ -38,11 +38,6 @@ const Calculator = () => {
     localStorage.setItem(CALCULATOR_STATE, JSON.stringify({ numbers, operator }));
   };
 
-  const handleAllClearClick = () => {
-    setNumbers([0, 0]);
-    setOperator('');
-  };
-
   const handleDigitClick = (digit) => {
     const numberIndex = operator === '' ? 0 : 1;
     const newStateNumbers = [...numbers];
@@ -51,8 +46,7 @@ const Calculator = () => {
 
     if (Number.isNaN(newStateNumbers[numberIndex])) {
       alert(ERROR_MESSAGE.NOT_ENTER_INFINITY_NUMBER);
-      setNumbers([0, 0]);
-      setOperator('');
+      resetState();
       return;
     }
 
@@ -76,6 +70,11 @@ const Calculator = () => {
     setOperator('');
   };
 
+  const resetState = () => {
+    setNumbers([0, 0]);
+    setOperator('');
+  };
+
   return (
     <div className="App">
       <div className="calculator">
@@ -86,7 +85,7 @@ const Calculator = () => {
           ))}
         </div>
         <div className="modifiers subgrid">
-          <button className="modifier" onClick={handleAllClearClick}>
+          <button className="modifier" onClick={resetState}>
             AC
           </button>
         </div>
