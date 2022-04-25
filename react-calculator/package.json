@@ -1,6 +1,6 @@
 {
   "name": "react-calculator",
-  "homepage": "https://jin7969.github.io/react-calculator/",
+  "homepage": "https://rladpwl0512.github.io/react-calculator/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -18,14 +18,18 @@
     "commitizen": "^4.2.4",
     "commitlint-config-gitmoji": "^2.2.5",
     "cz-customizable": "^6.3.0",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react-hooks": "^4.4.0",
     "gh-pages": "^3.2.3",
-    "husky": "^7.0.4"
+    "husky": "^7.0.4",
+    "prettier": "^2.6.2"
   },
   "config": {
     "commitizen": {
@@ -37,7 +41,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
   },
   "eslintConfig": {

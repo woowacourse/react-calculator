@@ -1,127 +1,76 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-import Digits from './components/digits.jsx';
-import Operations from './components/operations.jsx';
-import { MAX_NUMBER_LENGTH, INDIVISIBLE_NUMBER, RESULT } from './constants.js';
+import { MAX_NUMBER_LENGTH, RESULT, KEY_PREV_RESULT } from './constants.js';
 import store from './utils/store.js';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.resultRef = React.createRef();
-    this.state = {
-      operation: '',
-      firstNumber: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
-      secondNumber: '',
-      result: store.getLocalStorage('prevResult') ? store.getLocalStorage('prevResult') : '',
-    };
-  }
+import Operations from './components/Operations.jsx';
+import Digits from './components/Digits.jsx';
+import AllClear from './components/AllClear.jsx';
+import Result from './components/Result.jsx';
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.onBeforeUnload);
-  }
+function App() {
+  const prevResult = store.getLocalStorage(KEY_PREV_RESULT);
+  const [operation, setOperation] = useState(null);
+  const [firstNumber, setFirstNumber] = useState(prevResult || '');
+  const [secondNumber, setSecondNumber] = useState('');
+  const [result, setResult] = useState(prevResult || RESULT.RESET);
 
-  onBeforeUnload = (e) => {
-    e.preventDefault();
-    e.returnValue = '';
-    if (this.state.result === '' || this.state.result === RESULT.RESET) return;
-    store.setLocalStorage('prevResult', this.state.result);
+  useEffect(() => {
+    window.addEventListener('beforeunload', onBeforeUnload);
+  });
+
+  const onBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = '';
+    if (result === RESULT.RESET) {
+      localStorage.removeItem(KEY_PREV_RESULT);
+      return;
+    }
+    store.setLocalStorage(KEY_PREV_RESULT, result);
   };
 
-  handleDigit = (number) => {
-    if (this.state.operation) {
-      const secondNumberResult = this.state.secondNumber + number;
-      this.setState({
-        secondNumber:
-          this.state.secondNumber.length === MAX_NUMBER_LENGTH
-            ? this.state.secondNumber
-            : secondNumberResult,
-      });
-      this.renderCalculatorNumber(secondNumberResult);
+  const setClickedNumber = (event) => {
+    const number = event.target.textContent;
+
+    if (operation) {
+      const secondNumberResult = secondNumber.length === MAX_NUMBER_LENGTH ? secondNumber : secondNumber + number;
+      setSecondNumber(secondNumberResult);
+      setResult(secondNumberResult);
       return;
     }
 
-    const firstNumberResult = this.state.firstNumber + number;
-    this.setState({
-      firstNumber:
-        this.state.firstNumber.length === MAX_NUMBER_LENGTH
-          ? this.state.firstNumber
-          : firstNumberResult,
-    });
-    this.renderCalculatorNumber(firstNumberResult);
+    const firstNumberResult = firstNumber.length === MAX_NUMBER_LENGTH ? firstNumber : firstNumber + number;
+    setFirstNumber(firstNumberResult);
+    setResult(firstNumberResult);
   };
 
-  setOperations = (selectedOperation) => {
-    this.setState({ operation: selectedOperation });
+  const resetState = () => {
+    setOperation(null);
+    setFirstNumber('');
+    setSecondNumber('');
   };
 
-  add = () => {
-    const result = Number(this.state.firstNumber) + Number(this.state.secondNumber);
-    this.renderCalculatorNumber(result);
+  const allClearCalculator = () => {
+    setResult(RESULT.RESET);
+    resetState();
   };
 
-  minus = () => {
-    const result = Number(this.state.firstNumber) - Number(this.state.secondNumber);
-    this.renderCalculatorNumber(result);
-  };
-
-  divide = () => {
-    if (this.state.secondNumber === INDIVISIBLE_NUMBER) {
-      this.renderCalculatorNumber(RESULT.ERROR_MESSAGE);
-      return;
-    }
-    const result = Math.floor(Number(this.state.firstNumber) / Number(this.state.secondNumber));
-    this.renderCalculatorNumber(result);
-  };
-
-  multiply = () => {
-    const result = Number(this.state.firstNumber) * Number(this.state.secondNumber);
-    this.renderCalculatorNumber(result);
-  };
-
-  renderCalculatorNumber = (result) => {
-    this.setState({ result });
-    this.resultRef.current.textContent = result;
-  };
-
-  handleModifierButtonClick = () => {
-    this.renderCalculatorNumber(RESULT.RESET);
-    this.resetState();
-  };
-
-  resetState = () => {
-    this.setState({
-      operation: '',
-      firstNumber: '',
-      secondNumber: '',
-    });
-  };
-
-  render() {
-    return (
-      <div id="app">
-        <div className="calculator">
-          <h1 id="calculator-number" ref={this.resultRef}>
-            {this.state.result ? this.state.result : 0}
-          </h1>
-          <Digits handleDigit={this.handleDigit} />
-          <div className="modifiers subgrid">
-            <button className="modifier" onClick={this.handleModifierButtonClick}>
-              AC
-            </button>
-          </div>
-          <Operations
-            operation={this.state.operation}
-            setOperation={this.setOperations}
-            add={this.add}
-            minus={this.minus}
-            divide={this.divide}
-            multiply={this.multiply}
-            resetState={this.resetState}
-          />
-        </div>
+  return (
+    <div id="app">
+      <div className="calculator">
+        <Result result={result} />
+        <Digits setClickedNumber={setClickedNumber} />
+        <AllClear allClearCalculator={allClearCalculator} />
+        <Operations
+          firstNumber={firstNumber}
+          secondNumber={secondNumber}
+          operation={operation}
+          setOperation={setOperation}
+          resetState={resetState}
+          setResult={setResult}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 export default App;

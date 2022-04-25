@@ -1,52 +1,56 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { OPERATIONS, INDIVISIBLE_NUMBER, RESULT } from '../constants.js';
+import { add, minus, divide, multiply } from '../utils/calculate.js';
 
-class Operations extends Component {
-  handleOperationButtonClick = (e) => {
-    this.props.setOperation(e.target.textContent);
-  };
+function Operations({ firstNumber, secondNumber, operation, setOperation, resetState, setResult }) {
+  const calculate = () => {
+    let calculatedResult = 0;
 
-  handleEqualityButtonClick = () => {
-    const { operation, resetState } = this.props;
     switch (operation) {
       case '+':
-        this.props.add();
+        calculatedResult = add(firstNumber, secondNumber);
         break;
       case '-':
-        this.props.minus();
+        calculatedResult = minus(firstNumber, secondNumber);
         break;
       case '/':
-        this.props.divide();
+        if (secondNumber === INDIVISIBLE_NUMBER) {
+          calculatedResult = RESULT.ERROR_MESSAGE;
+          break;
+        }
+        calculatedResult = divide(firstNumber, secondNumber);
         break;
-      case '*':
-        this.props.multiply();
+      case 'X':
+        calculatedResult = multiply(firstNumber, secondNumber);
         break;
       default:
         break;
     }
-    resetState();
+
+    return calculatedResult;
   };
 
-  render() {
-    return (
-      <div className="operations subgrid">
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          /
+  const handleOperationButtonClick = (e) => {
+    const operator = e.target.textContent;
+
+    if (operator === '=') {
+      const calculatedResult = calculate();
+      setResult(calculatedResult);
+      resetState();
+      return;
+    }
+    setOperation(operator);
+  };
+
+  return (
+    <div className="operations subgrid">
+      {OPERATIONS.map((operator) => (
+        <button className="operation" onClick={handleOperationButtonClick} key={operator}>
+          {operator}
         </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          X
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          -
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          +
-        </button>
-        <button className="operation" onClick={this.handleEqualityButtonClick}>
-          =
-        </button>
-      </div>
-    );
-  }
+      ))}
+    </div>
+  );
 }
 
 export default Operations;

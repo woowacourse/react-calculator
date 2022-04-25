@@ -1,46 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { DIGITS } from '../constants.js';
 
-class Digits extends Component {
-  handleDigitButtonClick = (e) => {
-    this.props.handleDigit(e.target.textContent);
-  };
-
-  render() {
-    return (
-      <div className="digits flex">
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          9
+function Digits({ setClickedNumber }) {
+  return (
+    <div className="digits flex">
+      {DIGITS.map((digit) => (
+        <button className="digit" onClick={setClickedNumber} key={digit}>
+          {digit}
         </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          8
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          7
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          6
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          5
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          4
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          3
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          2
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          1
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          0
-        </button>
-      </div>
-    );
-  }
+      ))}
+    </div>
+  );
 }
 
 export default Digits;
