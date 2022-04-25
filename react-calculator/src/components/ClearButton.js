@@ -1,18 +1,20 @@
-import React, { Component } from 'react';
-export default class ClearButton extends Component {
-  render() {
-    return (
-      <div className="modifiers subgrid">
-        <button
-          className="modifier"
-          onClick={() => {
-            this.props.setScreenNumber(0);
-            this.props.setRecordNumber(0);
-          }}
-        >
-          AC
-        </button>
-      </div>
-    );
-  }
+import React from "react";
+
+function ClearButton({ setScreenNumber, setRecordNumber, setOperatorClicked }) {
+  return (
+    <div className="modifiers subgrid">
+      <button
+        className="modifier"
+        onClick={() => {
+          setScreenNumber(0);
+          setRecordNumber(0);
+          setOperatorClicked("");
+        }}
+      >
+        AC
+      </button>
+    </div>
+  );
 }
+
+export default ClearButton;

@@ -1,74 +1,74 @@
-import React, { Component } from 'react';
-import Operator from '../elements/Operator';
-import { add, sub, mul, div } from '../utils/operations';
-import { OPERATORS, ERROR_MESSAGE } from '../constants';
+import React, { useState } from "react";
+import Operator from "../elements/Operator";
+import { add, sub, mul, div } from "../utils/operations";
+import { OPERATORS, ERROR_MESSAGE } from "../constants";
 
-export default class Operators extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      operators: OPERATORS,
-      operator: '',
-    };
-  }
+function Operators({
+  setScreenNumber,
+  screenNumber,
+  setStep,
+  isNumberStep,
+  recordNumber,
+  setRecordNumber,
+  clicked,
+  setOperatorClicked,
+}) {
+  const [operator, setOperator] = useState("");
 
-  onClickOperator = (operator) => {
-    if (operator !== '=') {
-      if (this.props.isNumberStep && this.props.recordNumber !== 0) {
+  const onClickOperator = (curOperator) => {
+    setStep(false);
+
+    if (curOperator !== "=") {
+      if (isNumberStep && recordNumber !== 0) {
         alert(ERROR_MESSAGE.OVER_INPUT_NUMBER_COUNT);
         return;
       }
-      this.props.setStep(false);
-      this.props.setRecordNumber(this.props.screenNumber);
-      this.setState({ operator });
+      setRecordNumber(screenNumber);
+      setOperator(curOperator);
+      setOperatorClicked(curOperator);
       return;
     }
 
-    this.props.setStep(false);
-    this.props.setRecordNumber(0);
-    this.setState({ operator: '' });
+    setRecordNumber(0);
+    setOperator("");
+    setOperatorClicked("");
 
-    switch (this.state.operator) {
-      case '+':
-        this.props.setScreenNumber(
-          add(this.props.recordNumber, this.props.screenNumber)
-        );
+    let result = 0;
+
+    switch (operator) {
+      case "+":
+        result = add(recordNumber, screenNumber);
         break;
-      case '-':
-        this.props.setScreenNumber(
-          sub(this.props.recordNumber, this.props.screenNumber)
-        );
+      case "-":
+        result = sub(recordNumber, screenNumber);
         break;
-      case 'X':
-        this.props.setScreenNumber(
-          mul(this.props.recordNumber, this.props.screenNumber)
-        );
+      case "X":
+        result = mul(recordNumber, screenNumber);
         break;
-      case '/':
-        if (this.props.screenNumber === 0) {
-          this.props.setScreenNumber(ERROR_MESSAGE.INFINITE_NUMBER);
-          return;
-        }
-        this.props.setScreenNumber(
-          div(this.props.recordNumber, this.props.screenNumber)
-        );
+      case "/":
+        result = div(recordNumber, screenNumber);
         break;
       default:
+        result = screenNumber;
         break;
     }
+
+    if (!isFinite(result)) result = ERROR_MESSAGE.INFINITE_NUMBER;
+    setScreenNumber(result);
   };
 
-  render() {
-    return (
-      <div className="operations subgrid">
-        {this.state.operators.map((operator, index) => (
-          <Operator
-            onClickOperator={this.onClickOperator}
-            operator={operator}
-            key={index}
-          />
-        ))}
-      </div>
-    );
-  }
+  return (
+    <div className="operations subgrid">
+      {OPERATORS.map((operator, index) => (
+        <Operator
+          onClickOperator={onClickOperator}
+          operator={operator}
+          clicked={clicked === operator}
+          key={index}
+        />
+      ))}
+    </div>
+  );
 }
+
+export default Operators;
