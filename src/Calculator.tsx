@@ -36,6 +36,7 @@ type CalculatorState = {
   nextNumber: null | number;
   operator: null | Operator;
   result: string;
+  completed: boolean;
 };
 
 const initialState: CalculatorState = {
@@ -43,6 +44,7 @@ const initialState: CalculatorState = {
   nextNumber: null,
   operator: null,
   result: '0',
+  completed: false,
 };
 
 const localStorageKey = 'calculator-localstorage-key';
@@ -65,10 +67,16 @@ function Calculator() {
   }, [state]);
 
   const handleClickDigitBtn = (digit: number) => {
-    const { prevNumber, nextNumber, operator } = state;
+    const { prevNumber, nextNumber, operator, completed } = state;
 
     const isPrevNumberTurn = operator === null;
     const targetNumber = isPrevNumberTurn ? prevNumber : nextNumber;
+
+    // =를 눌러서 연산이 끝났는데 또 숫자를 누르면 초기화를 한다
+    if (completed) {
+      setState({ ...initialState });
+      return;
+    }
 
     // 첫번째 피연산자 혹은 두번째 피연산자의 길이가 3을 초과하면 에러를 띄운다
     if (`${targetNumber ?? ''}`.length >= 3) {
@@ -110,7 +118,7 @@ function Calculator() {
       return;
     }
 
-    setState({ ...state, operator, result: `${prevNumber}${operator}` });
+    setState({ ...state, operator, result: `${prevNumber}${operator}`, completed: false });
   };
 
   const handleClickCalculateBtn = () => {
@@ -136,7 +144,7 @@ function Calculator() {
       return;
     }
 
-    setState({ prevNumber: result, nextNumber: null, operator: null, result: `${result}` });
+    setState({ prevNumber: result, nextNumber: null, operator: null, result: `${result}`, completed: true });
   };
 
   const handleClickResetBtn = () => setState({ ...initialState });
