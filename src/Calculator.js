@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import DisplayResult from "./component/DisplayResult";
 import NumberButton from "./component/buttons/NumberButton";
 import ModifierButton from "./component/buttons/ModifierButton";
@@ -15,7 +15,7 @@ export default function App() {
   const [result, setResult] = useState(0);
 
   useEffect(() => {
-    const prevValue = localStorage.getItem("prevValue") || 0;
+    const prevValue = localStorage.getItem("prevValue") || result;
     setFirstNumber(Number(prevValue));
     setResult(Number(prevValue));
 
@@ -54,14 +54,14 @@ export default function App() {
     onCalculate();
   };
 
-  const onClickModifier = () => {
+  const onClickModifier = useCallback(() => {
     setFirstNumber(0);
     setSecondNumber(0);
     setOperator(null);
     setIsFirstNumber(true);
     setResult(0);
     localStorage.setItem("prevValue", 0);
-  };
+  }, []);
 
   const onCalculate = () => {
     const res = calculate(firstNumber, secondNumber, operator);
