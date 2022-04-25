@@ -7,11 +7,14 @@ import {
   CONFIRM_MSG,
   OPERATOR_LIST,
   CALCULATOR_INITIAL_STATE,
+  OPERATOR,
+  ERROR_MSG,
 } from '../constants/constant';
 import { expressionStorage } from '../store/store';
 
 const Calculator = () => {
   const [state, setState] = useState(CALCULATOR_INITIAL_STATE);
+  const { prevNumbers, operator, nextNumbers } = state;
   const stateRef = useRef(state);
 
   stateRef.current = state;
@@ -39,6 +42,34 @@ const Calculator = () => {
     };
   }, []);
 
+  const onClickEqual = () => {
+    setState({
+      ...CALCULATOR_INITIAL_STATE,
+      sum: calculateSum(),
+    });
+  };
+
+  const calculateSum = () => {
+    const prevNumber = Number(prevNumbers.join(''));
+    const nextNumber = Number(nextNumbers.join(''));
+
+    switch (operator) {
+      case OPERATOR.PLUS:
+        return prevNumber + nextNumber;
+      case OPERATOR.SUBSTRACT:
+        return prevNumber - nextNumber;
+      case OPERATOR.MULTI:
+        return prevNumber * nextNumber;
+      case OPERATOR.DIVIDE:
+        if (!isFinite(prevNumber / nextNumber)) {
+          return ERROR_MSG.INFINITY;
+        }
+        return Math.floor(prevNumber / nextNumber);
+      default:
+        return prevNumber;
+    }
+  };
+
   return (
     <div id="app">
       <div className="calculator">
@@ -63,6 +94,7 @@ const Calculator = () => {
               selfOperand={operand}
               state={state}
               setState={setState}
+              calculate={onClickEqual}
             />
           ))}
         </div>
