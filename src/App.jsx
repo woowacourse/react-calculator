@@ -136,10 +136,18 @@ export default function App({ store }) {
 
   useEffect(() => {
     window.addEventListener('beforeunload', confirmLeave);
+
+    return () => {
+      window.removeEventListener('beforeunload', confirmLeave);
+    };
   }, []);
 
   useEffect(() => {
     window.addEventListener('unload', saveStates);
+
+    return () => {
+      window.removeEventListener('beforeunload', saveStates);
+    };
   }, [saveStates]);
 
   return (
