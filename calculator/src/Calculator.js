@@ -1,96 +1,74 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import './css/index.css';
-import {
-  FONT_SIZE_STANDARD,
-  INFINITY_MESSAGE,
-  MAX_CURRENT_LENGTH,
-} from './constants';
+import { FONT_SIZE_STANDARD, INFINITY_MESSAGE, MAX_CURRENT_LENGTH } from './constants';
 
-class Calculator extends Component {
-  constructor() {
-    super();
+const digits = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+const operators = ['/', 'X', '-', '+', '='];
+const initState = {
+  total: 0,
+  current: 0,
+  operator: '',
+  isLastClickOperator: false,
+};
 
-    this.state = JSON.parse(localStorage.getItem('state')) ?? {
-      total: 0,
-      current: 0,
-      operator: '',
-      isLastClickOperator: false,
-    };
-  }
+const Calculator = () => {
+  const [state, setState] = useState(JSON.parse(localStorage.getItem('state')) ?? { ...initState });
+  const { total, current, operator, isLastClickOperator } = state;
 
-  componentDidUpdate() {
-    localStorage.setItem('state', JSON.stringify(this.state));
-  }
+  useEffect(() => {
+    localStorage.setItem('state', JSON.stringify(state));
+  });
 
-  handleDigitClick(digitValue) {
-    const { current, isLastClickOperator } = this.state;
+  const handleDigitClick = (e) => {
+    const digitValue = Number(e.target.textContent);
 
     if (current.toString().length > MAX_CURRENT_LENGTH) {
-      this.setState({ current: Infinity });
+      setState((prev) => ({ ...prev, current: Infinity }));
       return;
     }
 
     if (isLastClickOperator) {
-      this.enterNewOperand(digitValue);
+      enterNewOperand(digitValue);
     }
 
     if (!isLastClickOperator) {
-      this.concatDigitOperand(digitValue);
+      concatDigitOperand(digitValue);
     }
-  }
+  };
 
-  enterNewOperand(digitValue) {
-    this.setState({
-      current: digitValue,
-      isLastClickOperator: false,
-    });
-  }
+  const enterNewOperand = (digitValue) => {
+    setState((prev) => ({ ...prev, current: digitValue, isLastClickOperator: false }));
+  };
 
-  concatDigitOperand(digitValue) {
-    const { current } = this.state;
+  const concatDigitOperand = (digitValue) => {
+    setState((prev) => ({ ...prev, current: current * 10 + digitValue }));
+  };
 
-    this.setState({
-      current: current * 10 + digitValue,
-    });
-  }
-
-  handleOperatorClick(operatorValue) {
-    const { isLastClickOperator, operator, total, current } = this.state;
-
-    this.updateOperator(operatorValue);
+  const handleOperatorClick = (e) => {
+    updateOperator(e);
 
     if (isLastClickOperator) return;
 
-    if (!this.isOperatorExist()) {
-      this.calculate(current);
+    if (!isOperatorExist()) {
+      calculate(current);
     }
 
-    if (this.isOperatorExist()) {
-      const result = this.operate(total, current, operator);
-
-      this.calculate(result);
+    if (isOperatorExist()) {
+      const result = operate(total, current, operator);
+      calculate(result);
     }
-  }
+  };
 
-  updateOperator(operatorValue) {
-    this.setState({
-      operator: operatorValue === '=' ? '' : operatorValue,
-      isLastClickOperator: true,
-    });
-  }
+  const updateOperator = (e) => {
+    const operatorValue = e.target.textContent;
+    setState((prev) => ({ ...prev, operator: operatorValue, isLastClickOperator: true }));
+  };
 
-  calculate(result) {
-    this.setState({
-      total: result,
-      current: result,
-    });
-  }
+  const isOperatorExist = () => {
+    return operator !== '';
+  };
 
-  isOperatorExist() {
-    return this.state.operator !== '';
-  }
-
-  operate(a, b, operator) {
+  const operate = (a, b, operator) => {
     switch (operator) {
       case '+':
         return a + b;
@@ -103,69 +81,53 @@ class Calculator extends Component {
       default:
         break;
     }
-  }
+  };
 
-  handleClear() {
-    this.setState({
-      total: 0,
-      current: 0,
-      operator: '',
-      isLastClickOperator: false,
-    });
-  }
+  const calculate = (result) => {
+    setState((prev) => ({ ...prev, total: result, current: result }));
+  };
 
-  render() {
-    const { current } = this.state;
-    const digits = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
-    const operators = ['/', 'X', '-', '+', '='];
+  const handleClear = () => {
+    setState(initState);
+  };
 
-    return (
-      <div className="App">
-        <div className="calculator">
-          <div className="total">
-            <h1
-              className={
-                current.toString().length >= FONT_SIZE_STANDARD
-                  ? ' small-total-font'
-                  : ''
-              }
-            >
-              {current === Infinity ? INFINITY_MESSAGE : current}
-            </h1>
-          </div>
-          <div className="digits flex">
-            {digits.map(digit => (
-              <button
-                key={digit.toString()}
-                className="digit"
-                onClick={e =>
-                  this.handleDigitClick(Number(e.target.textContent))
-                }
-              >
-                {digit}
-              </button>
-            ))}
-          </div>
-          <div className="modifiers subgrid">
-            <button className="modifier" onClick={() => this.handleClear()}>
-              AC
+  return (
+    <div className='App'>
+      <div className='calculator'>
+        <div className='total'>
+          <h1 className={current.toString().length >= FONT_SIZE_STANDARD ? ' small-total-font' : ''}>
+            {current === Infinity ? INFINITY_MESSAGE : current}
+          </h1>
+        </div>
+        <div className='digits flex'>
+          {digits.map((digit) => (
+            <button key={digit.toString()} className='digit' onClick={handleDigitClick}>
+              {digit}
             </button>
-          </div>
-          <div className="operations subgrid">
-            {operators.map(operator => (
-              <button
-                className="operation"
-                key={operator}
-                onClick={e => this.handleOperatorClick(e.target.textContent)}
-              >
-                {operator}
-              </button>
-            ))}
-          </div>
+          ))}
+        </div>
+        <div className='modifiers subgrid'>
+          <button className='modifier' onClick={handleClear}>
+            AC
+          </button>
+        </div>
+        <div className='operations subgrid'>
+          {operators.map((operator) => (
+            <button className='operation' key={operator} onClick={handleOperatorClick}>
+              {operator}
+            </button>
+          ))}
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+Calculator.prototype = {
+  total: Number,
+  current: Number,
+  operator: String,
+  isLastClickOperator: Boolean,
+};
 
 export default Calculator;

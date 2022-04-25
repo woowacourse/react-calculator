@@ -6,7 +6,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Calculator />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 window.addEventListener('beforeunload', function (event) {
