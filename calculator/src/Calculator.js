@@ -76,13 +76,12 @@ const Calculator = () => {
 
     if (!isOperatorExist()) {
       updateResult(current);
+      return;
     }
 
-    if (isOperatorExist()) {
-      const result = calculate(total, current, operator);
+    const result = calculate(total, current, operator);
 
-      updateResult(result);
-    }
+    updateResult(result);
   };
 
   const updateOperator = operatorValue => {
