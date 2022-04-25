@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DisplayResult from "./component/DisplayResult";
+import "./css/calculator.css";
 
 export default function App() {
   const [firstNumber, setFirstNumber] = useState(0);
