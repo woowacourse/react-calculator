@@ -103,7 +103,7 @@ function Calculator() {
       setState({ ...errorState(ERROR_MESSAGE.NOT_OPERATOR) });
       return;
     }
-    if (!prevNumber) {
+    if (prevNumber === null) {
       setState({ ...errorState(ERROR_MESSAGE.INPUT_ORDER) });
       return;
     }
@@ -114,7 +114,7 @@ function Calculator() {
   const handleClickCalculateBtn = () => {
     const { prevNumber, nextNumber, operator } = state;
 
-    if (!prevNumber) return;
+    if (prevNumber === null) return;
     if (!operator) return;
     if (nextNumber === null) {
       setState(prevState => ({ ...prevState, operator: Operator.empty }));
