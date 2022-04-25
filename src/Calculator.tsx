@@ -1,221 +1,174 @@
-/* eslint-disable no-underscore-dangle */
-import React from 'react';
+import { nanoid } from 'nanoid';
+import React, { useEffect, useState } from 'react';
+import DigitButton from './components/DigitButton';
+import OperatorButton from './components/OperatorButton';
+import Operator from './types';
 
-enum Operator {
-  empty = '',
-  plus = 'plus',
-  minus = 'minus',
-  multiply = 'multiply',
-  divide = 'divide',
-}
+const ERROR_MESSAGE = {
+  NOT_NUMBER: '숫자 아님',
+  INFINITY_NUMBER: '오류',
+  NOT_OPERATOR: '유효한 연산자가 아닙니다',
+  INPUT_ORDER: '숫자를 먼저 입력해 주세요',
+  MAX_DIGIT: '최대 세자리 숫자까지만 입력이 됩니다.',
+};
 
-type State = {
+const operators: Array<Operator> = [Operator.plus, Operator.minus, Operator.multiply, Operator.divide];
+
+// [9, 8, 7, 6, 5, 4, 3, 2, 1, 0];
+const DIGITS = Array.from({ length: 10 }, (_, i) => ({ id: nanoid(), digit: 9 - i }));
+
+const arithmeticOperation = {
+  plus: (num1: number, num2: number) => num1 + num2,
+  minus: (num1: number, num2: number) => num1 - num2,
+  multiply: (num1: number, num2: number) => num1 * num2,
+  divide: (num1: number, num2: number) => num1 / num2,
+};
+
+const operatorMap = {
+  [Operator.plus]: arithmeticOperation.plus,
+  [Operator.minus]: arithmeticOperation.minus,
+  [Operator.multiply]: arithmeticOperation.multiply,
+  [Operator.divide]: arithmeticOperation.divide,
+};
+
+type CalculatorState = {
   prevNumber: null | number;
   nextNumber: null | number;
   operator: Operator;
   result: string;
 };
 
-class Calculator extends React.Component<any, State> {
-  static localStorageKey = 'calculator-key';
+const initialState: CalculatorState = {
+  prevNumber: null,
+  nextNumber: null,
+  operator: Operator.empty,
+  result: '0',
+};
 
-  static initialState = {
-    prevNumber: null,
-    nextNumber: null,
-    operator: Operator.empty,
-    result: '0',
+const localStorageKey = 'calculator-localstorage-key';
+
+const errorState = (errorMessage: string): CalculatorState => ({
+  ...initialState,
+  result: errorMessage,
+});
+
+const saveCurrentStateBeforeLeave = (event: BeforeUnloadEvent, state: CalculatorState) => {
+  event.preventDefault();
+  localStorage.setItem(localStorageKey, JSON.stringify(state));
+};
+
+function Calculator() {
+  const [state, setState] = useState<CalculatorState>({ ...initialState });
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', e => saveCurrentStateBeforeLeave(e, state));
+  }, [state]);
+
+  const updateNumber = (isPrevNumberTurn: boolean, newNumber: number) => {
+    if (isPrevNumberTurn) {
+      setState(prevState => ({ ...prevState, prevNumber: newNumber, result: `${newNumber}` }));
+      return;
+    }
+    setState(prevState => ({ ...prevState, nextNumber: newNumber, result: `${newNumber}` }));
   };
 
-  static errorState = (errorMessage: string) => ({
-    ...Calculator.initialState,
-    result: errorMessage,
-  });
-
-  constructor(props: any) {
-    super(props);
-    const originalState = JSON.parse(localStorage.getItem(Calculator.localStorageKey) ?? '{}');
-    this.state = { ...Calculator.initialState, ...originalState };
-    window.addEventListener('beforeunload', this.saveCurrentStateBeforeLeave);
-    window.onbeforeunload = () => {
-      return 'Are you sure you want to leave?';
-    };
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.saveCurrentStateBeforeLeave);
-  }
-
-  saveCurrentStateBeforeLeave = (event: BeforeUnloadEvent) => {
-    event.preventDefault();
-    localStorage.setItem(Calculator.localStorageKey, JSON.stringify(this.state));
-  };
-
-  onClickDigitBtn = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
-    const { prevNumber, nextNumber, operator } = this.state;
-    const { digit } = (target as HTMLElement).dataset;
-    if (!digit) return;
+  const handleClickDigitBtn = (digit: number) => {
+    const { prevNumber, nextNumber, operator } = state;
 
     const isPrevNumberTurn = operator === Operator.empty;
-    if (isPrevNumberTurn) {
-      if (prevNumber === null) {
-        const _prevNumber = Number(digit);
-        this.setState({ prevNumber: _prevNumber, result: `${_prevNumber}` });
-        return;
-      }
+    const targetNumber = isPrevNumberTurn ? prevNumber : nextNumber;
 
-      if (`${prevNumber}`.length >= 3) return;
-      const _prevNumber = Number(prevNumber + digit);
-      this.setState({ prevNumber: _prevNumber, result: `${_prevNumber}` });
+    // 첫번째 피연산자가 비어있건 두번째 피연산자가 비어있건 상관없이 업데이트 한다
+    if (targetNumber === null) {
+      updateNumber(isPrevNumberTurn, digit);
       return;
     }
 
-    if (nextNumber === null) {
-      const _nextNumber = Number(digit);
-      this.setState({ nextNumber: _nextNumber, result: `${_nextNumber}` });
+    // 첫번째 피연산자 혹은 두번째 피연산자의 길이가 3을 초과하면
+    if (`${targetNumber}`.length >= 3) {
+      window.alert(ERROR_MESSAGE.MAX_DIGIT);
       return;
     }
 
-    if (`${nextNumber}`.length >= 3) return;
-    const _nextNumber = Number(nextNumber + digit);
-    this.setState({ nextNumber: _nextNumber, result: `${_nextNumber}` });
+    updateNumber(isPrevNumberTurn, Number(`${targetNumber}${digit}`));
   };
 
-  onClickOperator = ({ target }: React.MouseEvent<HTMLButtonElement>) => {
-    const { prevNumber } = this.state;
-    const { operator } = (target as HTMLElement).dataset;
+  const handleClickOperatorBtn = (operator: Operator) => {
+    const { prevNumber } = state;
+
     if (!operator) return;
-    const isValidOperator = Object.values(Operator).includes(operator as Operator);
+
+    const isValidOperator = Object.values(Operator).includes(operator);
     if (!isValidOperator) {
-      this.setState({ ...Calculator.errorState('유효한 연산자가 아닙니다') });
+      setState({ ...errorState(ERROR_MESSAGE.NOT_OPERATOR) });
       return;
     }
     if (!prevNumber) {
-      this.setState({ ...Calculator.errorState('숫자를 먼저 입력해 주세요') });
+      setState({ ...errorState(ERROR_MESSAGE.INPUT_ORDER) });
       return;
     }
-    this.setState({ operator: operator as Operator });
+
+    setState(prevState => ({ ...prevState, operator }));
   };
 
-  onClickCalculateBtn = () => {
-    const { prevNumber, nextNumber, operator } = this.state;
+  const handleClickCalculateBtn = () => {
+    const { prevNumber, nextNumber, operator } = state;
 
     if (!prevNumber) return;
     if (!operator) return;
     if (nextNumber === null) {
-      this.setState({ operator: Operator.empty });
+      setState(prevState => ({ ...prevState, operator: Operator.empty }));
       return;
     }
 
-    let operatorFn = null;
-    switch (operator) {
-      case Operator.plus: {
-        operatorFn = this.plus;
-        break;
-      }
-      case Operator.minus: {
-        operatorFn = this.minus;
-        break;
-      }
-      case Operator.multiply: {
-        operatorFn = this.multiply;
-        break;
-      }
-      case Operator.divide: {
-        operatorFn = this.divide;
-        break;
-      }
-      default: {
-        operatorFn = null;
-      }
-    }
-
+    const operatorFn = operatorMap[operator];
     if (operatorFn === null) return;
 
     const result = Math.floor(operatorFn(prevNumber, nextNumber));
-
     if (Number.isNaN(result)) {
-      this.setState({ ...Calculator.errorState('숫자 아님') });
+      setState({ ...errorState(ERROR_MESSAGE.NOT_NUMBER) });
       return;
     }
-
     if (!Number.isFinite(result)) {
-      this.setState({ ...Calculator.errorState('오류') });
+      setState({ ...errorState(ERROR_MESSAGE.INFINITY_NUMBER) });
       return;
     }
 
-    this.setState({ prevNumber: result, nextNumber: null, operator: Operator.empty, result: `${result}` });
+    setState({ prevNumber: result, nextNumber: null, operator: Operator.empty, result: `${result}` });
   };
 
-  plus = (num1: number, num2: number) => num1 + num2;
+  const handleClickResetBtn = () => setState({ ...initialState });
 
-  minus = (num1: number, num2: number) => num1 - num2;
+  const { result } = state;
 
-  multiply = (num1: number, num2: number) => num1 * num2;
-
-  divide = (num1: number, num2: number) => num1 / num2;
-
-  render() {
-    const { result } = this.state;
-    return (
-      <div className="calculator">
-        <h1 id="total">{result}</h1>
-        <div className="digits flex">
-          <button className="digit" type="button" data-digit="9" onClick={this.onClickDigitBtn}>
-            9
-          </button>
-          <button className="digit" type="button" data-digit="8" onClick={this.onClickDigitBtn}>
-            8
-          </button>
-          <button className="digit" type="button" data-digit="7" onClick={this.onClickDigitBtn}>
-            7
-          </button>
-          <button className="digit" type="button" data-digit="6" onClick={this.onClickDigitBtn}>
-            6
-          </button>
-          <button className="digit" type="button" data-digit="5" onClick={this.onClickDigitBtn}>
-            5
-          </button>
-          <button className="digit" type="button" data-digit="4" onClick={this.onClickDigitBtn}>
-            4
-          </button>
-          <button className="digit" type="button" data-digit="3" onClick={this.onClickDigitBtn}>
-            3
-          </button>
-          <button className="digit" type="button" data-digit="2" onClick={this.onClickDigitBtn}>
-            2
-          </button>
-          <button className="digit" type="button" data-digit="1" onClick={this.onClickDigitBtn}>
-            1
-          </button>
-          <button className="digit" type="button" data-digit="0" onClick={this.onClickDigitBtn}>
-            0
-          </button>
-        </div>
-        <div className="modifiers subgrid">
-          <button className="modifier" type="button" onClick={() => this.setState({ ...Calculator.initialState })}>
-            AC
-          </button>
-        </div>
-        <div className="operations subgrid">
-          <button className="operation" type="button" data-operator="divide" onClick={this.onClickOperator}>
-            /
-          </button>
-          <button className="operation" type="button" data-operator="multiply" onClick={this.onClickOperator}>
-            X
-          </button>
-          <button className="operation" type="button" data-operator="minus" onClick={this.onClickOperator}>
-            -
-          </button>
-          <button className="operation" type="button" data-operator="plus" onClick={this.onClickOperator}>
-            +
-          </button>
-          <button id="calculate-equal" className="operation" type="button" onClick={this.onClickCalculateBtn}>
-            =
-          </button>
-        </div>
+  return (
+    <div className="calculator">
+      <h1 id="total">{result}</h1>
+      <div className="digits flex">
+        {DIGITS.map(({ id, digit }) => (
+          <DigitButton key={id} onClick={handleClickDigitBtn} digit={digit} />
+        ))}
       </div>
-    );
-  }
+      <div className="modifiers subgrid">
+        <button className="modifier" type="button" onClick={handleClickResetBtn}>
+          AC
+        </button>
+      </div>
+      <div className="operations subgrid">
+        {operators.map(operator => (
+          <OperatorButton
+            key={operator}
+            isFocused={state.operator === operator}
+            operator={operator}
+            onClick={handleClickOperatorBtn}
+          />
+        ))}
+        <button id="calculate-equal" className="operation" type="button" onClick={handleClickCalculateBtn}>
+          =
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default Calculator;
