@@ -15,6 +15,7 @@ export default function Calculator() {
       <div className="digits flex">
         {CALCULATOR.NUMBERS.map((number) => (
           <CalculatorButton
+            type="button"
             key={number}
             className="digit"
             handleClick={changeNumber}
@@ -24,12 +25,18 @@ export default function Calculator() {
       </div>
 
       <div className="modifiers subgrid">
-        <CalculatorButton className="modifier" handleClick={initialize} content="AC" />
+        <CalculatorButton
+          type="reset"
+          className="modifier"
+          handleClick={initialize}
+          content="AC"
+        />
       </div>
 
       <div className="operations subgrid">
         {CALCULATOR.OPERATOR.map((operator, idx) => (
           <CalculatorButton
+            type="submit"
             key={idx}
             className="operation"
             handleClick={calculate}
