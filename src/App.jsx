@@ -107,7 +107,6 @@ export default function App({ store }) {
   };
 
   const saveStates = () => {
-    // alert('hi');
     store.save({ numberStrings, operator, displayedText });
   };
 
@@ -126,8 +125,9 @@ export default function App({ store }) {
   const confirmLeave = (e) => {
     e.preventDefault();
 
-    e.returnValue = 'Are you sure you want to leave?';
-    return 'Are you sure you want to leave?';
+    e.returnValue = '';
+
+    return '';
   };
 
   useEffect(() => {
