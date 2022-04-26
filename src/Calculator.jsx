@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import InputField from './components/InputField';
 import ResultField from './components/ResultField';
-import { OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constants';
-import { operation } from './util';
+import { OPERAND_ERROR_VALUE, STORAGE_KEY } from './constants';
+import { operation, isOverOperandMaxLength } from './util';
 
 function Calculator() {
   const [expression, setExpression] = useState(initialExpression);
@@ -58,10 +58,6 @@ function Calculator() {
       operator: newOperation,
     });
   };
-
-  function isOverOperandMaxLength(number) {
-    return number.length >= OPERAND_MAX_LENGTH;
-  }
 
   function calculate() {
     const { firstOperand, secondOperand, operator } = expression;

@@ -1,3 +1,5 @@
+import { OPERAND_MAX_LENGTH } from '../constants';
+
 const operation = {
   '+': (firstNumber, secondNumber) => firstNumber + secondNumber,
   '-': (firstNumber, secondNumber) => firstNumber - secondNumber,
@@ -5,4 +7,8 @@ const operation = {
   '/': (firstNumber, secondNumber) => Math.floor(firstNumber / secondNumber),
 };
 
-export { operation };
+const isOverOperandMaxLength = (number) => {
+  return number.length >= OPERAND_MAX_LENGTH;
+};
+
+export { operation, isOverOperandMaxLength };
