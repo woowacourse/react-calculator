@@ -1,181 +1,144 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
-import React, { Component } from 'react';
-import Button from './components/Button';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
+import Button from './components/common/Button';
 
 import storage from './storage/storage';
 import {
-  INFINITY_ERROR_TEXT,
   CALCULATOR_DATA_KEY,
-  OPERATOR,
   CALCULATOR_NUMBER_LIST,
   CALCULATOR_OPERATOR_LIST,
+  EQUAL,
+  INFINITY_ERROR_TEXT,
 } from './constants';
 import {
   validateOperatorIsDuplicated,
   isArithmeticOperator,
-  toFixedValue,
+  operations,
 } from './utils';
 
-class App extends Component {
-  #expressionRef;
+const initCalcData = {
+  firstOperand: 0,
+  secondOperand: 0,
+  operator: null,
+  calculationResult: 0,
+  lastExpression: null,
+};
 
-  constructor() {
-    super();
+const defaultCalcData = storage.get(CALCULATOR_DATA_KEY)
+  ? storage.get(CALCULATOR_DATA_KEY)
+  : initCalcData;
 
-    this.#expressionRef = React.createRef();
-    this.state = {
-      firstOperand: 0,
-      secondOperand: 0,
-      operator: '',
-      calculationResult: 0,
-    };
+function App() {
+  const [calcData, setCalcData] = useState(defaultCalcData);
+  const expressionRef = useRef();
 
-    window.addEventListener('beforeunload', this.#handleBeforeUnload);
-    window.addEventListener('unload', this.#handleUnload);
-  }
-
-  componentDidMount() {
-    if (storage.get(CALCULATOR_DATA_KEY)) {
-      const {
-        firstOperand,
-        secondOperand,
-        operator,
-        calculationResult,
-        lastExpression,
-      } = storage.get(CALCULATOR_DATA_KEY);
-
-      this.setState({
-        firstOperand,
-        secondOperand,
-        operator,
-        calculationResult,
-      });
-
-      this.#expressionRef.current.textContent = lastExpression ?? 0;
-    }
-  }
-
-  #handleBeforeUnload = (e) => {
-    e.preventDefault();
-    e.returnValue = '';
-  };
-
-  #handleUnload = () => {
-    const lastExpression = Number(this.#expressionRef.current.textContent);
-    storage.set(CALCULATOR_DATA_KEY, { ...this.state, lastExpression });
-  };
-
-  #handleDigitClick = (e) => {
-    const expression = this.#expressionRef.current.textContent;
+  function handleDigitClick(e) {
+    const expression = expressionRef.current.textContent;
     const digit = e.target.textContent;
 
     if (isArithmeticOperator(expression) || expression === '0') {
-      this.#expressionRef.current.textContent = digit;
+      expressionRef.current.textContent = digit;
       return;
     }
 
-    this.#expressionRef.current.textContent += digit;
-  };
+    expressionRef.current.textContent += digit;
+  }
 
-  #handleModifierClick = (e) => {
-    this.#initialize();
-  };
+  function initialize() {
+    expressionRef.current.textContent = 0;
+    setCalcData(initCalcData);
+  }
 
-  #handleOperationClick = (e) => {
+  function handleModifierClick() {
+    initialize();
+  }
+
+  function calculate(secondOperand) {
+    const { operator, firstOperand } = calcData;
+    const calculationResult = operations[operator](firstOperand, secondOperand);
+
+    expressionRef.current.textContent = calculationResult;
+    setCalcData({
+      ...calcData,
+      secondOperand,
+      calculationResult,
+    });
+  }
+
+  function handleOperationClick(e) {
     const operation = e.target.textContent;
-    const expression = this.#expressionRef.current.textContent;
+    const expression = expressionRef.current.textContent;
 
     try {
       validateOperatorIsDuplicated(expression);
     } catch ({ message }) {
       alert(message);
-      this.#initialize();
+      initialize();
       return;
     }
 
-    if (operation === OPERATOR.EQUAL) {
-      const { operator, firstOperand } = this.state;
-      const calculationResult = this.#calculate(operator, {
-        firstOperand,
-        secondOperand: Number(expression),
-      });
-
-      this.#expressionRef.current.textContent = calculationResult;
-      this.setState((state) => ({
-        ...state,
-        secondOperand: Number(expression),
-        calculationResult,
-      }));
-
+    if (operation === EQUAL) {
+      calculate(Number(expression));
       return;
     }
 
-    this.#expressionRef.current.textContent = operation;
-    this.setState((state) => ({
-      ...state,
+    expressionRef.current.textContent = operation;
+    setCalcData({
+      ...calcData,
       firstOperand: Number(expression),
       operator: operation,
-    }));
-  };
-
-  #initialize() {
-    this.#expressionRef.current.textContent = 0;
-    this.setState({
-      firstOperand: 0,
-      secondOperand: 0,
-      operator: '',
-      calculationResult: 0,
     });
   }
 
-  #calculate(operator, { firstOperand, secondOperand }) {
-    const operation = {
-      [OPERATOR.PLUS]: () => firstOperand + secondOperand,
-      [OPERATOR.MINUS]: () => firstOperand - secondOperand,
-      [OPERATOR.MULTIPLY]: () => firstOperand * secondOperand,
-      [OPERATOR.DIVIDE]: () =>
-        secondOperand === 0
-          ? INFINITY_ERROR_TEXT
-          : toFixedValue(firstOperand / secondOperand),
+  function handleBeforeUnload(e) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
+  function handleUnload() {
+    let lastExpression = expressionRef.current.textContent;
+    lastExpression =
+      lastExpression === INFINITY_ERROR_TEXT ? 0 : lastExpression;
+
+    storage.set(CALCULATOR_DATA_KEY, { ...calcData, lastExpression });
+  }
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('unload', handleUnload);
     };
+  }, [handleBeforeUnload, handleUnload]);
 
-    return operation[operator]();
-  }
-
-  render() {
-    return (
-      <>
-        <h1>⚛️ React 계산기 🧮</h1>
-        <div className="calculator">
-          <h2 id="expression" ref={this.#expressionRef}>
-            0
-          </h2>
-          <div className="digits flex" onClick={this.#handleDigitClick}>
-            {CALCULATOR_NUMBER_LIST.map((number, index) => (
-              <Button key={index} text={number} className="digit" />
-            ))}
-          </div>
-          <div
-            className="modifiers subgrid"
-            onClick={this.#handleModifierClick}
-          >
-            <Button className="modifier" text="AC" />
-          </div>
-          <div
-            className="operations subgrid"
-            onClick={this.#handleOperationClick}
-          >
-            {CALCULATOR_OPERATOR_LIST.map((operator, index) => (
-              <Button key={index} className="operation" text={operator} />
-            ))}
-          </div>
+  return (
+    <>
+      <h1>⚛️ React 계산기 🧮</h1>
+      <div className="calculator">
+        <h2 id="expression" ref={expressionRef}>
+          {calcData.lastExpression ?? 0}
+        </h2>
+        <div className="digits flex" onClick={handleDigitClick}>
+          {CALCULATOR_NUMBER_LIST.map((number, index) => (
+            <Button key={index} text={number} className="digit" />
+          ))}
         </div>
-      </>
-    );
-  }
+        <div className="modifiers subgrid" onClick={handleModifierClick}>
+          <Button className="modifier" text="AC" />
+        </div>
+        <div className="operations subgrid" onClick={handleOperationClick}>
+          {CALCULATOR_OPERATOR_LIST.map((operator, index) => (
+            <Button key={index} className="operation" text={operator} />
+          ))}
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default App;

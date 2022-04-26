@@ -1,4 +1,4 @@
-## 🎯 기능 요구사항
+## 🎯 step1 기능 요구사항
 
 - 공통 요구사항
 
@@ -40,3 +40,9 @@
 
 - 초기화 기능
   - [x] AC(All Clear)버튼을 누르면 0으로 초기화 한다.
+
+<br>
+
+## 🎯 step2 기능 요구사항
+
+- [x] `Class Component`를 `Function Component`로 마이그레이션 합니다.
