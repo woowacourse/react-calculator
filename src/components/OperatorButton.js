@@ -1,5 +1,5 @@
 import React from 'react';
-import { OPERATOR, CALCULATOR_INITIAL_STATE } from '../constants/constant';
+import { OPERATOR, EQUATION_INITIAL_STATE } from '../constants/constant';
 
 const OperatorButton = props => {
   const { selfOperand, prevNumbers, setEquationState, calculate } = props;
@@ -7,7 +7,7 @@ const OperatorButton = props => {
   const onClickOperator = () => {
     if (prevNumbers.length === 0) {
       setEquationState({
-        ...CALCULATOR_INITIAL_STATE,
+        ...EQUATION_INITIAL_STATE,
         prevNumbers: [0],
         operator: selfOperand,
       });

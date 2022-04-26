@@ -24,7 +24,7 @@ export const OPERATOR_LIST = [
   OPERATOR.EQUAL,
 ];
 
-export const CALCULATOR_INITIAL_STATE = {
+export const EQUATION_INITIAL_STATE = {
   sum: '',
   prevNumbers: [],
   operator: '',

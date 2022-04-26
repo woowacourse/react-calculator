@@ -1,6 +1,6 @@
 import React from 'react';
 import { NUMBER_LIMIT, ERROR_MSG } from '../constants/constant';
-import { CALCULATOR_INITIAL_STATE } from '../constants/constant';
+import { EQUATION_INITIAL_STATE } from '../constants/constant';
 
 const NumberButton = ({ number, equationState, setEquationState }) => {
   const { sum, prevNumbers, operator, nextNumbers } = equationState;
@@ -9,7 +9,7 @@ const NumberButton = ({ number, equationState, setEquationState }) => {
     const isPrev = operator === '';
 
     if (sum !== '') {
-      setEquationState({ ...CALCULATOR_INITIAL_STATE });
+      setEquationState({ EQUATION_INITIAL_STATE });
     }
 
     if (
@@ -21,14 +21,14 @@ const NumberButton = ({ number, equationState, setEquationState }) => {
     }
 
     isPrev
-      ? setEquationState(prevState => ({
-          ...prevState,
-          prevNumbers: [...prevState.prevNumbers, number],
-        }))
-      : setEquationState(prevState => ({
-          ...prevState,
-          nextNumbers: [...prevState.nextNumbers, number],
-        }));
+      ? setEquationState({
+          ...equationState,
+          prevNumbers: [...prevNumbers, number],
+        })
+      : setEquationState({
+          ...equationState,
+          nextNumbers: [...nextNumbers, number],
+        });
   };
 
   return (

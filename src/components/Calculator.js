@@ -6,24 +6,24 @@ import Screen from './Screen';
 import {
   CONFIRM_MSG,
   OPERATOR_LIST,
-  CALCULATOR_INITIAL_STATE,
+  EQUATION_INITIAL_STATE,
   OPERATOR,
   ERROR_MSG,
 } from '../constants/constant';
 import { expressionStorage } from '../store/store';
 
 const Calculator = () => {
-  const [equationState, setEquationState] = useState(CALCULATOR_INITIAL_STATE);
+  const [equationState, setEquationState] = useState(EQUATION_INITIAL_STATE);
   const { prevNumbers, operator, nextNumbers } = equationState;
-  const stateRef = useRef(equationState);
+  const equationStateRef = useRef(equationState);
 
-  stateRef.current = equationState;
+  equationStateRef.current = equationState;
 
   const confirmExist = useCallback(event => {
     event.preventDefault();
     event.returnValue = CONFIRM_MSG;
 
-    expressionStorage.setExpression(stateRef.current);
+    expressionStorage.setExpression(equationStateRef.current);
   }, []);
 
   const setInitialState = () => {
@@ -44,7 +44,7 @@ const Calculator = () => {
 
   const onClickEqual = () => {
     setEquationState({
-      ...CALCULATOR_INITIAL_STATE,
+      ...EQUATION_INITIAL_STATE,
       sum: calculateEquation(),
     });
   };
