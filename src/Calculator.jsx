@@ -59,7 +59,7 @@ function Calculator() {
     });
   };
 
-  function calculate() {
+  const calculate = () => {
     const { firstOperand, secondOperand, operator } = expression;
     if (!operation[expression.operator]) return;
 
@@ -70,15 +70,15 @@ function Calculator() {
       secondOperand: '',
       operator: '',
     });
-  }
+  };
 
-  function resetExpression() {
+  const resetExpression = () => {
     setExpression({
       firstOperand: '',
       secondOperand: '',
       operator: '',
     });
-  }
+  };
 
   useEffect(() => {
     window.addEventListener('beforeunload', saveResult);
