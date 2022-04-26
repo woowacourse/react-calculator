@@ -1,39 +1,39 @@
-import React, { Component } from "react";
+import React, { memo } from "react";
 
-class Operation extends Component {
-  render() {
-    return (
-      <>
-        <div className="modifiers subgrid">
-          <button
-            className="modifier"
-            id="clear-button"
-            onClick={this.props.onClickClearButton}
-          >
-            AC
-          </button>
-        </div>
-        <div
-          className="operations subgrid"
-          onClick={this.props.onClickOperation}
+const operationArray = ["/", "x", "-", "+"];
+
+const Operation = memo((props) => {
+  const { onClickClearButton, onClickEqualOperation, onClickOperation } = props;
+
+  return (
+    <>
+      <div className="modifiers subgrid">
+        <button
+          className="modifier"
+          id="clear-button"
+          onClick={onClickClearButton}
         >
-          <button className="operation" data-operator="/">
-            /
+          AC
+        </button>
+      </div>
+      <div className="operations subgrid">
+        {operationArray.map((operation) => (
+          <button
+            className="operation"
+            onClick={() => {
+              onClickOperation(operation);
+            }}
+            key={operation}
+          >
+            {operation}
           </button>
-          <button className="operation" data-operator="x">
-            X
-          </button>
-          <button className="operation" data-operator="-">
-            -
-          </button>
-          <button className="operation" data-operator="+">
-            +
-          </button>
-          <button id="calculate-button">=</button>
-        </div>
-      </>
-    );
-  }
-}
+        ))}
+        <button id="calculate-button" onClick={onClickEqualOperation}>
+          =
+        </button>
+      </div>
+    </>
+  );
+});
 
 export default Operation;
