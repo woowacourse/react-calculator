@@ -1,82 +1,68 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class OperationButtons extends Component {
-  #operatorButtons;
+const calculation = {
+  '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+  X: (a, b) => a * b,
+  '/': (a, b) => Math.trunc(a / b),
+};
 
-  #calculation;
-
-  constructor(props) {
-    super(props);
-
-    this.#calculation = {
-      '+': (a, b) => a + b,
-      '-': (a, b) => a - b,
-      X: (a, b) => a * b,
-      '/': (a, b) => Math.floor(a / b),
-    };
-  }
-
-  #handleOperatorClick = ({ target }) => {
-    if (!target.classList.contains('operation')) return;
-
-    const { secondOperand } = this.props.state;
+export default function OperationButtons({
+  firstOperand,
+  secondOperand,
+  operator,
+  setOperator,
+  setResult,
+  setIsError,
+}) {
+  const handleOperatorClick = (operatorType) => {
     if (secondOperand) return;
 
-    this.props.handleParentState({
-      operator: target.textContent,
-    });
+    setOperator(operatorType);
   };
 
-  #handleResultButton = () => {
-    const { secondOperand } = this.props.state;
-    if (!secondOperand) return;
-
-    this.#showResult();
+  const calculate = () => {
+    const calc = calculation[operator];
+    return calc(Number(firstOperand), Number(secondOperand));
   };
 
-  #showResult() {
-    const result = this.#calculate();
+  const showResult = () => {
+    const result = calculate();
 
     if (result === Infinity || result === -Infinity || Number.isNaN(result)) {
-      this.props.triggerError();
+      setIsError(true);
 
       return;
     }
 
-    this.props.handleParentState({
-      ...this.props.initialState,
-      firstOperand: String(result),
-    });
-  }
+    setResult(String(result));
+  };
 
-  #calculate() {
-    const { operator, firstOperand, secondOperand } = this.props.state;
+  const handleResultButton = () => {
+    if (!secondOperand) return;
 
-    const calc = this.#calculation[operator];
-    return calc(Number(firstOperand), Number(secondOperand));
-  }
+    showResult();
+  };
 
-  render() {
-    return (
-      <div className="operations subgrid">
-        {Object.keys(this.#calculation).map((operator) => (
-          <button
-            key={operator}
-            type="button"
-            className="operation"
-            onClick={this.#handleOperatorClick}
-          >
-            {operator}
-          </button>
-        ))}
+  return (
+    <div className="operations subgrid">
+      {Object.keys(calculation).map((operatorType) => (
         <button
-          className="operation result-button"
+          key={operatorType}
           type="button"
-          onClick={this.#handleResultButton}
+          className="operation"
+          onClick={() => handleOperatorClick(operatorType)}
         >
-          =
+          {operatorType}
         </button>
-      </div>
-    );
-  }
+      ))}
+      <button
+        className="operation result-button"
+        type="button"
+        onClick={handleResultButton}
+      >
+        =
+      </button>
+    </div>
+  );
 }
