@@ -45,6 +45,7 @@ function Calculator() {
   };
 
   const updateOperation = (newOperation) => {
+    if (newOperation !== '=' && !operation[newOperation]) return;
     if (expression.firstOperand === OPERAND_ERROR_VALUE) return;
 
     if (newOperation === '=') {
@@ -61,7 +62,6 @@ function Calculator() {
 
   const calculate = () => {
     const { firstOperand, secondOperand, operator } = expression;
-    if (!operation[expression.operator]) return;
 
     const result = operation[operator](+firstOperand, +secondOperand);
 
