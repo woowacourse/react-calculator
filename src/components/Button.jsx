@@ -1,20 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class Button extends Component {
-  render() {
-    return (
-      <button
-        className={this.props.className}
-        onClick={() => {
-          this.props.onClick(this.props.text);
-        }}
-        type="button"
-      >
-        {this.props.text}
-      </button>
-    );
-  }
+export default function Button({ className, text, onClick }) {
+  return (
+    <button
+      className={className}
+      onClick={() => {
+        onClick(text);
+      }}
+      type="button"
+    >
+      {text}
+    </button>
+  );
 }
 
 Button.propTypes = {
@@ -22,5 +20,3 @@ Button.propTypes = {
   text: PropTypes.string,
   onClick: PropTypes.func,
 };
-
-export default Button;
