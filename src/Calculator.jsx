@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import InputField from './components/InputField';
 import ResultField from './components/ResultField';
-import { OPERAND_ERROR_VALUE, STORAGE_KEY } from './constants';
+import { OPERAND_ERROR_VALUE, STORAGE_EXPRESSION_KEY } from './constants';
 import { operation, isOverOperandMaxLength } from './util';
 
 function Calculator() {
-  const [expression, setExpression] = useState(initialExpression);
-
-  const initialExpression = localStorage.getItem(STORAGE_KEY)
-    ? JSON.parse(localStorage.getItem(STORAGE_KEY))
-    : {
-        firstOperand: '',
-        secondOperand: '',
-        operator: '',
-      };
+  const [expression, setExpression] = useState(
+    localStorage.getItem(STORAGE_EXPRESSION_KEY)
+      ? JSON.parse(localStorage.getItem(STORAGE_EXPRESSION_KEY))
+      : {
+          firstOperand: '',
+          secondOperand: '',
+          operator: '',
+        },
+  );
 
   const saveResult = (e) => {
     e.preventDefault();
     e.returnValue = '';
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(expression));
+    localStorage.setItem(STORAGE_EXPRESSION_KEY, JSON.stringify(expression));
   };
 
   const updateOperandWithNewDigit = (newDigit) => {
