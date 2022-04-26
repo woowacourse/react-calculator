@@ -43,9 +43,10 @@ const Calculator = () => {
 
   const handleDigitClick = (digit) => {
     const numberIndex = operator === '' ? 0 : 1;
-    const newStateNumbers = [...numbers];
-    const sign = newStateNumbers[numberIndex] >= 0 ? 1 : -1;
-    newStateNumbers[numberIndex] = newStateNumbers[numberIndex] * 10 + Number(digit) * sign;
+    const sign = numbers[numberIndex] >= 0 ? 1 : -1;
+    const newStateNumbers = numbers.map((number, index) =>
+      index === numberIndex ? number * 10 + Number(digit) * sign : number
+    );
 
     if (Number.isNaN(newStateNumbers[numberIndex])) {
       alert(ERROR_MESSAGE.NOT_ENTER_INFINITY_NUMBER);
