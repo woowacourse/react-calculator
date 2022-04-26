@@ -1,6 +1,8 @@
 export const EMPTY_SECOND_OPERAND_ERROR_MESSAGE =
   '2번째 피연산자를 입력해주세요.';
 
+export const AC_CLICK_REQUIRED_MESSAGE = '초기화(AC) 후 연산해주세요.';
+
 export const INFINITY_ERROR_TEXT = '오류';
 
 export const CALCULATOR_DATA_KEY = 'calculatorData';
