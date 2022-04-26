@@ -1,5 +1,7 @@
 ## 요구 사항
 
+### Step 1
+
 - [x] Class Component를 사용합니다.
 - [x] 레벨1을 참고하여 REQUIREMENTS.md에 요구 사항 도출
   - [x] 2개의 숫자에 대해 덧셈이 가능하다.
@@ -12,3 +14,9 @@
 - [x] 출력값 있는 상황에 사용자의 페이지 이탈시 confirm을 활용해 사용자의 이탈 여부를 확인한다.
 - [x] 항상 사용자의 이탈시 마지막 출력값을 Local Storage에 저장한다.
 - [x] 연산의 결과값이 Infinity일 경우 오류라는 문자열을 보여준다. (아이폰 참고)
+
+### Step 2
+
+- [x] Step1의 Class Component를 Function Component로 마이그레이션 합니다.
+- [x] Step1에서의 피드백을 적용합니다.
+- [x] 전체 코드를 리팩토링 합니다.
