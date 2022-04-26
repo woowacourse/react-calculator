@@ -1,20 +1,16 @@
-import React, { Component } from 'react';
+import React from "react";
+import { OPERATOR_LIST } from "../constants/constant";
 
-class OperatorButtons extends Component {
-  onClickOperator = (event) => {
-    this.props.func(event);
-  };
-
-  render() {
-    return (
-      <button
-        className='operation'
-        data-operator={this.props.operator}
-        onClick={this.onClickOperator}>
-        {this.props.operator}
-      </button>
-    );
-  }
-}
+const OperatorButtons = (props) => {
+  return (
+    <div className="operations subgrid">
+      {OPERATOR_LIST.map((operand, index) => (
+        <button className="operation" onClick={props.onClick} key={index}>
+          {operand}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 export default OperatorButtons;

@@ -1,17 +1,16 @@
-import React, { Component } from 'react';
+import React from "react";
+import { DIGIT_NUMBER_LIST } from "../constants/constant";
 
-class NumberButtons extends Component {
-  onClickNumber = (event) => {
-    this.props.func(event);
-  };
-
-  render() {
-    return (
-      <button className='digit' data-number={this.props.number} onClick={this.onClickNumber}>
-        {this.props.number}
-      </button>
-    );
-  }
-}
+const NumberButtons = (props) => {
+  return (
+    <div className="digits flex">
+      {DIGIT_NUMBER_LIST.map((digit, index) => (
+        <button className="digit" key={index} onClick={props.onClick}>
+          {digit}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 export default NumberButtons;

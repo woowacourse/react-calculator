@@ -1,3 +1,16 @@
+## 2단계
+
+- [x] class component를 function component로 교체하기
+
+### 1단계 피드백 반영 사항
+
+- [x] Calculator.js 에서 ... 연산자 사용하여 setState하기
+- [x] switch문에서 연산자로 계산된 값을 반환하는 메소드와 그 반환된 값으로 setState하게 분리하기
+- [x] 초기화 객체 상수화하여 관리하기
+- [x] dataset사용하지 않기
+
+## 1단계
+
 ## 🎯 기능 요구사항
 
 - [x] 2개의 숫자에 대해 덧셈이 가능하다.
