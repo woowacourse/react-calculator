@@ -1,6 +1,7 @@
 {
   "name": "react-calculator",
   "version": "0.1.0",
+  "homepage": "https://soyi47.github.io/react-calculator/",
   "description": "<우아한테크코스 4기 프론트엔드> level 2 - 계산기",
   "private": true,
   "dependencies": {
