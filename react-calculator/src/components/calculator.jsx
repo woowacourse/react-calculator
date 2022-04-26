@@ -24,7 +24,7 @@ function Calculator() {
 
     window.addEventListener('beforeunload', onBeforeUnload);
     return () => window.removeEventListener('beforeunload', onBeforeUnload);
-  });
+  }, []);
 
   const handleDigit = (number) => {
     if (operation) {
