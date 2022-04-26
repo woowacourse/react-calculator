@@ -63,10 +63,12 @@ function Calculator() {
   const calculate = () => {
     const { firstOperand, secondOperand, operator } = expression;
 
-    const result = operation[operator](+firstOperand, +secondOperand);
+    const newFirstOperand = operation[operator](+firstOperand, +secondOperand);
 
     setExpression({
-      firstOperand: Number.isFinite(result) ? String(result) : OPERAND_ERROR_VALUE,
+      firstOperand: Number.isFinite(newFirstOperand)
+        ? String(newFirstOperand)
+        : OPERAND_ERROR_VALUE,
       secondOperand: '',
       operator: '',
     });
