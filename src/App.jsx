@@ -1,87 +1,99 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './App.css';
 
+import AllClearButton from './components/AllClearButton';
 import DigitButtons from './components/DigitButtons';
-
 import OperationButtons from './components/OperationButtons';
 
-import AllClearButton from './components/AllClearButton';
+const initialState = {
+  firstOperand: '0',
+  secondOperand: '',
+  operator: '',
+  isError: false,
+};
 
-class App extends Component {
-  constructor() {
-    super();
+function App() {
+  const [state, setState] = useState(
+    JSON.parse(localStorage.getItem('state')) || { ...initialState }
+  );
 
-    this.initialState = {
-      firstOperand: '0',
-      secondOperand: '',
-      operator: null,
-      isError: false,
-    };
-
-    this.state = {
-      ...(JSON.parse(localStorage.getItem('state')) || this.initialState),
-    };
-  }
-
-  componentDidMount() {
-    window.localStorage.removeItem('state');
-
-    window.addEventListener('beforeunload', this.#handleBeforeUnload);
-
-    window.addEventListener('pagehide', () => {
-      const { firstOperand, operator } = this.state;
-
-      if (firstOperand !== '0' || operator) {
-        window.localStorage.setItem('state', JSON.stringify(this.state));
-      }
-
-      window.removeEventListener('beforeunload', this.#handleBeforeUnload);
-    });
-  }
-
-  #handleBeforeUnload = (e) => {
+  const handleBeforeUnload = (e) => {
     e.preventDefault();
 
     // chorme에서 confirm 추가를 위해서 필요
     e.returnValue = '';
   };
 
-  #handleParentState = (state) => {
-    this.setState({ ...state });
+  const triggerError = () => {
+    setState({ ...initialState, isError: true });
   };
 
-  #triggerError = () => {
-    this.setState({ ...this.initialState, isError: true });
+  const setOperandValue = (operand, value) => {
+    setState((prevState) => ({
+      ...prevState,
+      [operand === 'first' ? 'firstOperand' : 'secondOperand']: value,
+    }));
   };
 
-  render() {
-    const { isError, firstOperand, operator, secondOperand } = this.state;
+  const setOperatorValue = (value) => {
+    setState((prevState) => ({ ...prevState, operator: value }));
+  };
 
-    return (
-      <div className="App">
-        <div className="calculator">
-          {isError ? (
-            <h1 id="total">오류</h1>
-          ) : (
-            <h1 id="total">
-              {firstOperand}
-              {operator}
-              {secondOperand}
-            </h1>
-          )}
-          <DigitButtons state={this.state} handleParentState={this.#handleParentState} />
-          <AllClearButton handleParentState={this.#handleParentState} />
-          <OperationButtons
-            state={this.state}
-            initialState={this.initialState}
-            handleParentState={this.#handleParentState}
-            triggerError={this.#triggerError}
-          />
-        </div>
+  const clearState = () => {
+    setState({ ...initialState });
+  };
+
+  const clearAndSetResultValue = (value) => {
+    setState({ ...initialState, firstOperand: value });
+  };
+
+  useEffect(() => {
+    window.localStorage.removeItem('state');
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    window.addEventListener('pagehide', () => {
+      const { firstOperand, operator } = state;
+
+      if (firstOperand !== '0' || operator) {
+        window.localStorage.setItem('state', JSON.stringify(state));
+      }
+
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    });
+  }, []);
+
+  return (
+    <div className="App">
+      <div className="calculator">
+        {state.isError ? (
+          <h1 id="total">오류</h1>
+        ) : (
+          <h1 id="total">
+            {state.firstOperand}
+            {state.operator}
+            {state.secondOperand}
+          </h1>
+        )}
+        <DigitButtons
+          operator={state.operator}
+          firstOperand={state.firstOperand}
+          secondOperand={state.secondOperand}
+          setOperand={setOperandValue}
+        />
+        <AllClearButton clearState={clearState} />
+        <OperationButtons
+          operator={state.operator}
+          firstOperand={state.firstOperand}
+          secondOperand={state.secondOperand}
+          setOperator={setOperatorValue}
+          clearAndSetResult={clearAndSetResultValue}
+          triggerError={triggerError}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
