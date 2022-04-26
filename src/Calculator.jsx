@@ -5,6 +5,8 @@ import { OPERAND_ERROR_VALUE, OPERAND_MAX_LENGTH, STORAGE_KEY } from './constant
 import { operation } from './util';
 
 function Calculator() {
+  const [expression, setExpression] = useState(initialExpression);
+
   const initialExpression = localStorage.getItem(STORAGE_KEY)
     ? JSON.parse(localStorage.getItem(STORAGE_KEY))
     : {
@@ -12,15 +14,6 @@ function Calculator() {
         secondOperand: '',
         operator: '',
       };
-
-  const [expression, setExpression] = useState(initialExpression);
-
-  useEffect(() => {
-    window.addEventListener('beforeunload', saveResult);
-    return () => {
-      window.removeEventListener('beforeunload', saveResult);
-    };
-  });
 
   const saveResult = (e) => {
     e.preventDefault();
@@ -90,6 +83,13 @@ function Calculator() {
       operator: '',
     });
   }
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', saveResult);
+    return () => {
+      window.removeEventListener('beforeunload', saveResult);
+    };
+  });
 
   return (
     <div className="App">
