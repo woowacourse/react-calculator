@@ -27,14 +27,6 @@ const Calculator = () => {
     event.returnValue = "";
   }, []);
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", handleUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleUnload);
-    };
-  }, []);
-
   const onClickNumber = useCallback(({ target }) => {
     dispatch({ type: SET_NUMBER, inputNumber: target.textContent });
   }, []);
@@ -52,6 +44,14 @@ const Calculator = () => {
     }
 
     dispatch({ type: SET_OPERATOR, inputOperator });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", handleUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
   }, []);
 
   return (
