@@ -2,11 +2,11 @@ import React from 'react';
 import { OPERATOR, EQUATION_INITIAL_STATE } from '../constants/constant';
 
 const OperatorButton = props => {
-  const { selfOperand, prevNumbers, setEquationState, calculate } = props;
+  const { selfOperand, prevNumbers, updateOperator, calculate } = props;
 
   const onClickOperator = () => {
     if (prevNumbers.length === 0) {
-      setEquationState({
+      updateOperator({
         ...EQUATION_INITIAL_STATE,
         prevNumbers: [0],
         operator: selfOperand,
@@ -14,7 +14,7 @@ const OperatorButton = props => {
     }
 
     if (selfOperand !== OPERATOR.EQUAL) {
-      setEquationState(prevState => ({ ...prevState, operator: selfOperand }));
+      updateOperator(prevState => ({ ...prevState, operator: selfOperand }));
       return;
     }
 
