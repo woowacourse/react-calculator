@@ -1,46 +1,20 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { CALCULATOR } from '../constants.js';
 
-class Digits extends Component {
-  handleDigitButtonClick = (e) => {
-    this.props.handleDigit(e.target.textContent);
+function Digits({ handleDigit }) {
+  const handleDigitButtonClick = (e) => {
+    handleDigit(e.target.textContent);
   };
 
-  render() {
-    return (
-      <div className="digits flex">
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          9
+  return (
+    <div className="digits flex" onClick={handleDigitButtonClick}>
+      {CALCULATOR.DIGITS.map((digit, index) => (
+        <button type="button" className="digit" key={index}>
+          {digit}
         </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          8
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          7
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          6
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          5
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          4
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          3
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          2
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          1
-        </button>
-        <button className="digit" onClick={this.handleDigitButtonClick}>
-          0
-        </button>
-      </div>
-    );
-  }
+      ))}
+    </div>
+  );
 }
 
 export default Digits;

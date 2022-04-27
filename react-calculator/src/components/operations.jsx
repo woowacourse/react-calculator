@@ -1,52 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { CALCULATOR } from '../constants.js';
 
-class Operations extends Component {
-  handleOperationButtonClick = (e) => {
-    this.props.setOperation(e.target.textContent);
-  };
-
-  handleEqualityButtonClick = () => {
-    const { operation, resetState } = this.props;
-    switch (operation) {
-      case '+':
-        this.props.add();
-        break;
-      case '-':
-        this.props.minus();
-        break;
-      case '/':
-        this.props.divide();
-        break;
-      case '*':
-        this.props.multiply();
-        break;
-      default:
-        break;
+function Operations({ handleOperation, calculate }) {
+  const handleOperationButtonClick = (e) => {
+    const operator = e.target.textContent;
+    if (operator === '=') {
+      calculate();
+      return;
     }
-    resetState();
+    handleOperation(operator);
   };
 
-  render() {
-    return (
-      <div className="operations subgrid">
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          /
+  return (
+    <div className="operations subgrid" onClick={handleOperationButtonClick}>
+      {CALCULATOR.OPERATIONS.map((operator, index) => (
+        <button type="button" className="operation" key={index}>
+          {operator}
         </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          X
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          -
-        </button>
-        <button className="operation" onClick={this.handleOperationButtonClick}>
-          +
-        </button>
-        <button className="operation" onClick={this.handleEqualityButtonClick}>
-          =
-        </button>
-      </div>
-    );
-  }
+      ))}
+    </div>
+  );
 }
 
 export default Operations;
