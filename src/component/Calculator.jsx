@@ -7,8 +7,8 @@ import {
   SET_OPERATOR,
 } from "../constants";
 
-import { calculatorReducer } from "../store/calculatorReducer";
-import { initialCalculatorState } from "../store/initialCalculatorState";
+import { calculationReducer } from "../store/calculationReducer";
+import { initialCalculationState } from "../store/initialCalculationState";
 
 import ClearButton from "./ClearButton";
 import DisplayResult from "./DisplayResult";
@@ -17,9 +17,9 @@ import OperatorButton from "./OperatorButton";
 import ErrorMessage from "./ErrorMessage";
 
 const Calculator = () => {
-  const [calculatorState, dispatch] = useReducer(
-    calculatorReducer,
-    initialCalculatorState
+  const [calculationState, dispatch] = useReducer(
+    calculationReducer,
+    initialCalculationState
   );
 
   const handleUnload = useCallback((event) => {
@@ -56,10 +56,12 @@ const Calculator = () => {
 
   return (
     <>
-      {calculatorState.error && <ErrorMessage error={calculatorState.error} />}
+      {calculationState.error && (
+        <ErrorMessage error={calculationState.error} />
+      )}
       <div className="calculator">
         <DisplayResult
-          result={calculatorState.error ? "오류" : calculatorState.result}
+          result={calculationState.error ? "오류" : calculationState.result}
         />
         <div className="digits flex">
           {Array.from({ length: 10 }, (_, index) => (
