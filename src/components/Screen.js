@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Screen extends Component {
-  render() {
-    const { prevNumber, operator, nextNumber, sum } = this.props.state;
+const Screen = ({ equationState }) => {
+  const { prevNumbers, operator, nextNumbers, sum } = equationState;
 
-    return (
-      <h1 className='total'>{sum === '' ? [...prevNumber, ...operator, ...nextNumber] : sum}</h1>
-    );
-  }
-}
+  return (
+    <h1 className="total">
+      {sum === '' ? [...prevNumbers, ...operator, ...nextNumbers] : sum}
+    </h1>
+  );
+};
 
 export default Screen;

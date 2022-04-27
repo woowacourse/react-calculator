@@ -15,3 +15,4 @@
 - [x] 출력값 있는 상황에 사용자의 페이지 이탈시 confirm을 활용해 사용자의 이탈 여부를 확인한다.
 - [x] 항상 사용자의 이탈시 마지막 출력값을 Local Storage에 저장한다.
 - [x] 연산의 결과값이 Infinity일 경우 오류라는 문자열을 보여준다.
+- [x] Step1의 Class Component를 Function Component로 마이그레이션 합니다.

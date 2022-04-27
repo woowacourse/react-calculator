@@ -10,24 +10,23 @@ export const CONFIRM_MSG = '정말 창을 닫으시겠습니까?';
 
 export const OPERATOR = {
   MULTI: 'X',
-
   DIVIDE: '/',
-
   SUBSTRACT: '-',
-
   PLUS: '+',
-
   EQUAL: '=',
 };
 
 export const OPERATOR_LIST = [
   OPERATOR.MULTI,
-
   OPERATOR.DIVIDE,
-
   OPERATOR.SUBSTRACT,
-
   OPERATOR.PLUS,
-
   OPERATOR.EQUAL,
 ];
+
+export const EQUATION_INITIAL_STATE = {
+  sum: '',
+  prevNumbers: [],
+  operator: '',
+  nextNumbers: [],
+};
