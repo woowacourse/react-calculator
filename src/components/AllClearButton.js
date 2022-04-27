@@ -1,9 +1,8 @@
 import React from 'react';
-import { EQUATION_INITIAL_STATE } from '../constants/constant';
 
 const AllClearButton = ({ clear }) => {
   const onClickAllClear = () => {
-    clear(EQUATION_INITIAL_STATE);
+    clear();
   };
 
   return (

@@ -70,6 +70,10 @@ const Calculator = () => {
     }
   };
 
+  const clearEquation = () => {
+    setEquationState(EQUATION_INITIAL_STATE);
+  };
+
   return (
     <div id="app">
       <div className="calculator">
@@ -80,12 +84,13 @@ const Calculator = () => {
               key={index}
               number={9 - index}
               equationState={equationState}
-              setEquationState={setEquationState}
+              updateNumbers={setEquationState}
+              clear={clearEquation}
             />
           ))}
         </div>
         <div className="modifiers subgrid">
-          <AllClearButton clear={setEquationState} />
+          <AllClearButton clear={clearEquation} />
         </div>
         <div className="operations subgrid">
           {OPERATOR_LIST.map((operand, index) => (
@@ -93,7 +98,7 @@ const Calculator = () => {
               key={index}
               selfOperand={operand}
               prevNumbers={prevNumbers}
-              setEquationState={setEquationState}
+              updateOperator={setEquationState}
               calculate={onClickEqual}
             />
           ))}
