@@ -101,9 +101,7 @@ const Calculator = () => {
           ))}
         </div>
         <div className='modifiers subgrid'>
-          <button className='modifier' onClick={handleClear}>
-            AC
-          </button>
+          <CalculatorButton className='modifier' onClick={handleClear} value='AC' />
         </div>
         <div className='operations subgrid'>
           {operators.map((operator) => (
