@@ -9,7 +9,7 @@ function Operation(props) {
         props.onClick(props.operator);
       }}
     >
-      {props.operator}
+      {props.children}
     </button>
   );
 }

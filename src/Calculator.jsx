@@ -139,15 +139,19 @@ function Calculator() {
       <Result operator={input.operator} operand={input.operand} />
       <div className="digits flex">
         {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map(digit => (
-          <Digit key={digit} digit={String(digit)} onClick={handleClickDigit} />
+          <Digit key={digit} digit={String(digit)} onClick={handleClickDigit}>
+            {digit}
+          </Digit>
         ))}
       </div>
       <div className="modifiers subgrid">
-        <Modifier onClick={handleClickModifier} />
+        <Modifier onClick={handleClickModifier}>AC</Modifier>
       </div>
       <div className="operations subgrid">
         {['/', 'X', '-', '+', '='].map(operatorValue => (
-          <Operation key={operatorValue} operator={operatorValue} onClick={handleClickOperation} />
+          <Operation key={operatorValue} operator={operatorValue} onClick={handleClickOperation}>
+            {operatorValue}
+          </Operation>
         ))}
       </div>
     </div>

@@ -9,7 +9,7 @@ function Digit(props) {
         props.onClick(props.digit);
       }}
     >
-      {props.digit}
+      {props.children}
     </button>
   );
 }
