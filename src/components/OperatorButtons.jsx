@@ -1,4 +1,4 @@
-function OperatorButtonContainer({ updateOperation }) {
+export default function OperatorButtons({ updateOperation }) {
   const onClickOperationButton = (e) => {
     const newOperation = e.target.value;
     updateOperation(newOperation);
@@ -24,5 +24,3 @@ function OperatorButtonContainer({ updateOperation }) {
     </div>
   );
 }
-
-export default OperatorButtonContainer;

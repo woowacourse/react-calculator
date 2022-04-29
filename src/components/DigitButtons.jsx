@@ -1,6 +1,6 @@
 import { DIGITS } from '../constants';
 
-function DigitButtonContainer({ updateOperandWithNewDigit }) {
+export default function DigitButtons({ updateOperandWithNewDigit }) {
   const onClickDigitButton = (e) => {
     const newDigit = e.target.value;
     updateOperandWithNewDigit(newDigit);
@@ -16,5 +16,3 @@ function DigitButtonContainer({ updateOperandWithNewDigit }) {
     </div>
   );
 }
-
-export default DigitButtonContainer;

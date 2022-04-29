@@ -1,4 +1,4 @@
-function ACButtonContainer({ resetExpression }) {
+export default function ACButtons({ resetExpression }) {
   return (
     <div className="modifiers subgrid" onClick={resetExpression}>
       <button className="modifier" id="clear-button">
@@ -7,5 +7,3 @@ function ACButtonContainer({ resetExpression }) {
     </div>
   );
 }
-
-export default ACButtonContainer;

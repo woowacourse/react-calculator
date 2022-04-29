@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import InputField from './components/InputField';
+
 import ResultField from './components/ResultField';
+import DigitButtons from './components/DigitButtons';
+import ACButtons from './components/ACButtons';
+import OperatorButtons from './components/OperatorButtons';
+
 import { OPERAND_ERROR_VALUE } from './constants';
 import { operation, isOverOperandMaxLength } from './util';
 import Storage from './util/Storage';
@@ -87,12 +91,12 @@ function Calculator() {
   return (
     <div className="App">
       <div className="calculator">
-        <ResultField expression={expression} />
-        <InputField
-          updateOperandWithNewDigit={updateOperandWithNewDigit}
-          updateOperation={updateOperation}
-          resetExpression={resetExpression}
-        />
+        <ResultField>
+          {expression.firstOperand + expression.operator + expression.secondOperand}
+        </ResultField>
+        <DigitButtons updateOperandWithNewDigit={updateOperandWithNewDigit} />
+        <ACButtons resetExpression={resetExpression} />
+        <OperatorButtons updateOperation={updateOperation} />
       </div>
     </div>
   );
