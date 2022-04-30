@@ -1,185 +1,161 @@
-import React, { Component } from 'react';
+/* eslint-disable no-param-reassign */
 
-export default class Calculator extends Component {
-  constructor() {
-    super();
+import React, { useState, useEffect, useRef } from 'react';
+import Digit from './components/Digit';
+import Modifier from './components/Modifier';
+import Operation from './components/Operation';
+import Result from './components/Result';
+import calculateResult from './utils/calculateResult';
+import { load, save } from './utils/storage';
 
-    this.state = {
-      operand: ['0', ''],
-      operator: '',
-      index: 0,
-    };
+const DEFAULT_VALUE = { operand: ['0', ''], operator: '', index: 0 };
 
-    window.addEventListener('beforeunload', e => {
-      e.preventDefault();
-      e.returnValue = '';
-    });
-  }
+function Calculator() {
+  const [input, setInput] = useState({
+    operand: DEFAULT_VALUE.operand,
+    operator: DEFAULT_VALUE.operator,
+    index: DEFAULT_VALUE.index,
+  });
 
-  componentDidMount() {
-    const localState = JSON.parse(localStorage.getItem('state'));
+  const handleBeforeUnload = event => {
+    event.preventDefault();
+    event.returnValue = '';
+  };
+
+  const storedInput = useRef(input);
+
+  useEffect(() => {
+    storedInput.current = input;
+  }, [input]);
+
+  const handleUnload = () => {
+    save('calculator', storedInput.current);
+  };
+
+  useEffect(() => {
+    const localState = load('calculator');
 
     if (localState) {
-      this.setState({ operand: localState.operand });
-      this.setState({ operator: localState.operator });
-      this.setState({ index: localState.index });
+      setInput({
+        operator: localState.operator,
+        index: localState.index,
+        operand: localState.operand,
+      });
     }
-  }
 
-  componentDidUpdate() {
-    localStorage.setItem('state', JSON.stringify(this.state));
-  }
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleUnload);
 
-  handleClickDigit(digit) {
-    if (this.state.operand[0] === '오류') {
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('unload', handleUnload);
+    };
+  }, []);
+
+  const handleClickDigit = digit => {
+    if (input.operand[0] === '오류') {
       alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
       return;
     }
 
-    if (+(this.state.operand[this.state.index] + digit) >= 1000) {
+    if (+(input.operand[input.index] + digit) >= 1000) {
       alert('숫자는 한번에 최대 3자리 수까지 입력 가능합니다.');
       return;
     }
 
-    switch (this.state.index) {
+    switch (input.index) {
       case 0:
-        this.setState(prevState => ({
-          operand: [String(+(prevState.operand[0] + digit)), ''],
-        }));
+        setInput(prevState => {
+          return { ...prevState, operand: [String(+(prevState.operand[0] + digit)), ''] };
+        });
         break;
 
       case 1:
-        this.setState(prevState => ({
-          operand: [String(+prevState.operand[0]), String(+(prevState.operand[1] + digit))],
-        }));
+        setInput(prevState => {
+          return {
+            ...prevState,
+            operand: [String(+prevState.operand[0]), String(+(prevState.operand[1] + digit))],
+          };
+        });
         break;
 
       default:
         break;
     }
-  }
+  };
 
-  handleClickOperation(operator) {
-    if (this.state.operand[0] === '오류') {
+  const calculate = (operand, operator) => {
+    if (!operator) {
+      return;
+    }
+
+    const result = calculateResult(operand, operator);
+
+    if (result === Infinity) {
+      setInput(prevState => {
+        return { ...prevState, operand: ['오류', ''], operator: '' };
+      });
+
+      return;
+    }
+
+    setInput({
+      operator: '',
+      index: 0,
+      operand: [String(result), ''],
+    });
+  };
+
+  const handleClickOperation = operator => {
+    if (input.operand[0] === '오류') {
       alert('오류입니다. AC를 눌러 값을 초기화해주세요.');
       return;
     }
 
     if (operator === '=') {
-      this.calculate(this.state.operand, this.state.operator);
+      calculate(input.operand, input.operator);
       return;
     }
 
-    if (this.state.operator) {
+    if (input.operator) {
       return;
     }
 
-    this.setState({ operator });
-    this.setState({ index: 1 });
-  }
+    setInput(prevState => {
+      return { ...prevState, operator, index: 1 };
+    });
+  };
 
-  handleClickModifier() {
-    this.setState({ operand: ['0', ''] });
-    this.setState({ operator: '' });
-    this.setState({ index: 0 });
-  }
+  const handleClickModifier = () => {
+    setInput({
+      operand: DEFAULT_VALUE.operand,
+      operator: DEFAULT_VALUE.operator,
+      index: DEFAULT_VALUE.index,
+    });
+  };
 
-  calculate(operand, operator) {
-    if (!this.state.operator) {
-      return;
-    }
-    let result = null;
-    switch (operator) {
-      case '+':
-        result = +operand[0] + +operand[1];
-        break;
-      case '-':
-        result = +operand[0] - +operand[1];
-        break;
-      case 'X':
-        result = +operand[0] * +operand[1];
-        break;
-      case '/':
-        result = Math.floor(+operand[0] / +operand[1]);
-        break;
-      default:
-        break;
-    }
-
-    if (result === Infinity) {
-      this.setState({ operand: ['오류', ''] });
-      this.setState({ operator: '' });
-      return;
-    }
-
-    this.setState({ operand: [String(result), ''] });
-    this.setState({ operator: '' });
-    this.setState({ index: 0 });
-  }
-
-  renderDigit(i) {
-    return (
-      <button className="digit" type="button" onClick={this.handleClickDigit.bind(this, i)}>
-        {i}
-      </button>
-    );
-  }
-
-  renderModifier() {
-    return (
-      <button type="button" className="modifier" onClick={this.handleClickModifier.bind(this)}>
-        AC
-      </button>
-    );
-  }
-
-  renderResult() {
-    return (
-      <h1 id="total">
-        {this.state.operand[0]}
-        {this.state.operator}
-        {this.state.operand[1]}
-      </h1>
-    );
-  }
-
-  renderOperation(operation) {
-    return (
-      <button
-        type="button"
-        className="operation"
-        onClick={this.handleClickOperation.bind(this, operation)}
-      >
-        {operation}
-      </button>
-    );
-  }
-
-  render() {
-    return (
-      <div className="calculator">
-        {this.renderResult()}
-        <div className="digits flex">
-          {this.renderDigit('9')}
-          {this.renderDigit('8')}
-          {this.renderDigit('7')}
-          {this.renderDigit('6')}
-          {this.renderDigit('5')}
-          {this.renderDigit('4')}
-          {this.renderDigit('3')}
-          {this.renderDigit('2')}
-          {this.renderDigit('1')}
-          {this.renderDigit('0')}
-        </div>
-        <div className="modifiers subgrid">{this.renderModifier()}</div>
-        <div className="operations subgrid">
-          {this.renderOperation('/')}
-          {this.renderOperation('X')}
-          {this.renderOperation('-')}
-          {this.renderOperation('+')}
-          {this.renderOperation('=')}
-        </div>
+  return (
+    <div className="calculator">
+      <Result operator={input.operator} operand={input.operand} />
+      <div className="digits flex">
+        {[9, 8, 7, 6, 5, 4, 3, 2, 1, 0].map(digit => (
+          <Digit key={digit} digit={String(digit)} onClick={handleClickDigit}>
+            {digit}
+          </Digit>
+        ))}
       </div>
-    );
-  }
+      <div className="modifiers subgrid">
+        <Modifier onClick={handleClickModifier}>AC</Modifier>
+      </div>
+      <div className="operations subgrid">
+        {['/', 'X', '-', '+', '='].map(operatorValue => (
+          <Operation key={operatorValue} operator={operatorValue} onClick={handleClickOperation}>
+            {operatorValue}
+          </Operation>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+export default Calculator;
