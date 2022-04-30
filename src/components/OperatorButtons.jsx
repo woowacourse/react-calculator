@@ -1,26 +1,20 @@
-export default function OperatorButtons({ updateOperation }) {
-  const onClickOperationButton = (e) => {
-    const newOperation = e.target.value;
-    updateOperation(newOperation);
-  };
+import { OPERATIONS } from '../constants';
 
+export default function OperatorButtons({ updateOperation }) {
   return (
-    <div className="operations subgrid" onClick={onClickOperationButton}>
-      <button className="operation" value="/">
-        /
-      </button>
-      <button className="operation" value="x">
-        X
-      </button>
-      <button className="operation" value="-">
-        -
-      </button>
-      <button className="operation" value="+">
-        +
-      </button>
-      <button className="operation" value="=">
-        =
-      </button>
+    <div className="operations subgrid">
+      {OPERATIONS.map((operation, index) => (
+        <button
+          className="operation"
+          value={operation}
+          key={index}
+          onClick={() => {
+            updateOperation(operation);
+          }}
+        >
+          {operation.toLocaleUpperCase()}
+        </button>
+      ))}
     </div>
   );
 }
