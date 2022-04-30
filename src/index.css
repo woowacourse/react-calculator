@@ -60,6 +60,9 @@ button:hover {
   justify-content: flex-end;
   align-items: flex-end;
   font-size: 4rem;
+  box-sizing: border-box;
+  min-height: 120px;
+  word-break: break-all;
 }
 
 .digits {
